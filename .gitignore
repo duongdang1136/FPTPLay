@@ -1,0 +1,14 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs / temp
+*.log
+.tmp/
+tmp/
+
+# Local env / secrets
+.env
+.env.*
+secrets/
+credentials/
