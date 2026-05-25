@@ -1,5 +1,7 @@
 # Features
 
+Canonical framework: `../docs-sdlc-framework.md`
+
 FPTPlay feature docs are split into lightweight discovery/BA docs and final implementation contracts.
 
 ```text

@@ -132,7 +132,7 @@ skills/sdlc/03-document-writer/skill.md
 
 Use these in order for feature work: Researcher → BA Requirement → Document Writer.
 
-See `docs-sdlc-config.md` and `docs-ba-config.md` for the FPTPlay usage contract and repository hygiene rules.
+See `docs-sdlc-framework.md` for the FPTPlay usage contract, reusable templates, promotion gate, and repository hygiene rules.
 
 ## Reusable templates
 

@@ -88,7 +88,7 @@ features/final-docs/<Large-Feature>/<Sub-Feature>/
 - Keep lightweight docs separate from final docs.
 - Use Researcher → BA → Document Writer for FPTPlay feature tasks by default.
 - Promote to final docs only after assumptions/open questions are accepted or safely defaulted.
-- Treat `docs-sdlc-config.md` as the canonical full-chain config; `docs-ba-config.md` is BA-focused detail.
+- Treat `docs-sdlc-framework.md` as the canonical FPTPlay SDLC docs framework.
 - Do not commit `SOUL.md`, `USER.md`, `wiki/`, local memory, secrets, or unrelated agent runtime files.
 - Optional runtime-only helpers such as global researcher playbooks or `Tech-Skills/**` may be used from the active agent workspace, but they are not committed to this repo.
 - For external writes such as push, use the repository remote configured by the owner.
