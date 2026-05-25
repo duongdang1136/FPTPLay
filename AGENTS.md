@@ -11,18 +11,28 @@ Use this repo for product/BA/API/design docs only. Do not store agent-local memo
 ```text
 features/lightweight/**   # discovery / BA draft / review docs
 features/final-docs/**    # implementation-ready handoff contracts
-skills/sdlc/02-ba-requirement/** # BA skill used to clarify product/UX requirements
+skills/sdlc/01-researcher/**       # research + architecture context skill
+skills/sdlc/02-ba-requirement/**   # BA requirement clarification skill
+skills/sdlc/03-document-writer/**  # final contract writing skill
 ```
 
-## BA Skill Workflow
+## FPTPlay SDLC Skill Workflow
 
-When configuring or generating FPTPlay requirements, use:
+When the BA user connects to this repo and requests FPTPlay feature work, use the local SDLC skills in order unless the user explicitly narrows the task:
 
 ```text
-skills/sdlc/02-ba-requirement/skill.md
+1. skills/sdlc/01-researcher/skill.md
+2. skills/sdlc/02-ba-requirement/skill.md
+3. skills/sdlc/03-document-writer/skill.md
 ```
 
-BA outputs should clarify **what** and **why**, not implementation details:
+### 01 Researcher
+
+Use for feature/domain context, existing docs scan, architecture context, risks, reusable patterns, and assumptions.
+
+### 02 BA Requirement
+
+Use for product/UX clarification:
 
 - target users and goals;
 - scope boundaries;
@@ -30,6 +40,14 @@ BA outputs should clarify **what** and **why**, not implementation details:
 - function list with business rules, states, permissions, and acceptance criteria;
 - UX/UI notes per function;
 - assumptions, blockers, and requirement change log.
+
+### 03 Document Writer
+
+Use to promote accepted BA assumptions into implementation-ready final contracts:
+
+- `product/functional-specification.md`
+- `api/technical-contract.md`
+- `design/design-contract.md`
 
 ## Documentation Convention
 
@@ -57,6 +75,7 @@ features/final-docs/<Large-Feature>/<Sub-Feature>/
 ## Rules
 
 - Keep lightweight docs separate from final docs.
-- Promote to final docs only after assumptions/open questions are accepted.
+- Use Researcher → BA → Document Writer for FPTPlay feature tasks by default.
+- Promote to final docs only after assumptions/open questions are accepted or safely defaulted.
 - Do not commit `SOUL.md`, `USER.md`, `wiki/`, local memory, secrets, or unrelated agent runtime files.
 - For external writes such as push, use the repository remote configured by the owner.

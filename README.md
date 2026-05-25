@@ -120,12 +120,16 @@ Final docs:
 features/final-docs/Pre-Waiting-Room/Pre-Live-Waiting-Room/
 ```
 
-## BA skill configuration
+## SDLC skill configuration
 
-This repo is configured to use the SDLC BA requirement skill for requirement clarification before final handoff:
+This repo is configured to use the focused SDLC documentation skill chain for FPTPlay feature tasks:
 
 ```text
+skills/sdlc/01-researcher/skill.md
 skills/sdlc/02-ba-requirement/skill.md
+skills/sdlc/03-document-writer/skill.md
 ```
 
-See `docs-ba-config.md` for the FPTPlay BA usage contract and repository hygiene rules.
+Use these in order for feature work: Researcher → BA Requirement → Document Writer.
+
+See `docs-sdlc-config.md` and `docs-ba-config.md` for the FPTPlay usage contract and repository hygiene rules.
