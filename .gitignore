@@ -6,9 +6,20 @@ Thumbs.db
 *.log
 .tmp/
 tmp/
+.trash/
 
 # Local env / secrets
 .env
 .env.*
 secrets/
 credentials/
+
+# Agent-local / personal runtime files
+SOUL.md
+USER.md
+MEMORY.md
+memory/
+wiki/
+skills/foundation/
+skills/researcher/
+skills/Tech-Skills/

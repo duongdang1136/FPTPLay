@@ -119,3 +119,13 @@ Final docs:
 ```text
 features/final-docs/Pre-Waiting-Room/Pre-Live-Waiting-Room/
 ```
+
+## BA skill configuration
+
+This repo is configured to use the SDLC BA requirement skill for requirement clarification before final handoff:
+
+```text
+skills/sdlc/02-ba-requirement/skill.md
+```
+
+See `docs-ba-config.md` for the FPTPlay BA usage contract and repository hygiene rules.
