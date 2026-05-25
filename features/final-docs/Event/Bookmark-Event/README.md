@@ -1,34 +1,59 @@
-# Bookmark Event — Final Implementation Docs
+# Bookmark Event — Final Docs
 
 > Project: FPTPlay
-> Feature: Event
+> Large feature: Event
 > Sub-feature: Bookmark Event
-> Source: BA-aligned lightweight pack using `skills/sdlc/02-ba-requirement/skill.md`
-> Status: Implementation-ready draft pending dev/API owner confirmation
+> Stage: Final implementation handoff
+> Framework: `docs-sdlc-framework.md`
+> Skill: `03-document-writer`
 
-## Scope
+## Purpose
 
-Bookmark Event lets an authenticated user save or unsave an eligible Event from Event Card and Event Detail surfaces.
+This folder is the implementation source of truth for Bookmark Event after promotion from lightweight Research + BA docs.
 
-## Final artifacts
+## Artifacts
 
 ```text
-features/final-docs/Event/Bookmark-Event/
-  product/functional-specification.md
-  api/technical-contract.md
-  design/design-contract.md
+product/functional-specification.md
+api/technical-contract.md
+design/design-contract.md
 ```
 
-## Accepted assumptions
+## Source lightweight docs
 
-- Bookmark is scoped to authenticated user + event.
-- Anonymous users must log in before saving.
-- Bookmark does not create reminder, registration, calendar sync, or entitlement.
-- FE follows server eligibility when available.
-- Idempotent bookmark/unbookmark mutations are preferred.
+```text
+features/lightweight/Event/Bookmark-Event/research/bookmark-event-research.md
+features/lightweight/Event/Bookmark-Event/product/ba-report-bookmark-event.md
+features/lightweight/Event/Bookmark-Event/product/SRS-bookmark-event.md
+features/lightweight/Event/Bookmark-Event/product/open-questions-bookmark-event.md
+features/lightweight/Event/Bookmark-Event/design/wireframe-suggestion-bookmark-event.md
+features/lightweight/Event/Bookmark-Event/api/API-bookmark-event.md
+```
 
-## Non-blocking confirmations before implementation
+## Implementation scope
 
-- Canonical event identifier field name.
-- Existing favorites/watchlist service reuse.
-- Whether bookmark state is embedded in Event list/detail DTOs or fetched separately.
+- Event Card bookmark toggle.
+- Event Detail Header bookmark toggle.
+- Authenticated bookmark/unbookmark.
+- Anonymous login prompt.
+- Loading, success, error, disabled, ineligible, and missing-state handling.
+- Idempotent bookmark/unbookmark API behavior.
+
+## Explicitly out of scope
+
+- Saved Events list.
+- Reminders/notifications.
+- Calendar sync.
+- Registration/check-in.
+- Entitlement/payment changes.
+- Admin/CMS management.
+- Bulk bookmark management.
+
+## Pending implementation confirmations
+
+These do not block documentation handoff but should be confirmed before coding:
+
+1. Canonical Event identifier field name.
+2. Final endpoint paths and API envelope if different from assumed contract.
+3. Whether existing favorites/watchlist service should be reused.
+4. Whether Event list/detail DTOs will embed bookmark state.

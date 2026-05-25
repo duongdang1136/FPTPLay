@@ -1,130 +1,206 @@
 # Technical Contract — Bookmark Event
 
 > Project: FPTPlay
-> Feature: Event
-> Sub-feature: Bookmark Event
-> Audience: BE, FE, QA
-> Status: Implementation-ready draft pending dev/API owner confirmation
+> Feature: Event / Bookmark Event
+> Stage: Final implementation handoff
+> Source framework: `docs-sdlc-framework.md`
 
-## 1. Auth Contract
+## 1. Contract status
 
-- Bookmark mutation requires authenticated user session/token.
-- Anonymous mutation must not create a bookmark.
-- FE may intercept anonymous click and open login before calling mutation endpoint.
-- If an unauthenticated request reaches BE, BE should return `UNAUTHORIZED`.
+This contract is implementation-ready at behavior level. Endpoint paths, API envelope, and identifier naming use accepted assumptions and should be confirmed by API owner before coding.
 
-## 2. Data Contract
+## 2. Canonical model
+
+### EventBookmarkState
 
 ```ts
 type EventBookmarkState = {
   event_id: string;
   bookmarked: boolean;
   bookmark_eligible: boolean;
-  updated_at?: string;
+  updated_at?: string | null;
 };
 ```
 
-Field notes:
+Field semantics:
 
-| Field | Required | Meaning |
-|---|---:|---|
-| `event_id` | Yes | Event identifier. Placeholder until API owner confirms canonical field. |
-| `bookmarked` | Yes | Whether current authenticated user saved the event. |
-| `bookmark_eligible` | Yes | Whether current event can be bookmarked. |
-| `updated_at` | No | Last bookmark state update timestamp. |
+- `event_id`: placeholder event identifier; replace with canonical FPTPlay event ID if different.
+- `bookmarked`: current authenticated user bookmark state. For anonymous render, must not imply persisted local bookmark.
+- `bookmark_eligible`: whether current event can be bookmarked.
+- `updated_at`: optional ISO timestamp of latest bookmark mutation.
 
-## 3. Endpoint Contract
+## 3. API envelope assumption
 
-### 3.1 Get bookmark state
+Unless the project standard differs, responses follow:
+
+```ts
+type ApiResponse<T> = {
+  status: "success" | "error";
+  error_code: string | null;
+  msg: string;
+  data: T | null;
+};
+```
+
+## 4. Endpoint contracts
+
+### 4.1 Get bookmark state
 
 ```http
 GET /api/events/{event_id}/bookmark
 ```
 
-Success:
+Purpose: return bookmark state for the current user/event context.
+
+Auth behavior:
+
+- Authenticated: return personalized state.
+- Anonymous: product preference is to allow page render and defer login prompt until mutation. API may return `bookmarked=false` + eligibility, or `401` if existing project auth rules require it.
+
+Success response:
 
 ```json
 {
-  "status": "1",
-  "error_code": "0",
-  "msg": "Success",
+  "status": "success",
+  "error_code": null,
+  "msg": "OK",
   "data": {
-    "event_id": "evt_123",
+    "event_id": "evt_12345",
     "bookmarked": false,
     "bookmark_eligible": true,
-    "updated_at": "2026-05-25T04:30:00Z"
+    "updated_at": null
   }
 }
 ```
 
-### 3.2 Bookmark event
+### 4.2 Bookmark event
 
 ```http
 POST /api/events/{event_id}/bookmark
 ```
 
-Success returns `EventBookmarkState` with `bookmarked=true`.
+Purpose: create or confirm bookmark for authenticated user.
 
-### 3.3 Remove bookmark
+Auth:
+
+- Required.
+
+Request body:
+
+```json
+{}
+```
+
+Success response:
+
+```json
+{
+  "status": "success",
+  "error_code": null,
+  "msg": "OK",
+  "data": {
+    "event_id": "evt_12345",
+    "bookmarked": true,
+    "bookmark_eligible": true,
+    "updated_at": "2026-05-25T07:00:00Z"
+  }
+}
+```
+
+Idempotency:
+
+- If bookmark already exists for user/event, return success and `bookmarked=true`.
+
+### 4.3 Unbookmark event
 
 ```http
 DELETE /api/events/{event_id}/bookmark
 ```
 
-Success returns `EventBookmarkState` with `bookmarked=false`.
+Purpose: remove or confirm absence of bookmark for authenticated user.
 
-## 4. Optional Event DTO Embedding
+Auth:
 
-If existing Event list/detail APIs can include bookmark state, use the same DTO shape:
+- Required.
 
-```ts
-type EventDto = {
-  event_id: string;
-  title: string;
-  bookmark?: EventBookmarkState;
-};
+Success response:
+
+```json
+{
+  "status": "success",
+  "error_code": null,
+  "msg": "OK",
+  "data": {
+    "event_id": "evt_12345",
+    "bookmarked": false,
+    "bookmark_eligible": true,
+    "updated_at": "2026-05-25T07:05:00Z"
+  }
+}
 ```
 
-This reduces extra state-fetch calls, but mutation endpoints still remain the source for state changes.
+Idempotency:
 
-## 5. Error Matrix
+- If bookmark does not exist, return success and `bookmarked=false`.
 
-| HTTP | error_code | Meaning | FE behavior |
+## 5. Error matrix
+
+| HTTP | error_code | Cause | FE behavior |
 |---:|---|---|---|
-| 400 | INVALID_EVENT_ID | Event ID missing or invalid. | Disable action or show safe error. |
-| 401 | UNAUTHORIZED | User not logged in/session expired. | Open login flow; do not keep optimistic state. |
-| 403 | BOOKMARK_NOT_ALLOWED | Event not eligible. | Disable/hide action or show explanation. |
-| 404 | EVENT_NOT_FOUND | Event does not exist. | Show safe error; do not retry blindly. |
-| 409 | STATE_CONFLICT | Optional if BE rejects non-idempotent repeated action. | Refetch state and restore UI. |
-| 429 | RATE_LIMITED | Too many requests. | Show retry-later feedback. |
-| 500 | SERVER_ERROR | Unexpected failure. | Restore previous state and show toast/snackbar. |
+| 400 | `INVALID_EVENT_ID` | Missing/invalid event identifier. | Disable action or show generic retry-safe error. |
+| 401 | `UNAUTHORIZED` | Missing/expired auth. | Open login prompt; do not mutate state. |
+| 403 | `BOOKMARK_NOT_ALLOWED` | User not allowed to bookmark this event. | Restore previous state; disable if persistent. |
+| 404 | `EVENT_NOT_FOUND` | Event unavailable/not found. | Disable action; rely on page-level not-found behavior if applicable. |
+| 409 | `EVENT_NOT_BOOKMARKABLE` | Event eligibility changed. | Refresh state; restore previous state; show safe message if needed. |
+| 429 | `RATE_LIMITED` | Too many attempts. | Restore previous state; show retry later message. |
+| 500 | `INTERNAL_ERROR` | Server failure. | Restore previous state; show retry message. |
 
-## 6. Idempotency
+## 6. FE requirements
 
-Required recommendation for implementation stability:
+- Use server state as source of truth on initial render.
+- Prefer embedded bookmark fields on event list/detail DTOs to avoid N+1 calls.
+- If dedicated state endpoint is used, avoid mass per-card calls on large lists without batching/caching.
+- Disable bookmark control while mutation is pending.
+- Prevent duplicate taps.
+- Update UI from mutation response.
+- Restore previous UI state on mutation failure.
+- Open login prompt for anonymous mutation attempts.
+- Do not auto-bookmark after login unless auth flow has explicit safe return-intent support.
+- Do not store anonymous local bookmarks in MVP.
 
-- `POST` on an already-bookmarked event returns success with `bookmarked=true`.
-- `DELETE` on a non-bookmarked event returns success with `bookmarked=false`.
-- Idempotency prevents duplicate tap and retry ambiguity.
+## 7. BE requirements
 
-## 7. FE Integration Rules
+- Enforce authenticated ownership on mutation endpoints.
+- Enforce uniqueness for active user/event bookmark relationship.
+- Implement POST and DELETE idempotently.
+- Check event eligibility server-side.
+- Return current `EventBookmarkState` after mutation.
+- Reuse existing favorites/watchlist service if it exists and fits Event domain.
+- Ensure bookmark mutation has no side effects on entitlement, registration, reminders, notifications, calendar, payment, or event metadata.
 
-- Server response is source of truth after mutation.
-- UI must disable bookmark control during mutation.
-- UI may use optimistic visual update only if previous state is restored on failure.
-- UI must not mutate state for anonymous users before login completes.
-- If `bookmark_eligible=false`, UI must not send mutation.
+## 8. Suggested persistence constraints
 
-## 8. QA Test Matrix
+If implementing new storage, recommended uniqueness:
 
-| ID | Scenario | Expected |
-|---|---|---|
-| API-001 | Authenticated get state | Returns current `EventBookmarkState`. |
-| API-002 | Authenticated POST bookmark | Returns `bookmarked=true`. |
-| API-003 | POST already-bookmarked event | Returns success with `bookmarked=true`. |
-| API-004 | Authenticated DELETE bookmark | Returns `bookmarked=false`. |
-| API-005 | DELETE non-bookmarked event | Returns success with `bookmarked=false`. |
-| API-006 | Anonymous mutation | Returns/opens `UNAUTHORIZED` login flow. |
-| API-007 | Ineligible event | Returns `BOOKMARK_NOT_ALLOWED` or equivalent disabled state. |
-| API-008 | Missing event | Returns `EVENT_NOT_FOUND`. |
-| API-009 | Server error | FE restores previous state and shows error. |
+```text
+unique(user_id, event_id)
+```
+
+Recommended fields:
+
+```text
+id
+user_id
+event_id
+created_at
+updated_at
+deleted_at optional if soft delete is used
+```
+
+## 9. Integration decisions pending confirmation
+
+- Canonical event identifier field.
+- Final route prefix and naming.
+- Existing API envelope and error code convention.
+- Whether state is embedded in list/detail event DTOs.
+- Whether existing favorites/watchlist service should be reused.

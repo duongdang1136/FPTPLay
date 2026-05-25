@@ -1,148 +1,186 @@
 # Functional Specification — Bookmark Event
 
 > Project: FPTPlay
-> Feature: Event
-> Sub-feature: Bookmark Event
-> Audience: Product, FE, BE, QA
-> Status: Implementation-ready draft pending dev/API owner confirmation
+> Feature: Event / Bookmark Event
+> Stage: Final implementation handoff
+> Source framework: `docs-sdlc-framework.md`
+> Promotion source: `features/lightweight/Event/Bookmark-Event/**`
 
-## 1. Goal
+## 1. Summary
 
-Allow users to bookmark/save an Event and remove the bookmark later from Event Card and Event Detail surfaces.
+Bookmark Event lets authenticated FPTPlay users save an event and remove it later from key event discovery surfaces. Anonymous users are prompted to log in before saving.
 
-## 2. Actors and Permissions
+The feature is intentionally small: it is a contextual bookmark toggle, not a reminder, calendar, registration, entitlement, payment, or Saved Events management feature.
 
-| Actor | Permission |
-|---|---|
-| Anonymous user | Can see bookmark action; must log in before saving. |
-| Authenticated user | Can view personalized bookmark state and bookmark/unbookmark eligible events. |
+## 2. Goals
 
-## 3. Scope
+- Let users save eligible events from Event Card.
+- Let users save eligible events from Event Detail Header.
+- Show whether an event is already saved.
+- Let users undo saved state.
+- Prompt anonymous users to log in instead of creating local bookmarks.
+- Provide clear loading/error/disabled states for reliable UX.
 
-### In scope
-
-- Display bookmark state on Event Card.
-- Display bookmark state on Event Detail Header.
-- Authenticated bookmark mutation.
-- Authenticated unbookmark mutation.
-- Login prompt for anonymous bookmark attempt.
-- Loading, success, error, disabled, and unavailable-state handling.
-
-### Out of scope
+## 3. Non-goals
 
 - Saved Events list page.
-- Reminder/notification settings.
-- Calendar integration.
+- Push/email/in-app reminder creation.
+- Calendar sync.
 - Event registration/check-in.
 - Payment or entitlement changes.
 - Admin/CMS bookmark management.
+- Bulk bookmark management.
 
-## 4. Business Rules
+## 4. Users
 
-| ID | Rule |
-|---|---|
-| BR-001 | Bookmark is scoped to exactly one authenticated user and one event. |
-| BR-002 | Bookmarking must not create duplicate records for the same user/event pair. |
-| BR-003 | Unbookmarking a non-bookmarked event should not break the UI; idempotent success is preferred. |
-| BR-004 | Bookmark does not grant entitlement, registration, reminder, notification opt-in, or calendar sync. |
-| BR-005 | FE must follow server-provided `bookmark_eligible` when available. |
-| BR-006 | UI must prevent repeated taps while mutation is pending. |
-| BR-007 | UI must restore previous state if mutation fails. |
+### Anonymous visitor
 
-## 5. Functions
+Can see event surfaces and may see a bookmark affordance. When tapping bookmark, they are prompted to log in. No local bookmark is saved in MVP.
 
-### F-1 — Display bookmark state
+### Authenticated user
 
-- **Trigger:** automatic when Event Card or Event Detail renders.
-- **Input:** `event_id`, auth context if available, bookmark state from Event DTO or dedicated endpoint.
-- **Output:** UI displays not-bookmarked, bookmarked, disabled, loading, or safe unknown state.
-- **Permission:** Anonymous can view generic action; authenticated user can view personalized state.
+Can view personalized bookmark state and toggle bookmark/unbookmark for eligible events.
 
-Acceptance criteria:
+### Product/QA reviewer
 
-- Given server returns `bookmarked=false`, when event renders, then UI shows not-bookmarked state.
-- Given server returns `bookmarked=true`, when event renders, then UI shows bookmarked state.
-- Given server returns `bookmark_eligible=false`, when event renders, then UI disables or hides mutation action.
-- Given bookmark state is unavailable, when event renders, then UI does not falsely claim saved state.
+Validates states, scope, copy, and acceptance criteria.
 
-### F-2 — Bookmark event
+### FE/BE implementer
 
-- **Trigger:** user taps/clicks Bookmark.
-- **Input:** `event_id`, authenticated session/token.
-- **Output:** server returns current state with `bookmarked=true`.
-- **Permission:** authenticated user only.
+Implements the final contracts in this folder.
 
-Acceptance criteria:
+## 5. Surfaces
 
-- Given authenticated user views eligible unbookmarked event, when they tap Bookmark, then UI enters loading state and sends bookmark mutation.
-- Given mutation succeeds, when response returns `bookmarked=true`, then UI shows saved/bookmarked state.
-- Given mutation fails, when error returns, then UI restores previous state and shows safe error feedback.
-- Given mutation is pending, when user taps again, then duplicate mutation is prevented.
+### Event Card
 
-### F-3 — Unbookmark event
+- Bookmark action appears as an icon button, preferably near the top-right of the card thumbnail/content area.
+- Action must not obscure the event title or primary card navigation.
+- Icon-only is acceptable if accessible label is provided.
 
-- **Trigger:** user taps/clicks Saved/Bookmark on bookmarked event.
-- **Input:** `event_id`, authenticated session/token.
-- **Output:** server returns current state with `bookmarked=false`.
-- **Permission:** authenticated user only.
+### Event Detail Header
+
+- Bookmark action appears near the title or CTA area.
+- Primary action such as Watch/Join/Detail remains visually dominant.
+- Icon + label is preferred when space allows.
+
+## 6. Functional requirements
+
+### FR-001 — Display bookmark state
+
+System displays the current bookmark state for an event.
+
+Rules:
+
+- Server state is source of truth on initial render.
+- UI must not claim saved state if bookmark state is unknown.
+- If `bookmark_eligible=false`, FE must disable or hide the action according to surface convention.
+- If event identifier is missing, FE must not allow mutation.
 
 Acceptance criteria:
 
-- Given authenticated user views bookmarked event, when they tap Saved/Bookmark, then UI enters loading state and sends unbookmark mutation.
-- Given mutation succeeds, when response returns `bookmarked=false`, then UI shows not-bookmarked state.
-- Given mutation fails, when error returns, then UI restores previous bookmarked state and shows safe error feedback.
+- Given `bookmarked=false`, when the event renders, then UI shows not-bookmarked state.
+- Given `bookmarked=true`, when the event renders, then UI shows bookmarked state.
+- Given `bookmark_eligible=false`, when the event renders, then bookmark action is disabled or hidden and mutation is impossible.
+- Given state cannot be loaded, when the event renders, then UI uses safe default/disabled behavior and does not show saved state.
 
-### F-4 — Prompt login
+### FR-002 — Bookmark event
 
-- **Trigger:** anonymous user taps/clicks Bookmark.
-- **Input:** anonymous auth context, selected event.
-- **Output:** login modal/bottom sheet opens; no bookmark mutation is sent.
-- **Permission:** anonymous user.
+Authenticated user can bookmark an eligible event.
+
+Rules:
+
+- User must be authenticated.
+- Event must be bookmark eligible.
+- Mutation must be protected against duplicate taps.
+- API response determines final UI state.
+- Bookmark does not create reminder, registration, notification opt-in, calendar sync, entitlement, or payment state.
 
 Acceptance criteria:
 
-- Given anonymous user taps Bookmark, when user is not authenticated, then login prompt opens.
-- Given login prompt opens, then bookmark state remains unchanged.
-- Given user dismisses login prompt, then UI returns to previous state.
+- Given authenticated user views an eligible unbookmarked event, when they tap Bookmark, then UI enters loading state and sends bookmark mutation.
+- Given API returns success, when mutation completes, then UI shows `bookmarked=true` based on response.
+- Given request fails, when mutation completes, then UI restores previous state and shows non-blocking error feedback.
+- Given user taps repeatedly while pending, when request is in progress, then duplicate mutation is prevented.
 
-## 6. State Model
+### FR-003 — Unbookmark event
 
-| State | Trigger | UI behavior |
+Authenticated user can remove bookmark from a bookmarked event.
+
+Rules:
+
+- User must be authenticated.
+- Removing a non-existing bookmark should be safe/idempotent.
+- Unbookmark does not alter watch history, entitlement, registration, reminders, notifications, calendar, payment, or event metadata.
+
+Acceptance criteria:
+
+- Given authenticated user views a bookmarked event, when they tap Saved/Bookmark again, then UI enters loading state and sends unbookmark mutation.
+- Given API returns success, when mutation completes, then UI shows `bookmarked=false` based on response.
+- Given request fails, when mutation completes, then UI restores previous bookmarked state and shows non-blocking error feedback.
+
+### FR-004 — Prompt anonymous user to log in
+
+Anonymous user cannot bookmark until authenticated.
+
+Rules:
+
+- No bookmark mutation is sent before authentication.
+- Prompt uses existing FPTPlay auth/login component or pattern.
+- Dismissal keeps previous state unchanged.
+- MVP does not create local-only anonymous bookmarks.
+- After login, default behavior is return to event context; automatic retry/bookmark only if existing auth flow explicitly supports safe return intent.
+
+Acceptance criteria:
+
+- Given anonymous user taps Bookmark, when no auth session exists, then login prompt opens.
+- Given login prompt opens, then no server mutation is sent.
+- Given user dismisses prompt, then prompt closes and bookmark state remains unchanged.
+
+## 7. State and copy
+
+| State | UI behavior | Copy |
 |---|---|---|
-| Not bookmarked | `bookmarked=false` | Outline bookmark / “Save” label where available. |
-| Bookmarked | `bookmarked=true` | Filled bookmark / “Saved” label where available. |
-| Loading | Mutation pending | Disable control and show spinner/loading affordance. |
-| Login required | Anonymous tap | Open login modal/bottom sheet; no mutation. |
-| Error | Mutation or state load failure | Restore previous state and show toast/snackbar. |
-| Disabled/ineligible | Missing `event_id` or `bookmark_eligible=false` | Hide/disable action; no mutation. |
+| Not bookmarked | Outline icon / “Save” label where available | Save / Lưu |
+| Bookmarked | Filled icon / “Saved” label where available | Saved / Đã lưu |
+| Loading | Disabled control with spinner/loading affordance | Optional loading state only |
+| Login required | Login modal/bottom sheet | “Đăng nhập để lưu sự kiện” |
+| Error saving | Restore previous state + toast/snackbar | “Không thể lưu sự kiện. Vui lòng thử lại.” |
+| Error removing | Restore previous state + toast/snackbar | “Không thể bỏ lưu sự kiện. Vui lòng thử lại.” |
+| Ineligible/disabled | Hide or disable action | Optional reason if UI supports it |
 
-## 7. UX Copy
+## 8. Business rules
 
-| Case | Copy |
-|---|---|
-| Login prompt title | Đăng nhập để lưu sự kiện |
-| Login primary CTA | Đăng nhập |
-| Login secondary CTA | Để sau |
-| Bookmark error | Không thể lưu sự kiện. Vui lòng thử lại. |
-| Unbookmark error | Không thể bỏ lưu sự kiện. Vui lòng thử lại. |
+- BR-001: Bookmark is scoped by authenticated user and event.
+- BR-002: Same user/event pair must not create duplicate active bookmarks.
+- BR-003: Bookmark/unbookmark should be idempotent.
+- BR-004: FE follows server-provided `bookmark_eligible` when present.
+- BR-005: UI must prevent duplicate taps while mutation is pending.
+- BR-006: UI must restore previous state if mutation fails.
+- BR-007: Anonymous users must log in before saving.
+- BR-008: Bookmark does not affect entitlement, registration, reminders, notifications, calendar, payment, or event metadata.
 
-## 8. Assumptions
+## 9. Dependencies and assumptions
 
-- `event_id` is the placeholder event identifier until API owner confirms actual field.
-- Existing FPTPlay login component handles auth UX.
-- Existing toast/snackbar pattern handles non-blocking mutation errors.
-- API mutations should be idempotent.
+- Existing FPTPlay auth/login component is available.
+- Existing toast/snackbar or equivalent non-blocking feedback pattern is available.
+- `event_id` is used as placeholder in docs until API owner confirms canonical identifier.
+- API response can return current `EventBookmarkState` after mutation.
+- Backend can expose eligibility through `bookmark_eligible` or equivalent.
 
-## 9. QA Acceptance Checklist
+## 10. QA checklist
 
-- [ ] Event Card shows not-bookmarked state.
-- [ ] Event Card shows bookmarked state.
-- [ ] Event Detail shows not-bookmarked state.
-- [ ] Event Detail shows bookmarked state.
-- [ ] Authenticated user can bookmark eligible event.
-- [ ] Authenticated user can unbookmark event.
-- [ ] Anonymous user sees login prompt and no mutation occurs.
-- [ ] Loading state prevents duplicate taps.
-- [ ] Bookmark failure restores previous state and shows error copy.
-- [ ] Unbookmark failure restores previous state and shows error copy.
-- [ ] Ineligible event disables/hides mutation action.
+- [ ] Event Card renders not-bookmarked state.
+- [ ] Event Card renders bookmarked state.
+- [ ] Event Detail Header renders not-bookmarked state.
+- [ ] Event Detail Header renders bookmarked state.
+- [ ] Authenticated user can bookmark from Event Card.
+- [ ] Authenticated user can unbookmark from Event Card.
+- [ ] Authenticated user can bookmark from Event Detail Header.
+- [ ] Authenticated user can unbookmark from Event Detail Header.
+- [ ] Anonymous user sees login prompt and no mutation is sent.
+- [ ] Pending mutation disables repeated taps.
+- [ ] Failed bookmark restores previous state and shows error feedback.
+- [ ] Failed unbookmark restores previous state and shows error feedback.
+- [ ] Ineligible event disables/hides action.
+- [ ] Missing event identifier disables/hides action.
+- [ ] Bookmark does not trigger reminders, registration, entitlement, payment, calendar, or notification side effects.

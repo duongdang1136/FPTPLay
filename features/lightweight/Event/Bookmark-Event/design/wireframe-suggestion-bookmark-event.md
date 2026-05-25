@@ -1,6 +1,6 @@
 # Wireframe Suggestion — Bookmark Event
 
-> BA-aligned lo-fi wireframe from `skills/sdlc/02-ba-requirement/skill.md`.
+> Framework stage: `02-ba-requirement` → lightweight design/UX suggestion.
 
 ## Layout pattern
 
@@ -29,7 +29,7 @@ Why:
 - Outline bookmark = not bookmarked.
 - Filled bookmark = bookmarked.
 - Spinner/disabled = mutation pending.
-- Disabled/hidden = not eligible.
+- Disabled/hidden = not eligible or missing event identifier.
 
 ### Lo-Fi Wireframe
 
@@ -78,7 +78,7 @@ Why:
 
 [Modal / bottom sheet]
 - Title: “Đăng nhập để lưu sự kiện”.
-- Description: explain login requirement.
+- Description: “Bạn cần đăng nhập để lưu sự kiện này.”
 - Primary CTA: “Đăng nhập”.
 - Secondary CTA: “Để sau”.
 
@@ -110,7 +110,7 @@ Why:
 
 - Update state from API response.
 - No navigation.
-- Toast is optional; avoid noisy success toast unless FPTPlay pattern requires it.
+- Success toast is optional; avoid noisy success toast unless FPTPlay pattern requires it.
 
 ### Error
 
@@ -132,6 +132,7 @@ Why:
 ## Accessibility
 
 - Bookmark control must be keyboard focusable.
+- Minimum tap target should be 44x44 px.
 - Use `aria-pressed` or equivalent selected-state semantics.
 - Accessible label should include event context when available, e.g. “Lưu sự kiện {event_name}”.
 - Do not rely on icon fill only; screen reader state must be explicit.

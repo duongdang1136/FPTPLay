@@ -1,28 +1,45 @@
 # Design Contract — Bookmark Event
 
 > Project: FPTPlay
-> Feature: Event
-> Sub-feature: Bookmark Event
-> Audience: FE, Product, QA, Designer
-> Status: Implementation-ready draft pending dev/API owner confirmation
+> Feature: Event / Bookmark Event
+> Stage: Final implementation handoff
+> Source framework: `docs-sdlc-framework.md`
 
-## 1. Layout Pattern
+## 1. Design intent
+
+Bookmark Event is a contextual save action. It must feel lightweight, familiar, and secondary to the main event action.
+
+The control should be easy to find but must not compete with Watch/Join/Detail CTAs.
+
+## 2. Pattern
 
 Pattern: **Inline Action + State Toggle**
 
-Bookmark is a contextual secondary action attached to existing Event surfaces. It must not compete with Watch/Join/Detail primary CTAs.
+Use this pattern because:
 
-## 2. Surfaces
+- The user acts directly on an event item.
+- The state is binary: saved/not saved.
+- The action appears in compact and expanded event surfaces.
+- No multi-step form is needed.
 
-| Surface | Placement | Behavior |
-|---|---|---|
-| Event Card | Top-right of thumbnail/card | Icon-only bookmark action. |
-| Event Detail Header | Near title or primary action area | Icon + Save/Saved label when space allows. |
-| Login prompt | Modal or bottom sheet | Opens for anonymous bookmark attempt. |
+## 3. Surfaces
 
-## 3. Lo-Fi Wireframes
+### 3.1 Event Card
 
-### Event Card
+Placement:
+
+- Top-right of thumbnail/card visual area is preferred.
+- If the current FPTPlay card pattern has an existing action cluster, place bookmark in that cluster.
+- Maintain minimum 44x44 px tap target.
+
+Visual behavior:
+
+- Not bookmarked: outline bookmark icon.
+- Bookmarked: filled bookmark icon.
+- Loading: disabled icon with spinner/loading affordance.
+- Disabled/ineligible: hide or disabled icon according to surface convention.
+
+Lo-fi structure:
 
 ```text
 ┌──────────────────────────────────────────────┐
@@ -34,7 +51,21 @@ Bookmark is a contextual secondary action attached to existing Event surfaces. I
 └──────────────────────────────────────────────┘
 ```
 
-### Event Detail Header
+### 3.2 Event Detail Header
+
+Placement:
+
+- Near title or CTA region.
+- Secondary to Watch/Join/Detail CTA.
+- Icon + text label preferred where space allows.
+
+Visual behavior:
+
+- Not bookmarked: “Save” / “Lưu” with outline icon.
+- Bookmarked: “Saved” / “Đã lưu” with filled icon.
+- Loading: disabled with spinner/pressed-loading state.
+
+Lo-fi structure:
 
 ```text
 ┌──────────────────────────────────────────────┐
@@ -45,7 +76,24 @@ Bookmark is a contextual secondary action attached to existing Event surfaces. I
 └──────────────────────────────────────────────┘
 ```
 
-### Login Required Prompt
+### 3.3 Login prompt
+
+Trigger:
+
+- Anonymous user taps bookmark.
+
+Preferred component:
+
+- Existing FPTPlay auth modal/bottom sheet.
+
+Copy:
+
+- Title: “Đăng nhập để lưu sự kiện”
+- Body: “Bạn cần đăng nhập để lưu sự kiện này.”
+- Primary CTA: “Đăng nhập”
+- Secondary CTA: “Để sau”
+
+Lo-fi structure:
 
 ```text
 ┌──────────────────────────────────────────────┐
@@ -56,64 +104,87 @@ Bookmark is a contextual secondary action attached to existing Event surfaces. I
 └──────────────────────────────────────────────┘
 ```
 
-## 4. Component States
+## 4. Interaction states
 
-| State | Icon/Label | Behavior |
-|---|---|---|
-| Not bookmarked | Outline bookmark / Save | Click starts bookmark for authenticated user. |
-| Bookmarked | Filled bookmark / Saved | Click starts unbookmark for authenticated user. |
-| Loading | Spinner or disabled icon | Prevent duplicate taps until API resolves. |
-| Login required | Prior state unchanged | Open login prompt; no mutation. |
-| Error | Restore previous visual state | Show toast/snackbar. |
-| Disabled/ineligible | Disabled or hidden | No mutation; explain if visible and feasible. |
+### Default: not bookmarked
 
-## 5. Interaction Rules
+- Icon: outline bookmark.
+- Detail label: “Save” / “Lưu”.
+- Screen reader state: not pressed / not saved.
 
-- Tap/click bookmark toggles state only for authenticated users.
-- Anonymous tap opens login modal/bottom sheet.
-- During mutation, disable repeated taps.
-- On success, update visual state from API response.
-- On failure, restore previous state and show safe error feedback.
-- Bookmark action should remain secondary to Watch/Join/Detail.
+### Selected: bookmarked
 
-## 6. Copy
+- Icon: filled bookmark.
+- Detail label: “Saved” / “Đã lưu”.
+- Screen reader state: pressed / saved.
 
-| Case | Copy |
-|---|---|
-| Login prompt title | Đăng nhập để lưu sự kiện |
-| Login prompt body | Bạn cần đăng nhập để lưu sự kiện này. |
-| Login CTA | Đăng nhập |
-| Later CTA | Để sau |
-| Bookmark error | Không thể lưu sự kiện. Vui lòng thử lại. |
-| Unbookmark error | Không thể bỏ lưu sự kiện. Vui lòng thử lại. |
+### Loading
 
-## 7. Accessibility
+- Control disabled.
+- Spinner, skeleton, or pressed-loading visual.
+- No duplicate mutation while pending.
 
-- Bookmark control must be keyboard focusable.
-- Tap target should be at least 44x44 px.
-- Accessible label must include event context when possible, e.g. “Lưu sự kiện {event_name}”.
-- Use `aria-pressed` or equivalent selected-state semantics.
-- State must not rely on icon fill only.
-- Loading state must prevent duplicate activation and communicate disabled/pending state.
+### Success
 
-## 8. Responsive Behavior
+- State updates from API response.
+- No forced navigation.
+- Success toast optional; avoid noisy success toast unless FPTPlay component standard requires it.
 
-- Event Card: icon-only is acceptable on all viewports if accessible label exists.
-- Event Detail desktop/tablet: icon + label preferred.
-- Event Detail constrained mobile: icon-only is acceptable if accessible state and label remain explicit.
-- Login prompt may be modal on desktop and bottom sheet on mobile if consistent with FPTPlay auth patterns.
+### Error
 
-## 9. QA Checklist
+- Restore previous state.
+- Show toast/snackbar:
+  - Bookmark failure: “Không thể lưu sự kiện. Vui lòng thử lại.”
+  - Unbookmark failure: “Không thể bỏ lưu sự kiện. Vui lòng thử lại.”
 
-- [ ] Event Card not-bookmarked state visible.
-- [ ] Event Card bookmarked state visible.
-- [ ] Event Detail not-bookmarked state visible.
-- [ ] Event Detail bookmarked state visible.
-- [ ] Loading state disables duplicate taps.
-- [ ] Anonymous click opens login prompt.
-- [ ] Login dismiss keeps prior state unchanged.
-- [ ] Bookmark API error restores previous state.
-- [ ] Unbookmark API error restores previous state.
-- [ ] Ineligible event disables/hides mutation action.
-- [ ] Keyboard focus works.
-- [ ] Screen reader state semantics are explicit.
+### Disabled / ineligible
+
+- Hide or disable action based on existing FPTPlay surface convention.
+- If visible and disabled, use accessible disabled state and optional reason if UI pattern supports it.
+
+### Empty / missing ID
+
+- Do not render an active bookmark action.
+- Prefer hidden action on card; detail page may show disabled if product wants layout stability.
+
+## 5. Accessibility
+
+- Control must be keyboard focusable.
+- Use semantic button.
+- Minimum tap target: 44x44 px.
+- Provide accessible label with event name when available:
+  - “Lưu sự kiện {event_name}”
+  - “Bỏ lưu sự kiện {event_name}”
+- Use `aria-pressed` or equivalent state semantics.
+- Do not rely only on color or icon fill to communicate saved state.
+- Loading state should communicate busy/disabled behavior to assistive tech where supported.
+
+## 6. Responsive behavior
+
+### Mobile
+
+- Event Card uses icon-only control.
+- Detail Header may use icon-only if width is constrained.
+- Login prompt can be bottom sheet if that is the mobile standard.
+
+### Tablet/Desktop
+
+- Event Card remains compact.
+- Detail Header should prefer icon + label.
+- Login prompt may be modal/dialog.
+
+## 7. Visual constraints
+
+- Use existing FPTPlay design tokens and icon library.
+- Do not introduce a new color system for bookmark state.
+- Filled/outline icon state should be visually clear in light/dark backgrounds used by Event surfaces.
+- Bookmark must not cover important event imagery/text.
+
+## 8. Handoff checklist
+
+- [ ] Event Card placement approved against existing component.
+- [ ] Event Detail Header placement approved against existing component.
+- [ ] Login prompt uses existing auth pattern.
+- [ ] Copy confirmed for Vietnamese UI.
+- [ ] Loading, error, disabled, and ineligible states designed.
+- [ ] Accessibility labels and selected-state semantics implemented.
