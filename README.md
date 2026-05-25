@@ -133,3 +133,20 @@ skills/sdlc/03-document-writer/skill.md
 Use these in order for feature work: Researcher → BA Requirement → Document Writer.
 
 See `docs-sdlc-config.md` and `docs-ba-config.md` for the FPTPlay usage contract and repository hygiene rules.
+
+## Reusable templates
+
+For new FPTPlay feature docs, copy from:
+
+```text
+features/_templates/lightweight-feature/
+features/_templates/final-feature/
+features/_checklists/promotion-checklist.md
+```
+
+Default mapping:
+
+```text
+01 Researcher + 02 BA Requirement  → features/lightweight/**
+03 Document Writer                 → features/final-docs/**
+```

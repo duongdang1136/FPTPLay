@@ -49,6 +49,17 @@ Use to promote accepted BA assumptions into implementation-ready final contracts
 - `api/technical-contract.md`
 - `design/design-contract.md`
 
+## FPTPlay Default Mode
+
+Default to **feature-docs mode** in this repository:
+
+```text
+01 Researcher + 02 BA Requirement  → features/lightweight/**
+03 Document Writer                 → features/final-docs/**
+```
+
+Strict task-state outputs such as `state/tasks/{TASK-ID}/...` are optional only when a formal SDLC task runner explicitly creates a task state.
+
 ## Documentation Convention
 
 Lightweight docs:
@@ -77,5 +88,7 @@ features/final-docs/<Large-Feature>/<Sub-Feature>/
 - Keep lightweight docs separate from final docs.
 - Use Researcher → BA → Document Writer for FPTPlay feature tasks by default.
 - Promote to final docs only after assumptions/open questions are accepted or safely defaulted.
+- Treat `docs-sdlc-config.md` as the canonical full-chain config; `docs-ba-config.md` is BA-focused detail.
 - Do not commit `SOUL.md`, `USER.md`, `wiki/`, local memory, secrets, or unrelated agent runtime files.
+- Optional runtime-only helpers such as global researcher playbooks or `Tech-Skills/**` may be used from the active agent workspace, but they are not committed to this repo.
 - For external writes such as push, use the repository remote configured by the owner.

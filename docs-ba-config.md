@@ -2,6 +2,8 @@
 
 FPTPlay uses the SDLC skill chain for feature clarification and implementation handoff.
 
+> Canonical full-chain config: `docs-sdlc-config.md`. This file defines BA-specific expectations inside that chain.
+
 ## Active Skills
 
 ```text
