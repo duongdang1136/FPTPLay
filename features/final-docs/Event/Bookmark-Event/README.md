@@ -1,23 +1,34 @@
-# Bookmark Event — Final Docs
+# Bookmark Event — Final Implementation Docs
 
-> Project: FPTPlay  
-> Large feature: Event  
-> Sub-feature: Bookmark Event  
-> Status: Implementation-ready draft pending dev/API owner review
+> Project: FPTPlay
+> Feature: Event
+> Sub-feature: Bookmark Event
+> Source: BA-aligned lightweight pack using `skills/sdlc/02-ba-requirement/skill.md`
+> Status: Implementation-ready draft pending dev/API owner confirmation
 
-## Canonical Contracts
+## Scope
 
-- Product: `product/functional-specification.md`
-- API: `api/technical-contract.md`
-- Design: `design/design-contract.md`
+Bookmark Event lets an authenticated user save or unsave an eligible Event from Event Card and Event Detail surfaces.
 
-## Scope Summary
+## Final artifacts
 
-Authenticated users can save/bookmark an Event and remove that bookmark later. Anonymous users are prompted to log in.
+```text
+features/final-docs/Event/Bookmark-Event/
+  product/functional-specification.md
+  api/technical-contract.md
+  design/design-contract.md
+```
 
-## Out of Scope
+## Accepted assumptions
 
-- Notifications/reminders
-- Calendar integration
-- Entitlement or registration changes
-- Dedicated Saved Events page unless separately scoped
+- Bookmark is scoped to authenticated user + event.
+- Anonymous users must log in before saving.
+- Bookmark does not create reminder, registration, calendar sync, or entitlement.
+- FE follows server eligibility when available.
+- Idempotent bookmark/unbookmark mutations are preferred.
+
+## Non-blocking confirmations before implementation
+
+- Canonical event identifier field name.
+- Existing favorites/watchlist service reuse.
+- Whether bookmark state is embedded in Event list/detail DTOs or fetched separately.

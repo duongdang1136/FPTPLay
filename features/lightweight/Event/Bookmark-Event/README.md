@@ -1,24 +1,39 @@
-# Bookmark Event — Lightweight Docs
+# Bookmark Event — Lightweight BA Pack
 
-> Project: FPTPlay  
-> Large feature: Event  
-> Sub-feature: Bookmark Event  
-> Status: Lightweight discovery + recommended assumptions
+> Project: FPTPlay
+> Feature: Event
+> Sub-feature: Bookmark Event
+> Stage: Lightweight BA clarification
+> Source skill: `skills/sdlc/02-ba-requirement/skill.md`
 
 ## Purpose
 
-Allow users to bookmark/save an Event so they can find it again later from a saved/bookmarked list or event-related surfaces.
+Clarify the Bookmark Event product behavior before implementation handoff. This pack follows the BA skill structure: scope, layout pattern, lo-fi wireframe, function list, UX notes, assumptions, blockers, and accepted change log.
 
-## Documents
+## Artifacts
 
-- Research: `research/bookmark-event-research.md`
-- Product SRS: `product/SRS-bookmark-event.md`
-- Open questions: `product/open-questions-bookmark-event.md`
-- Wireframe suggestion: `design/wireframe-suggestion-bookmark-event.md`
-- API draft: `api/API-bookmark-event.md`
+```text
+features/lightweight/Event/Bookmark-Event/
+  research/bookmark-event-research.md
+  product/ba-report-bookmark-event.md
+  product/SRS-bookmark-event.md
+  product/open-questions-bookmark-event.md
+  design/wireframe-suggestion-bookmark-event.md
+  api/API-bookmark-event.md
+```
 
-## Promotion
+## Current BA decision
 
-Implementation-ready contracts are promoted to:
+- MVP supports save/unsave only.
+- Anonymous users cannot create local bookmarks; they must log in.
+- Bookmark does not imply reminder, registration, calendar sync, or content entitlement.
+- FE follows server-provided eligibility when available.
+- API should be idempotent for safe retry behavior.
 
-`features/final-docs/Event/Bookmark-Event/`
+## Promotion target
+
+Final implementation docs are maintained at:
+
+```text
+features/final-docs/Event/Bookmark-Event/
+```
