@@ -87,7 +87,7 @@ Acceptance criteria:
 
 | ID | Rule |
 |---|---|
-| BR-001 | Live Activity requires user-engaged match. |
+| BR-001 | Live Activity requires a followed/subscribed match and eligible device/platform state. Match Detail/Player screen is optional context, not a start gate. |
 | BR-002 | At match start, normal notification and Live Activity are both triggered when eligible. |
 | BR-003 | Dynamic Island initial state is compact. |
 | BR-004 | Dynamic Island compact tap expands Live Activity. |

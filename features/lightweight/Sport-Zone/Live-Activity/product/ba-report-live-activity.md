@@ -39,7 +39,7 @@ Sport Zone Live Activity gives users a persistent real-time match surface after 
 
 | ID | Rule |
 |---|---|
-| BR-001 | Live Activity starts only for matches where the user has entered Match Detail/Player screen in the current eligibility window. |
+| BR-001 | Live Activity starts for followed/subscribed matches at match start when device/platform eligibility passes. User does not need to currently be in Match Detail/Player screen. |
 | BR-002 | Match start triggers both normal notification and Live Activity when eligible. |
 | BR-003 | Normal notification and Live Activity may display in parallel. |
 | BR-004 | Dynamic Island-capable devices show compact Live Activity first. |
