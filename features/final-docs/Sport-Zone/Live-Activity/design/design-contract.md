@@ -18,7 +18,7 @@
 
 ## 1. Design Goal
 
-Show a persistent, glanceable match state for engaged Sport Zone matches on Dynamic Island and lock screen, while keeping interaction simple: compact expands; expanded opens app.
+Show a persistent, glanceable match state for engaged Sport Zone matches on Dynamic Island and lock screen, while keeping interaction simple: compact tap opens app; compact long press/hold expands; expanded opens app.
 
 ## 2. References
 
@@ -42,7 +42,7 @@ Show a persistent, glanceable match state for engaged Sport Zone matches on Dyna
 
 | Surface | Route | Access rule | Behavior |
 |---|---|---|---|
-| Dynamic Island compact | System Live Activity | Eligible iOS Dynamic Island device. | Tap expands Live Activity. |
+| Dynamic Island compact | System Live Activity | Eligible iOS Dynamic Island device. | Tap opens deeplink; long press/hold expands Live Activity. |
 | Dynamic Island expanded | `deeplink` | App opens target route; auth/entitlement handled by app. | Tap opens app. |
 | Lock-screen expanded | `deeplink` | App opens target route; auth/entitlement handled by app. | Tap opens app. |
 | Fallback | `fallback_deeplink` | Same as target route. | Use if live target unavailable. |
@@ -59,7 +59,7 @@ User wants to quickly know the current match state and open the match when inter
 - Expanded state should show teams, score, match clock/period/status.
 - Do not duplicate normal notification content inside Live Activity more than needed.
 - Lock-screen content must be safe to show publicly.
-- Interaction rule must stay predictable: compact → expanded → deeplink.
+- Interaction rule must stay predictable: compact tap → deeplink; compact long press/hold → expanded → deeplink.
 
 ## 6. Layout Requirements
 
@@ -89,7 +89,7 @@ User wants to quickly know the current match state and open the match when inter
 | 1 | Sport/FPT icon | default | Small brand/sport identifier. |
 | 2 | Score | default, updating | Primary content, e.g. `0 - 0`. |
 | 3 | Status indicator | live, half-time, ended | Must not rely only on color. |
-| 4 | Tap area | default | Tap expands Live Activity. |
+| 4 | Tap area | default | Tap opens deeplink; long press/hold expands Live Activity. |
 
 ### Surface: Dynamic Island Expanded
 
@@ -122,7 +122,7 @@ User wants to quickly know the current match state and open the match when inter
 
 **States:** live, half-time, second-half, ended, unavailable.
 
-**Behavior:** Tap expands. Does not deeplink directly by product rule.
+**Behavior:** Tap opens deeplink. Long press/hold expands to the expanded Live Activity view.
 
 **Accessibility:** System surface should expose concise label: `{home_team} {home_score}, {away_team} {away_score}, {status}`.
 
@@ -145,7 +145,8 @@ User wants to quickly know the current match state and open the match when inter
 | Interaction | Trigger | UI behavior | API/route |
 |---|---|---|---|
 | Start Live Activity | Match starts for active viewed match | Compact on Dynamic Island; expanded on lock screen. | Start API/internal platform payload |
-| Compact tap | User taps Dynamic Island compact | Expanded Live Activity appears. | Platform behavior |
+| Compact tap | User taps Dynamic Island compact | App opens deeplink/fallback. | `deeplink` then fallback |
+| Compact long press/hold | User long-presses/holds Dynamic Island compact | Expanded Live Activity appears. | Platform behavior |
 | Expanded Dynamic Island tap | User taps expanded activity | App opens deeplink. | `deeplink` then fallback |
 | Lock-screen expanded tap | User taps lock-screen activity | App opens deeplink. | `deeplink` then fallback |
 | Match update | Score/status changes | UI updates content state. | Update API/internal platform payload |
@@ -252,7 +253,7 @@ PiP and Live Activity are independent surfaces.
 
 | Breakpoint / Device | Behavior |
 |---|---|
-| iPhone with Dynamic Island | Compact initially; tap expands; expanded tap deeplinks. |
+| iPhone with Dynamic Island | Compact initially; tap opens deeplink; long press/hold expands; expanded tap opens deeplink. |
 | iPhone lock screen | Expanded Live Activity visible; tap deeplinks. |
 | iOS without Dynamic Island | No compact Dynamic Island state; lock-screen Live Activity may still be eligible if platform supports. |
 | Unsupported platform | Suppress Live Activity; normal notification behavior remains. |
@@ -267,7 +268,7 @@ PiP and Live Activity are independent surfaces.
 ## 15. Design QA Checklist
 
 - [x] Required surfaces are present.
-- [x] Compact → expanded → deeplink interaction is specified.
+- [x] Compact tap → deeplink and compact long press/hold → expanded → deeplink interaction is specified.
 - [x] Lock-screen expanded → deeplink interaction is specified.
 - [x] Loading/updating/ended/unavailable states are specified.
 - [x] API/error states are mapped to UI behavior.

@@ -41,7 +41,7 @@ Live Activity complements the Notifications & Alert feature. Live Activity is st
 
 - iOS Live Activity for users who entered the Match Detail/Player screen.
 - Dynamic Island compact state.
-- Dynamic Island expanded state after compact tap.
+- Dynamic Island expanded state after long press/hold on compact Live Activity.
 - Lock-screen expanded state.
 - Match-start/live-state trigger that starts Live Activity only for users currently in Match Detail/Player screen.
 - Deeplink from expanded Live Activity into app.
@@ -68,7 +68,7 @@ Live Activity complements the Notifications & Alert feature. Live Activity is st
 |---|---|
 | Live Activity | iOS persistent system surface that shows real-time match state. |
 | Dynamic Island compact | Small Dynamic Island representation shown on supported devices. |
-| Dynamic Island expanded | Larger view shown after compact Live Activity is tapped/expanded. |
+| Dynamic Island expanded | Larger view shown after compact Live Activity is long-pressed/held. |
 | Lock-screen expanded | Live Activity view shown on iOS lock screen. |
 | Active viewed match | Match currently open in Match Detail/Player screen or Player screen. This is the primary Live Activity eligibility gate. |
 | Normal notification | Push notification defined by Notifications & Alert. |
@@ -90,7 +90,7 @@ Live Activity complements the Notifications & Alert feature. Live Activity is st
 | Entry | Behavior |
 |---|---|
 | Match start/live-state event | Trigger Live Activity start for users currently in Match Detail/Player screen. |
-| Dynamic Island compact tap | Expand Live Activity. |
+| Dynamic Island compact tap | Open app via deeplink. |
 | Dynamic Island expanded tap | Open app via deeplink. |
 | Lock-screen expanded tap | Open app via deeplink. |
 | Match update event | Update Live Activity content state. |
@@ -100,7 +100,7 @@ Live Activity complements the Notifications & Alert feature. Live Activity is st
 
 | UC | Actor | Goal | Main path | Alternate / error paths |
 |---|---|---|---|---|
-| UC-001 | Dynamic Island user | Monitor active viewed match from Dynamic Island. | Enter Match Detail/Player screen → match starts/is live → compact Live Activity starts → compact tap expands. | Device not supported: no Dynamic Island compact state. |
+| UC-001 | Dynamic Island user | Monitor active viewed match from Dynamic Island. | Enter Match Detail/Player screen → match starts/is live → compact Live Activity starts → compact tap deeplinks. | Device not supported: no Dynamic Island compact state. |
 | UC-002 | Dynamic Island user | Open match from expanded Live Activity. | Expanded state visible → user taps → app opens deeplink. | Target unavailable → fallback route. |
 | UC-003 | Lock-screen user | Monitor active viewed match on lock screen. | Enter Match Detail/Player screen → device locked → match starts/is live → expanded Live Activity starts. | Live Activity start fails → no Live Activity; normal notification behavior remains separate. |
 | UC-004 | Lock-screen user | Open match from lock screen. | Expanded lock-screen Live Activity visible → user taps → app opens deeplink. | Target unavailable → fallback route. |
@@ -114,7 +114,7 @@ Live Activity complements the Notifications & Alert feature. Live Activity is st
 | BR-002 | Match start/live-state trigger starts Live Activity when eligible. Normal notification rules remain owned by Notifications & Alert. | Product/API |
 | BR-003 | Normal notification and Live Activity may display in parallel. | Product/Design |
 | BR-004 | Dynamic Island-capable devices show compact Live Activity initially. | Product/Design |
-| BR-005 | Tapping compact Dynamic Island Live Activity expands it; it does not deeplink directly. | Product/Design |
+| BR-005 | Tapping compact Dynamic Island Live Activity opens the app via deeplink; long press/hold expands it. | Product/Design |
 | BR-006 | Tapping expanded Dynamic Island Live Activity deeplinks into app. | Product/Design |
 | BR-007 | Lock screen shows expanded Live Activity. | Product/Design |
 | BR-008 | Tapping expanded lock-screen Live Activity deeplinks into app. | Product/Design |
@@ -157,15 +157,15 @@ Live Activity complements the Notifications & Alert feature. Live Activity is st
 
 ### F-003 — Expand Dynamic Island Live Activity
 
-**Description:** Expand compact Dynamic Island Live Activity on user tap.
+**Description:** Expand compact Dynamic Island Live Activity on user long press/hold.
 
-**Input:** User tap on compact surface.
+**Input:** User long press/hold on compact surface.
 
-**System behavior:** System presents expanded Live Activity.
+**System behavior:** System presents expanded Live Activity on long press/hold.
 
 **Output:** Expanded Live Activity UI.
 
-**Errors:** If expansion unavailable, no deeplink should be forced from compact tap unless platform behavior requires it.
+**Errors:** If expansion unavailable, long press/hold does not change state; normal compact tap still opens deeplink.
 
 ### F-004 — Deeplink from expanded Dynamic Island Live Activity
 
@@ -340,7 +340,8 @@ Error envelope:
 | QA-001A | Outside Match Detail/Player screen | User is on another screen/app, even if they previously opened or followed the match | Match starts/is live | Live Activity is suppressed with `NOT_IN_MATCH_DETAIL_OR_PLAYER`. |
 | QA-001B | Match screen opened, no follow state | User is currently in Match Detail/Player screen and device eligible; no follow/subscription state exists | Match starts/is live | Live Activity is still triggered. |
 | QA-002 | Dynamic Island compact | Device supports Dynamic Island | Live Activity starts | Compact Live Activity is visible. |
-| QA-003 | Dynamic Island expand | Compact state visible | User taps compact | Expanded Live Activity appears. |
+| QA-003 | Dynamic Island deeplink | Compact state visible | User taps compact | App opens match deeplink/fallback. |
+| QA-003A | Dynamic Island expand | Compact state visible | User long-presses/holds compact | Expanded Live Activity appears. |
 | QA-004 | Expanded deeplink | Expanded Dynamic Island visible | User taps expanded | App opens match deeplink/fallback. |
 | QA-005 | Lock-screen expanded | Device locked and eligible | Match starts | Lock screen shows expanded Live Activity plus normal notification. |
 | QA-006 | Lock-screen deeplink | Expanded lock-screen Live Activity visible | User taps it | App opens match deeplink/fallback. |

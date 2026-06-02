@@ -35,7 +35,7 @@ api/API-live-activity.md
 - At match start/live-state, the system starts Live Activity only for users currently in Match Detail/Player screen or Player screen.
 - Notification and Live Activity can be visible in parallel.
 - Dynamic Island supported devices show compact Live Activity initially.
-- Tapping compact Dynamic Island Live Activity expands it.
+- Tapping compact Dynamic Island Live Activity opens the app via deeplink; long press/hold expands it.
 - Tapping expanded Dynamic Island Live Activity opens the app via deeplink.
 - Lock screen shows expanded Live Activity throughout the match.
 - Tapping expanded lock-screen Live Activity opens the app via deeplink.

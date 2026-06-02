@@ -20,7 +20,7 @@ Provide persistent Sport Zone Live Activity for active viewed matches across Dyn
 
 - Start Live Activity at match start/live-state only for matches currently open in Match Detail/Player screen or Player screen.
 - Show compact Live Activity on Dynamic Island-capable device.
-- Show expanded Live Activity after compact tap on Dynamic Island.
+- Show expanded Live Activity after long press/hold on compact Dynamic Island.
 - Show expanded Live Activity on lock screen.
 - Deeplink from expanded Live Activity into app.
 - Keep Live Activity throughout match.
@@ -51,7 +51,7 @@ Acceptance criteria:
 
 Acceptance criteria:
 
-- Given compact Live Activity is visible in Dynamic Island, when the user taps it, then the system displays expanded Live Activity.
+- Given compact Live Activity is visible in Dynamic Island, when the user long-presses/holds it, then the system displays expanded Live Activity. When the user taps compact, the app opens via deeplink.
 
 ### FR-004 — Deeplink from expanded Dynamic Island Live Activity
 
@@ -90,7 +90,7 @@ Acceptance criteria:
 | BR-001 | Live Activity requires a actively viewing match and eligible device/platform state. Match Detail/Player screen is optional context, not a start gate. |
 | BR-002 | At match start, normal notification and Live Activity are both triggered when eligible. |
 | BR-003 | Dynamic Island initial state is compact. |
-| BR-004 | Dynamic Island compact tap expands Live Activity. |
+| BR-004 | Dynamic Island compact tap opens deeplink; long press/hold expands Live Activity. |
 | BR-005 | Expanded Live Activity tap opens deeplink. |
 | BR-006 | Lock screen displays expanded Live Activity. |
 | BR-007 | Live Activity persists throughout the match. |
@@ -106,7 +106,7 @@ Acceptance criteria:
 | `active_compact` | Dynamic Island compact state. |
 | `active_expanded` | Expanded Dynamic Island or lock-screen state. |
 | `updating` | Match data update is being applied. |
-| `deeplink_opened` | User tapped expanded activity and app route opened. |
+| `deeplink_opened` | User tapped compact or expanded activity and app route opened. |
 | `ended` | Live Activity ended normally. |
 | `failed` | Start/update/end failed. |
 

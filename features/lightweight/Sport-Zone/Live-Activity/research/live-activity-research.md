@@ -20,7 +20,7 @@ There are two Live Activity channels/surfaces:
 2. When the match starts, the system pushes a normal notification plus a Live Activity.
 3. UI shows both normal notification and compact Live Activity in parallel.
 4. Live Activity stays visible throughout the match.
-5. Ignoring the normal notification, user taps compact Live Activity in Dynamic Island.
+5. Ignoring the normal notification, user taps compact Live Activity in Dynamic Island to open deeplink, or long-presses/holds to expand it.
 6. System shows expanded Live Activity.
 7. User taps expanded Live Activity.
 8. System opens the app by deeplink.
