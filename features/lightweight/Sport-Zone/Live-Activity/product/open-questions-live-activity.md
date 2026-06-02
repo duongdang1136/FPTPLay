@@ -5,7 +5,7 @@
 | ID | Question | Accepted assumption for final docs |
 |---|---|---|
 | Q-001 | Which platform is in scope? | iOS Live Activity only for MVP. |
-| Q-002 | Which users receive Live Activity? | Authenticated users who follow the match and have eligible device/platform state. |
+| Q-002 | Which users receive Live Activity? | Authenticated users who entered match detail or player and have eligible device/platform state. |
 | Q-003 | What triggers Live Activity start? | Match start event from match event service. |
 | Q-004 | Is normal notification still sent? | Yes, normal notification + Live Activity start together when eligible. |
 | Q-005 | Dynamic Island tap behavior? | Compact tap expands; expanded tap deeplinks. |

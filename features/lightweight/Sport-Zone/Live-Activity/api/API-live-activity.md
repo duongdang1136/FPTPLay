@@ -2,7 +2,7 @@
 
 ## Auth
 
-- User-facing eligibility/follow state requires user auth.
+- User-facing eligibility/engagement state requires user auth.
 - Internal Live Activity start/update/end endpoints require service auth.
 - API envelope follows FPTPlay convention unless code-backed docs override it.
 
@@ -41,7 +41,7 @@ type SportLiveActivityContentStateDto = {
 
 ### Internal API: POST /api/v1/internal/sport-zone/live-activities/start
 
-Purpose: Start Live Activity for eligible followed-match users at match start.
+Purpose: Start Live Activity for eligible match-engaged users at match start.
 
 Request:
 

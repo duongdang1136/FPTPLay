@@ -94,6 +94,8 @@ type SportLiveActivityDto = {
 type LiveActivityStartRequest = {
   event_id: string;
   match_id: string;
+  eligibility_source: 'match_detail' | 'player';
+  engagement_at: string;
   source: 'match_start';
   content_state: SportLiveActivityContentStateDto;
   deeplink: string;
@@ -117,7 +119,7 @@ type LiveActivityEndRequest = {
 
 | Endpoint | Product requirement | Screen / Surface | Side effects |
 |---|---|---|---|
-| `POST /start` | F-001, F-002, F-005 | Dynamic Island / lock screen | Starts Live Activity for eligible followers. |
+| `POST /start` | F-001, F-002, F-005 | Dynamic Island / lock screen | Starts Live Activity for eligible match-engaged users. |
 | `PATCH /{activity_id}/update` | F-007 | Dynamic Island / lock screen | Updates content state. |
 | `PATCH /{activity_id}/end` | F-008 | Dynamic Island / lock screen | Ends Live Activity. |
 
@@ -125,7 +127,7 @@ type LiveActivityEndRequest = {
 
 ### 4.1 `POST /api/v1/internal/sport-zone/live-activities/start`
 
-Purpose: Start Live Activity for eligible users following a match when that match starts.
+Purpose: Start Live Activity for eligible users who entered the match detail or player when that match starts.
 
 Auth / ownership: service-to-service only.
 
@@ -319,7 +321,8 @@ Error responses:
 | `DUPLICATE_EVENT` | Event already processed. | Do not duplicate Live Activity. |
 | `ACTIVITY_ENDED` | Update attempted after end. | Stop retrying update; ensure state ended. |
 | `UNSUPPORTED_DEVICE` | User device not eligible. | Suppress Live Activity silently. |
-| `NOT_FOLLOWING_MATCH` | User does not follow match. | Suppress Live Activity silently. |
+| `NOT_MATCH_ENGAGED` | User has not entered match detail or player within the eligibility window. | Suppress Live Activity silently. |
+| `LIVE_ACTIVITY_DISMISSED` | User manually dismissed Live Activity for this match/session. | Do not recreate immediately without renewed in-app engagement. |
 | `RATE_LIMITED` | Update cadence too high. | Back off/coalesce updates. |
 | `SERVER_ERROR` | Unexpected failure. | Retry if safe; alert if persistent. |
 
@@ -337,7 +340,7 @@ Error responses:
 
 | Operation | Server-side side effects | Persistence / schema impact |
 |---|---|---|
-| Start | Resolves eligible followers/devices, starts Live Activity, records activity state. | Live Activity table/log keyed by user + match. |
+| Start | Resolves eligible match-engaged users/devices, starts Live Activity, records activity state. | Live Activity table/log keyed by user + match. |
 | Update | Sends platform update and records last content state. | Update event log / last state. |
 | End | Sends end/final state and marks activity ended. | `ended_at`, reason. |
 | Deeplink open | App opens route and tracks source if available. | Analytics event. |
@@ -373,11 +376,47 @@ Error responses:
 | `sport_live_activity_ended` | Activity ended. | activity_id, match_id, reason | Yes |
 | `sport_live_activity_failed` | Start/update/end failure. | action, reason, retryable | Yes |
 
+## 10A. Aggregation Contract
+
+When a user has two or more engaged live matches, backend/client orchestration must maintain one aggregate Live Activity per user.
+
+Primary match ranking for compact Dynamic Island:
+
+```text
+1. latest_event_at DESC
+2. event_priority ASC
+3. engagement_at DESC
+4. scheduled_start_at ASC
+5. match_id ASC
+```
+
+Event priority:
+
+```text
+goal = 1
+red_card = 2
+final_score = 3
+match_start = 4
+second_half_start = 5
+half_time = 6
+match_reminder = 7
+```
+
+Expanded Dynamic Island and lock screen use the same sorted match list. If active match count is one, tap opens match deeplink. If active match count is two or more, tap opens Engaged Live Matches Hub.
+
+## 10B. PiP / Dismissal Contract
+
+- PiP state is playback state and must not override Live Activity primary match ranking.
+- Closing PiP must not call Live Activity end.
+- Manual Live Activity dismissal must not close PiP.
+- Manual Live Activity dismissal should produce/surface a suppression state equivalent to `LIVE_ACTIVITY_DISMISSED` for that match/session.
+- Recreate Live Activity only after renewed in-app engagement or a new match lifecycle trigger.
+
 ## 11. API Test Matrix
 
 | ID | Scenario | Expected |
 |---|---|---|
-| API-001 | Start success | Returns accepted counts; creates activities for eligible followers. |
+| API-001 | Start success | Returns accepted counts; creates activities for eligible match-engaged users. |
 | API-002 | Duplicate start | Returns idempotent result or `DUPLICATE_EVENT`; no duplicate activity. |
 | API-003 | Update success | Updates content state. |
 | API-004 | Update ended activity | Returns `ACTIVITY_ENDED` or safe no-op. |
@@ -385,3 +424,7 @@ Error responses:
 | API-006 | Duplicate end | Safe idempotent result. |
 | API-007 | Invalid content state | Returns `VALIDATION_ERROR`. |
 | API-008 | Update cadence exceeded | Returns/coalesces `RATE_LIMITED`. |
+| API-009 | User only entered match detail/player, did not follow | Live Activity eligibility passes if device/platform eligible. |
+| API-010 | Two engaged matches live | One aggregate activity is updated; compact primary follows deterministic ranking. |
+| API-011 | User closes PiP | No Live Activity end call is triggered. |
+| API-012 | User dismisses Live Activity | Suppress recreation until renewed in-app engagement/new lifecycle trigger. |

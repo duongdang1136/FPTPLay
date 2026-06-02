@@ -16,7 +16,7 @@ There are two Live Activity channels/surfaces:
 
 ## 2. Dynamic Island Flow
 
-1. User follows a match.
+1. User enters match detail or player.
 2. When the match starts, the system pushes a normal notification plus a Live Activity.
 3. UI shows both normal notification and compact Live Activity in parallel.
 4. Live Activity stays visible throughout the match.
@@ -27,7 +27,7 @@ There are two Live Activity channels/surfaces:
 
 ## 3. Lock Screen Flow
 
-1. User follows a match.
+1. User enters match detail or player.
 2. User/device is on lock screen.
 3. When the match starts, the system pushes a normal notification plus a Live Activity.
 4. Lock screen shows both normal notification and expanded Live Activity in parallel.
@@ -42,7 +42,7 @@ This follows a multi-channel notification pattern:
 ```text
 Match start event
 → Notification workflow
-→ Check followed match + platform eligibility
+→ Check engaged match + platform eligibility
 → Send normal notification
 → Start Live Activity
 → Update Live Activity during match

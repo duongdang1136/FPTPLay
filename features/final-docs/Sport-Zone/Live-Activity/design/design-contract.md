@@ -18,7 +18,7 @@
 
 ## 1. Design Goal
 
-Show a persistent, glanceable match state for followed Sport Zone matches on Dynamic Island and lock screen, while keeping interaction simple: compact expands; expanded opens app.
+Show a persistent, glanceable match state for engaged Sport Zone matches on Dynamic Island and lock screen, while keeping interaction simple: compact expands; expanded opens app.
 
 ## 2. References
 
@@ -35,7 +35,7 @@ Show a persistent, glanceable match state for followed Sport Zone matches on Dyn
 | Dynamic Island compact | iOS system surface | Persistent glanceable match state. | Tap to expand | UC-001 |
 | Dynamic Island expanded | iOS system surface | Richer match state. | Tap to open app | UC-002 |
 | Lock-screen expanded | iOS system surface | Persistent match state on lock screen. | Tap to open app | UC-003, UC-004 |
-| App deeplink target | `fptplay://sport-zone/matches/{match_id}/live` | Watch/follow live match. | Watch | UC-002, UC-004 |
+| App deeplink target | `fptplay://sport-zone/matches/{match_id}/live` | Watch live match or return to the engaged match. | Watch | UC-002, UC-004 |
 | Fallback target | match detail → Sport Zone home | Safe unavailable route. | Continue browsing | UC-002, UC-004 |
 
 ## 4. Route / Surface Contract
@@ -144,7 +144,7 @@ User wants to quickly know the current match state and open the match when inter
 
 | Interaction | Trigger | UI behavior | API/route |
 |---|---|---|---|
-| Start Live Activity | Match starts for followed match | Compact on Dynamic Island; expanded on lock screen. | Start API/internal platform payload |
+| Start Live Activity | Match starts for engaged match | Compact on Dynamic Island; expanded on lock screen. | Start API/internal platform payload |
 | Compact tap | User taps Dynamic Island compact | Expanded Live Activity appears. | Platform behavior |
 | Expanded Dynamic Island tap | User taps expanded activity | App opens deeplink. | `deeplink` then fallback |
 | Lock-screen expanded tap | User taps lock-screen activity | App opens deeplink. | `deeplink` then fallback |
@@ -162,13 +162,71 @@ User wants to quickly know the current match state and open the match when inter
 | Ended | Match ended/cancelled | Stop ongoing display or show final state per platform. | Optional open app if final state remains |
 | Unavailable | Target/content unavailable | Show safe status or end activity. | Fallback if tapped |
 
+## 10A. Multiple Engaged Matches UX
+
+When two or more engaged matches are live, the product must render one aggregated Live Activity.
+
+### Dynamic Island compact
+
+- Shows only one primary match.
+- Compact copy may include a small `+N` indicator for additional live matches.
+- Primary match is selected by the product ranking rule:
+
+```text
+1. latest_event_at DESC
+2. event_priority ASC
+3. engagement_at DESC
+4. scheduled_start_at ASC
+5. match_id ASC
+```
+
+Example:
+
+```text
+Team A 1-0 Team B +1
+```
+
+### Dynamic Island expanded
+
+Shows multi-match summary sorted by the same ranking:
+
+```text
+FPT Play · 2 trận đang diễn ra
+
+⚽ Team A 1 - 0 Team B   35'
+Team C 0 - 0 Team D      21'
+
+Xem các trận đang theo dõi
+```
+
+Tap expanded Live Activity opens Engaged Live Matches Hub when two or more matches are active.
+
+### Lock screen expanded
+
+Shows the same aggregate summary as Dynamic Island expanded, adapted to lock-screen size.
+
+Tap opens Engaged Live Matches Hub when two or more matches are active.
+
+## 10B. PiP + Live Activity UX
+
+PiP and Live Activity are independent surfaces.
+
+| Case | UI behavior |
+|---|---|
+| User backgrounds app while watching live match | PiP may appear; Live Activity remains active. |
+| PiP active + Live Activity active | PiP shows video; Live Activity shows score/status/deeplink. |
+| User closes PiP | Video playback stops; Live Activity remains active. |
+| User dismisses Live Activity | Live Activity stops; PiP remains unaffected. |
+| Multiple matches + PiP | PiP state does not override primary match selection. Use event ranking for Live Activity compact. |
+
 ## 10. Error / Loading / Empty UX
 
 | State / `error_code` | User-facing message | Placement | Recovery action |
 |---|---|---|---|
 | Starting delay | None | System surface | Wait; do not show custom error. |
 | `UNSUPPORTED_DEVICE` | None | Silent suppression | Normal notification still works. |
-| `NOT_FOLLOWING_MATCH` | None | Silent suppression | None. |
+| `NOT_MATCH_ENGAGED` | None | Silent suppression | User can renew eligibility by entering match detail/player. |
+| `LIVE_ACTIVITY_DISMISSED` | None | Silent suppression | Do not recreate immediately; wait for renewed in-app engagement. |
 | `TARGET_UNAVAILABLE` | Nội dung này hiện không còn khả dụng. | App fallback route/toast | Continue browsing. |
 | `SERVER_ERROR` | None on Live Activity surface | Internal logging | Retry/update/end safely. |
 
