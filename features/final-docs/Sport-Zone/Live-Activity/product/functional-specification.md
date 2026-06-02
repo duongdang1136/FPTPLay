@@ -20,7 +20,7 @@
 
 ### 1.1 Goal
 
-Provide a persistent Live Activity for Sport Zone matches the user is actively viewing in Match Detail/Player screen so users can monitor match state from Dynamic Island or lock screen and deeplink into FPT Play when they want to watch.
+Provide a persistent Live Activity for the Sport Zone match the user is actively viewing in Match Detail/Player screen so users can monitor match state from Dynamic Island or lock screen and deeplink into FPT Play when they want to watch.
 
 ### 1.2 Product context
 
@@ -122,9 +122,9 @@ Live Activity complements the Notifications & Alert feature. Live Activity is st
 | BR-010 | Live Activity start/update/end must be idempotent per `user_id + match_id + event_id`. | API |
 | BR-011 | Live Activity fallback route order: live match screen → match detail → Sport Zone home. | Product/Design/API |
 | BR-012 | Active Match Detail/Player screen presence is the mandatory Live Activity eligibility gate. Follow/subscription state must not be used for Live Activity eligibility. | Product/API |
-| BR-013 | When a user has multiple active viewed live matches, the system uses one aggregated Live Activity per user. | Product/API/Design |
-| BR-014 | Dynamic Island compact always displays one primary match selected by deterministic ranking. | Product/Design/API |
-| BR-015 | With two or more active viewed live matches, expanded Dynamic Island and lock screen open Active Live Matches Hub, not a single match. | Product/Design |
+| BR-013 | Live Activity shows only the one match currently open in Match Detail/Player screen or Player screen. | Product/API/Design |
+| BR-014 | Dynamic Island compact displays the current active viewed match only. | Product/Design/API |
+| BR-015 | Expanded Dynamic Island and lock screen show the same single active viewed match and tap opens that match deeplink/fallback. | Product/Design |
 | BR-016 | PiP and Live Activity are independent surfaces: PiP represents video playback; Live Activity represents match status. | Product/Design |
 | BR-017 | Closing PiP does not end Live Activity; dismissing Live Activity does not close PiP. | Product/Design/API |
 | BR-018 | If user manually dismisses Live Activity, system must not recreate it immediately for the same match without renewed in-app engagement. | Product/API |
@@ -235,7 +235,7 @@ Live Activity complements the Notifications & Alert feature. Live Activity is st
 |---|---|---|---|
 | `not_started` | Before match start or ineligible. | No Live Activity. | None. |
 | `starting` | Start request accepted. | Pending system surface. | None. |
-| `active_compact` | Dynamic Island compact active. | Compact score/status. | Tap to expand. |
+| `active_compact` | Dynamic Island compact active. | Compact score/status. | Tap opens deeplink; long press/hold expands. |
 | `active_expanded` | Dynamic Island expanded or lock-screen active. | Expanded score/status. | Tap to deeplink. |
 | `updating` | Match update being applied. | Keep previous safe state until update applies. | Tap if expanded. |
 | `ended` | Match end/cancel/unavailable. | No ongoing activity or final-ended state per platform. | None/deeplink if final state supports. |
@@ -246,7 +246,7 @@ Live Activity complements the Notifications & Alert feature. Live Activity is st
 | Match state | Live Activity behavior |
 |---|---|
 | Active viewed, not started | No visible Live Activity before match start unless future pre-match scope enabled; active screen presence is stored for match-start eligibility. |
-| Multiple active viewed live matches | One aggregate Live Activity; compact shows primary match; expanded/lock screen show multi-match summary. |
+| User switches to another match detail/player screen | End/replace previous match Live Activity and start/update Live Activity for the newly active viewed match when eligible. |
 | PiP active | PiP continues video playback; Live Activity continues match status independently. |
 | PiP closed | Video playback stops; Live Activity remains active if match is still eligible/live. |
 | Live Activity manually dismissed | Live Activity stops for that match/user and is not recreated immediately without renewed in-app engagement. |
@@ -272,7 +272,7 @@ Live Activity complements the Notifications & Alert feature. Live Activity is st
 
 | API | Purpose | Required? | Notes |
 |---|---|---:|---|
-| `POST /api/v1/internal/sport-zone/live-activities/start` | Start Live Activity for eligible active Match Detail/Player screen users. | Yes | Internal/service auth. |
+| `POST /api/v1/internal/sport-zone/live-activities/start` | Start Live Activity for eligible active Match Detail/Player screen user/session. | Yes | Internal/service auth. |
 | `PATCH /api/v1/internal/sport-zone/live-activities/{activity_id}/update` | Update score/time/status. | Yes | Internal/service auth. |
 | `PATCH /api/v1/internal/sport-zone/live-activities/{activity_id}/end` | End Live Activity. | Yes | Internal/service auth. |
 | Notifications & Alert match-start notification | Related parallel notification behavior. | No | See related feature; not an eligibility source for Live Activity. |

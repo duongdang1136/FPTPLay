@@ -18,7 +18,7 @@
 
 ## 1. Design Goal
 
-Show a persistent, glanceable match state for engaged Sport Zone matches on Dynamic Island and lock screen, while keeping interaction simple: compact tap opens app; compact long press/hold expands; expanded opens app.
+Show a persistent, glanceable match state for engaged the Sport Zone match on Dynamic Island and lock screen, while keeping interaction simple: compact tap opens app; compact long press/hold expands; expanded opens app.
 
 ## 2. References
 
@@ -32,7 +32,7 @@ Show a persistent, glanceable match state for engaged Sport Zone matches on Dyna
 
 | Screen / Surface | Route | Purpose | Primary CTA | Related UC |
 |---|---|---|---|---|
-| Dynamic Island compact | iOS system surface | Persistent glanceable match state. | Tap to expand | UC-001 |
+| Dynamic Island compact | iOS system surface | Persistent glanceable match state. | Tap to open app; long press/hold to expand | UC-001 |
 | Dynamic Island expanded | iOS system surface | Richer match state. | Tap to open app | UC-002 |
 | Lock-screen expanded | iOS system surface | Persistent match state on lock screen. | Tap to open app | UC-003, UC-004 |
 | App deeplink target | `fptplay://sport-zone/matches/{match_id}/live` | Watch live match or return to the active viewed match. | Watch | UC-002, UC-004 |
@@ -138,9 +138,9 @@ User wants to quickly know the current match state and open the match when inter
 
 **Accessibility:** Announce teams, score, clock/status. Do not rely only on color.
 
-## 9. Interaction & State Contract
+## 8. Interaction & State Contract
 
-### 9.1 Interactions
+### 8.1 Interactions
 
 | Interaction | Trigger | UI behavior | API/route |
 |---|---|---|---|
@@ -152,61 +152,36 @@ User wants to quickly know the current match state and open the match when inter
 | Match update | Score/status changes | UI updates content state. | Update API/internal platform payload |
 | Match end | Match ends/cancels | Activity ends or shows final state then ends. | End API/internal platform payload |
 
-### 9.2 Surface states
+### 8.2 Surface states
 
 | State | Trigger | UI requirement | CTA |
 |---|---|---|---|
 | Starting | Start event accepted | System may show pending activity. | None |
-| Compact | Dynamic Island eligible active activity | Show minimal score/status. | Tap to expand |
+| Compact | Dynamic Island eligible active activity | Show minimal score/status. | Tap opens deeplink; long press/hold expands |
 | Expanded | Compact expanded or lock screen active | Show teams, score, clock/status. | Tap to open app |
 | Updating | Match content state changes | Keep previous state until new state applied. | Existing tap behavior remains |
 | Ended | Match ended/cancelled | Stop ongoing display or show final state per platform. | Optional open app if final state remains |
 | Unavailable | Target/content unavailable | Show safe status or end activity. | Fallback if tapped |
 
-## 10A. Multiple Engaged Matches UX
+## 10A. Single Active Match UX
 
-When two or more active viewed matches are live, the product must render one aggregated Live Activity.
+Live Activity expanded Dynamic Island and lock-screen states show only the one match currently open in Match Detail/Player screen or Player screen. No multi-match list, `+N` indicator, hub CTA, or ranking rule is required for this feature.
+
+If the user switches to another match detail/player screen, the visible Live Activity should move to that new match according to platform/client orchestration.
 
 ### Dynamic Island compact
 
-- Shows only one primary match.
-- Compact copy may include a small `+N` indicator for additional live matches.
-- Primary match is selected by the product ranking rule:
-
-```text
-1. latest_event_at DESC
-2. event_priority ASC
-3. last_screen_seen_at DESC
-4. scheduled_start_at ASC
-5. match_id ASC
-```
-
-Example:
-
-```text
-Team A 1-0 Team B +1
-```
+- Shows only the active viewed match.
+- Tap opens the active match deeplink.
+- Long press/hold opens the expanded single-match Live Activity.
 
 ### Dynamic Island expanded
 
-Shows multi-match summary sorted by the same ranking:
-
-```text
-FPT Play · 2 trận đang diễn ra
-
-⚽ Team A 1 - 0 Team B   35'
-Team C 0 - 0 Team D      21'
-
-Xem các trận đang mở
-```
-
-Tap expanded Live Activity opens Active Live Matches Hub when two or more matches are active.
+Shows teams, score, clock/status, and deeplink hint for the same active viewed match.
 
 ### Lock screen expanded
 
-Shows the same aggregate summary as Dynamic Island expanded, adapted to lock-screen size.
-
-Tap opens Active Live Matches Hub when two or more matches are active.
+Shows the same single-match summary as Dynamic Island expanded, adapted to lock-screen size.
 
 ## 10B. PiP + Live Activity UX
 
@@ -218,9 +193,8 @@ PiP and Live Activity are independent surfaces.
 | PiP active + Live Activity active | PiP shows video; Live Activity shows score/status/deeplink. |
 | User closes PiP | Video playback stops; Live Activity remains active. |
 | User dismisses Live Activity | Live Activity stops; PiP remains unaffected. |
-| Multiple matches + PiP | PiP state does not override primary match selection. Use event ranking for Live Activity compact. |
 
-## 10. Error / Loading / Empty UX
+## 9. Error / Loading / Empty UX
 
 | State / `error_code` | User-facing message | Placement | Recovery action |
 |---|---|---|---|
@@ -230,7 +204,7 @@ PiP and Live Activity are independent surfaces.
 | `TARGET_UNAVAILABLE` | Nội dung này hiện không còn khả dụng. | App fallback route/toast | Continue browsing. |
 | `SERVER_ERROR` | None on Live Activity surface | Internal logging | Retry/update/end safely. |
 
-## 11. Copy & Microcopy
+## 10. Copy & Microcopy
 
 | Surface | Copy |
 |---|---|
@@ -241,7 +215,7 @@ PiP and Live Activity are independent surfaces.
 | Unavailable status | Trận đấu hiện không khả dụng |
 | Deeplink hint | Xem trận đấu |
 
-## 12. Accessibility
+## 11. Accessibility
 
 - Dynamic Island/lock-screen content should have concise accessibility label with teams, score, and status.
 - Do not rely on color only for live/ended state.
@@ -249,7 +223,7 @@ PiP and Live Activity are independent surfaces.
 - Tap targets follow platform Live Activity constraints.
 - Lock-screen content must not include private user data.
 
-## 13. Responsive Behavior
+## 12. Responsive Behavior
 
 | Breakpoint / Device | Behavior |
 |---|---|
@@ -258,14 +232,14 @@ PiP and Live Activity are independent surfaces.
 | iOS without Dynamic Island | No compact Dynamic Island state; lock-screen Live Activity may still be eligible if platform supports. |
 | Unsupported platform | Suppress Live Activity; normal notification behavior remains. |
 
-## 14. Security / Privacy UX
+## 13. Security / Privacy UX
 
 - Lock-screen content must be safe for public visibility.
 - Do not show user-specific private notes/preferences on Live Activity.
 - Deeplink failures use safe fallback copy.
 - Do not show raw backend/provider errors.
 
-## 15. Design QA Checklist
+## 14. Design QA Checklist
 
 - [x] Required surfaces are present.
 - [x] Compact tap → deeplink and compact long press/hold → expanded → deeplink interaction is specified.

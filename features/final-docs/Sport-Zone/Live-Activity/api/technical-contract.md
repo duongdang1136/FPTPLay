@@ -121,7 +121,7 @@ type LiveActivityEndRequest = {
 
 | Endpoint | Product requirement | Screen / Surface | Side effects |
 |---|---|---|---|
-| `POST /start` | F-001, F-002, F-005 | Dynamic Island / lock screen | Starts Live Activity for eligible active Match Detail/Player screen users. |
+| `POST /start` | F-001, F-002, F-005 | Dynamic Island / lock screen | Starts Live Activity for eligible active Match Detail/Player screen user/session. |
 | `PATCH /{activity_id}/update` | F-007 | Dynamic Island / lock screen | Updates content state. |
 | `PATCH /{activity_id}/end` | F-008 | Dynamic Island / lock screen | Ends Live Activity. |
 
@@ -346,7 +346,7 @@ Error responses:
 
 | Operation | Server-side side effects | Persistence / schema impact |
 |---|---|---|
-| Start | Resolves active Match Detail/Player screen users and eligible devices, starts Live Activity, records activity state. Follow/subscription state is ignored for Live Activity eligibility. | Live Activity table/log keyed by user + match + screen session. |
+| Start | Resolves active Match Detail/Player screen user/session and eligible devices, starts Live Activity, records activity state. Follow/subscription state is ignored for Live Activity eligibility. | Live Activity table/log keyed by user + match + screen session. |
 | Update | Sends platform update and records last content state. | Update event log / last state. |
 | End | Sends end/final state and marks activity ended. | `ended_at`, reason. |
 | Deeplink open | App opens route and tracks source if available. | Analytics event. |
@@ -382,37 +382,17 @@ Error responses:
 | `sport_live_activity_ended` | Activity ended. | activity_id, match_id, reason | Yes |
 | `sport_live_activity_failed` | Start/update/end failure. | action, reason, retryable | Yes |
 
-## 10A. Aggregation Contract
+## 10A. Single Active Match Contract
 
-When a user has two or more active viewed live matches, backend/client orchestration must maintain one aggregate Live Activity per user.
+Live Activity is scoped to the one match currently open in Match Detail/Player screen or Player screen. Because a user can only be in one match detail/player context at a time, this feature must not aggregate multiple matches in expanded Dynamic Island or lock-screen states.
 
-Primary match ranking for compact Dynamic Island:
+If the user switches from match A to match B, client/backend orchestration should end or replace the existing Live Activity for match A according to platform constraints, then start/update Live Activity for match B when eligible.
 
-```text
-1. latest_event_at DESC
-2. event_priority ASC
-3. last_screen_seen_at DESC
-4. scheduled_start_at ASC
-5. match_id ASC
-```
-
-Event priority:
-
-```text
-goal = 1
-red_card = 2
-final_score = 3
-match_start = 4
-second_half_start = 5
-half_time = 6
-match_reminder = 7
-```
-
-Expanded Dynamic Island and lock screen use the same sorted match list. If active match count is one, tap opens match deeplink. If active match count is two or more, tap opens Active Live Matches Hub.
+Expanded Dynamic Island and lock screen always show the same single active viewed match. Tap opens that match deeplink/fallback.
 
 ## 10B. PiP / Dismissal Contract
 
-- PiP state is playback state and must not override Live Activity primary match ranking.
+- PiP state is playback state and must not override the active viewed match shown in Live Activity.
 - Closing PiP must not call Live Activity end.
 - Manual Live Activity dismissal must not close PiP.
 - Manual Live Activity dismissal should produce/surface a suppression state equivalent to `LIVE_ACTIVITY_DISMISSED` for that match/session.
@@ -422,7 +402,7 @@ Expanded Dynamic Island and lock screen use the same sorted match list. If activ
 
 | ID | Scenario | Expected |
 |---|---|---|
-| API-001 | Start success | Returns accepted counts; creates activities for eligible active Match Detail/Player screen users. |
+| API-001 | Start success | Returns accepted counts; creates activities for eligible active Match Detail/Player screen user/session. |
 | API-002 | Duplicate start | Returns idempotent result or `DUPLICATE_EVENT`; no duplicate activity. |
 | API-003 | Update success | Updates content state. |
 | API-004 | Update ended activity | Returns `ACTIVITY_ENDED` or safe no-op. |
@@ -432,6 +412,6 @@ Expanded Dynamic Island and lock screen use the same sorted match list. If activ
 | API-008 | Update cadence exceeded | Returns/coalesces `RATE_LIMITED`. |
 | API-009 | User is outside Match Detail/Player screen | Live Activity is suppressed with `NOT_IN_MATCH_DETAIL_OR_PLAYER` for this feature. |
 | API-009A | User is currently in Match Detail/Player screen without follow state | Live Activity is triggered when device/platform eligible. |
-| API-010 | Two active viewed matches live | One aggregate activity is updated; compact primary follows deterministic ranking. |
+| API-010 | User switches from match A to match B | Live Activity is ended/replaced for match A and started/updated for match B when eligible; no multi-match aggregation is shown. |
 | API-011 | User closes PiP | No Live Activity end call is triggered. |
 | API-012 | User dismisses Live Activity | Suppress recreation until renewed in-app engagement/new lifecycle trigger. |

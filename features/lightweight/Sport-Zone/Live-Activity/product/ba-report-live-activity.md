@@ -2,7 +2,7 @@
 
 ## 1. Executive Summary
 
-Sport Zone Live Activity gives users a persistent real-time match surface while they are in a match Match Detail/Player screen. When the viewed match starts/is live, the system starts Live Activity for eligible active Match Detail/Player screen users. Normal notification behavior remains owned by Notifications & Alert.
+Sport Zone Live Activity gives users a persistent real-time match surface while they are in a match Match Detail/Player screen. When the viewed match starts/is live, the system starts Live Activity for eligible active Match Detail/Player screen user/session. Normal notification behavior remains owned by Notifications & Alert.
 
 ## 2. Users
 
@@ -55,15 +55,15 @@ Sport Zone Live Activity gives users a persistent real-time match surface while 
 - Confirm data shown in compact/expanded states.
 - Confirm update frequency and data source for score/match clock.
 - Confirm final deeplink route.
-- Confirm whether Live Activity starts for all active viewed matches or only selected sports/leagues.
+- Confirm whether Live Activity starts for all the active viewed match or only selected sports/leagues.
 
-## Accepted Update — Engagement Eligibility, Multi-Match, PiP
+## Accepted Update — Engagement Eligibility, Single-Match, PiP
 
 - User active screen presence is required for MVP Live Activity eligibility, together with Match Detail/Player screen engagement.
-- User becomes eligible after entering the match Match Detail/Player screen for that match within the configured eligibility window.
-- If multiple active viewed matches are live, use one aggregated Live Activity per user.
-- Dynamic Island compact shows one primary match selected by deterministic ranking: latest event time, event priority, engagement time, scheduled start time, match id.
-- Expanded Dynamic Island and lock screen show a multi-match summary and open Active Live Matches Hub when two or more matches are active.
+- User becomes eligible only while currently in the match Match Detail/Player screen or Player screen for that match.
+- Live Activity shows only the one match currently open in Match Detail/Player screen or Player screen.
+- Compact, expanded Dynamic Island, and lock screen all represent that same match.
+- If the user switches to another match detail/player screen, Live Activity should move to the new active match according to platform/client orchestration.
 - PiP and Live Activity are independent: PiP is video playback, Live Activity is match status.
 
 ## Final Correction — Active Screen Is the Start Gate

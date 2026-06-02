@@ -2,7 +2,7 @@
 
 ## 1. Objective
 
-Provide persistent Sport Zone Live Activity for active viewed matches across Dynamic Island and lock-screen surfaces, triggered at match start and maintained throughout the match.
+Provide persistent Sport Zone Live Activity for the active viewed match across Dynamic Island and lock-screen surfaces, triggered at match start and maintained throughout the match.
 
 ## 2. Users and Permissions
 
@@ -18,7 +18,7 @@ Provide persistent Sport Zone Live Activity for active viewed matches across Dyn
 
 ### In scope
 
-- Start Live Activity at match start/live-state only for matches currently open in Match Detail/Player screen or Player screen.
+- Start Live Activity at match start/live-state only for match currently open in Match Detail/Player screen or Player screen.
 - Show compact Live Activity on Dynamic Island-capable device.
 - Show expanded Live Activity after long press/hold on compact Dynamic Island.
 - Show expanded Live Activity on lock screen.
@@ -140,7 +140,7 @@ Draft copy pending final design/content.
 
 Live Activity eligibility requires both match active screen presence and match engagement. A user is eligible after entering Match Detail/Player screen for the match. Active screen presence is required and must be checked before Live Activity start.
 
-When two or more active viewed matches are live, the system maintains one aggregate Live Activity. Compact Dynamic Island displays the deterministic primary match; expanded Dynamic Island and lock screen display the multi-match summary.
+Live Activity shows only the one match currently open in Match Detail/Player screen or Player screen. Compact, expanded Dynamic Island, and lock screen all represent that same match; no multi-match aggregation is required.
 
 PiP is independent from Live Activity. Closing PiP does not end Live Activity, and dismissing Live Activity does not close PiP.
 
