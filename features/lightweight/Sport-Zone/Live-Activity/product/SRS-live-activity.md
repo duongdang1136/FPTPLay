@@ -150,7 +150,6 @@ Final eligibility is an AND condition:
 
 ```text
 User follows/subscribes to the match
-AND user entered Match Detail/Player screen within the eligibility window
 AND device/platform is eligible
 → start/show Live Activity
 ```
