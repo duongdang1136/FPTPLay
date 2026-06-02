@@ -94,10 +94,11 @@ type SportLiveActivityDto = {
 type LiveActivityStartRequest = {
   event_id: string;
   match_id: string;
-  follow_required: true;
-  context_source?: 'match_detail_player_screen' | 'background_follow_subscription';
-  last_screen_seen_at?: string;
-  source: 'match_start';
+  active_screen_required: true;
+  context_source: 'match_detail_player_screen' | 'player_screen';
+  screen_session_id?: string;
+  last_screen_seen_at: string;
+  source: 'match_start' | 'match_live_state';
   content_state: SportLiveActivityContentStateDto;
   deeplink: string;
   fallback_deeplink: string;
@@ -120,7 +121,7 @@ type LiveActivityEndRequest = {
 
 | Endpoint | Product requirement | Screen / Surface | Side effects |
 |---|---|---|---|
-| `POST /start` | F-001, F-002, F-005 | Dynamic Island / lock screen | Starts Live Activity for eligible match-engaged users. |
+| `POST /start` | F-001, F-002, F-005 | Dynamic Island / lock screen | Starts Live Activity for eligible active Match Detail/Player screen users. |
 | `PATCH /{activity_id}/update` | F-007 | Dynamic Island / lock screen | Updates content state. |
 | `PATCH /{activity_id}/end` | F-008 | Dynamic Island / lock screen | Ends Live Activity. |
 
@@ -128,7 +129,7 @@ type LiveActivityEndRequest = {
 
 ### 4.1 `POST /api/v1/internal/sport-zone/live-activities/start`
 
-Purpose: Start Live Activity for eligible users who follow/subscribe to the match when that match starts, even if the user is outside the match/app.
+Purpose: Start Live Activity only for eligible users currently in Match Detail/Player screen or Player screen for the match when that match starts/is live. Follow/subscription state is ignored for Live Activity eligibility.
 
 Auth / ownership: service-to-service only.
 
@@ -147,6 +148,10 @@ Request:
   "event_id": "evt_match_start_123",
   "match_id": "match_123",
   "source": "match_start",
+  "active_screen_required": true,
+  "context_source": "match_detail_player_screen",
+  "screen_session_id": "screen_session_123",
+  "last_screen_seen_at": "2026-06-02T19:59:55+07:00",
   "content_state": {
     "match_id": "match_123",
     "home_team": "Team A",
@@ -322,7 +327,7 @@ Error responses:
 | `DUPLICATE_EVENT` | Event already processed. | Do not duplicate Live Activity. |
 | `ACTIVITY_ENDED` | Update attempted after end. | Stop retrying update; ensure state ended. |
 | `UNSUPPORTED_DEVICE` | User device not eligible. | Suppress Live Activity silently. |
-| `NOT_FOLLOWING_MATCH` | User has not followed/subscribed to the match. | Suppress notification + Live Activity for this feature. |
+| `NOT_IN_MATCH_DETAIL_OR_PLAYER` | User is not currently in Match Detail/Player screen or Player screen for the match. | Suppress Live Activity for this feature; normal notification behavior is handled separately. |
 | `LIVE_ACTIVITY_DISMISSED` | User manually dismissed Live Activity for this match/session. | Do not recreate immediately without renewed in-app engagement. |
 | `RATE_LIMITED` | Update cadence too high. | Back off/coalesce updates. |
 | `SERVER_ERROR` | Unexpected failure. | Retry if safe; alert if persistent. |
@@ -341,7 +346,7 @@ Error responses:
 
 | Operation | Server-side side effects | Persistence / schema impact |
 |---|---|---|
-| Start | Resolves followed/subscribed users and eligible devices, starts Live Activity, records activity state. Match Detail/Player screen context is optional for deeplink/resume. | Live Activity table/log keyed by user + match. |
+| Start | Resolves active Match Detail/Player screen users and eligible devices, starts Live Activity, records activity state. Follow/subscription state is ignored for Live Activity eligibility. | Live Activity table/log keyed by user + match + screen session. |
 | Update | Sends platform update and records last content state. | Update event log / last state. |
 | End | Sends end/final state and marks activity ended. | `ended_at`, reason. |
 | Deeplink open | App opens route and tracks source if available. | Analytics event. |
@@ -379,14 +384,14 @@ Error responses:
 
 ## 10A. Aggregation Contract
 
-When a user has two or more engaged live matches, backend/client orchestration must maintain one aggregate Live Activity per user.
+When a user has two or more active viewed live matches, backend/client orchestration must maintain one aggregate Live Activity per user.
 
 Primary match ranking for compact Dynamic Island:
 
 ```text
 1. latest_event_at DESC
 2. event_priority ASC
-3. followed_at DESC
+3. last_screen_seen_at DESC
 4. scheduled_start_at ASC
 5. match_id ASC
 ```
@@ -403,7 +408,7 @@ half_time = 6
 match_reminder = 7
 ```
 
-Expanded Dynamic Island and lock screen use the same sorted match list. If active match count is one, tap opens match deeplink. If active match count is two or more, tap opens Engaged Live Matches Hub.
+Expanded Dynamic Island and lock screen use the same sorted match list. If active match count is one, tap opens match deeplink. If active match count is two or more, tap opens Active Live Matches Hub.
 
 ## 10B. PiP / Dismissal Contract
 
@@ -417,7 +422,7 @@ Expanded Dynamic Island and lock screen use the same sorted match list. If activ
 
 | ID | Scenario | Expected |
 |---|---|---|
-| API-001 | Start success | Returns accepted counts; creates activities for eligible match-engaged users. |
+| API-001 | Start success | Returns accepted counts; creates activities for eligible active Match Detail/Player screen users. |
 | API-002 | Duplicate start | Returns idempotent result or `DUPLICATE_EVENT`; no duplicate activity. |
 | API-003 | Update success | Updates content state. |
 | API-004 | Update ended activity | Returns `ACTIVITY_ENDED` or safe no-op. |
@@ -425,8 +430,8 @@ Expanded Dynamic Island and lock screen use the same sorted match list. If activ
 | API-006 | Duplicate end | Safe idempotent result. |
 | API-007 | Invalid content state | Returns `VALIDATION_ERROR`. |
 | API-008 | Update cadence exceeded | Returns/coalesces `RATE_LIMITED`. |
-| API-009 | User entered Match Detail/Player screen but did not follow | Notification + Live Activity are suppressed with `NOT_FOLLOWING_MATCH` for this feature. |
-| API-009A | User followed but is outside match/app | Normal notification + Live Activity are triggered when device/platform eligible. |
-| API-010 | Two engaged matches live | One aggregate activity is updated; compact primary follows deterministic ranking. |
+| API-009 | User is outside Match Detail/Player screen | Live Activity is suppressed with `NOT_IN_MATCH_DETAIL_OR_PLAYER` for this feature. |
+| API-009A | User is currently in Match Detail/Player screen without follow state | Live Activity is triggered when device/platform eligible. |
+| API-010 | Two active viewed matches live | One aggregate activity is updated; compact primary follows deterministic ranking. |
 | API-011 | User closes PiP | No Live Activity end call is triggered. |
 | API-012 | User dismisses Live Activity | Suppress recreation until renewed in-app engagement/new lifecycle trigger. |

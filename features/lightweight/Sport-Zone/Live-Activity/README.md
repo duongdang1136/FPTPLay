@@ -9,7 +9,7 @@
 
 ## Purpose
 
-Clarify Sport Zone Live Activity behavior for match-engaged users. This feature is related to Notifications & Alert: when a engaged match starts, the system sends both a normal notification and a Live Activity. The normal notification behavior is owned by Notifications & Alert; this feature owns the persistent Live Activity surfaces and deeplink behavior.
+Clarify Sport Zone Live Activity behavior for users currently in Match Detail/Player screen. This feature is related to Notifications & Alert, but Live Activity eligibility is screen-based: follow/subscription is ignored, and normal notification behavior remains owned by Notifications & Alert.
 
 ## Framework mapping
 
@@ -31,8 +31,8 @@ api/API-live-activity.md
 
 ## Current decision summary
 
-- Live Activity starts when a engaged match starts.
-- At match start, the system sends normal notification + Live Activity together.
+- Live Activity starts when a active viewed match starts.
+- At match start/live-state, the system starts Live Activity only for users currently in Match Detail/Player screen or Player screen.
 - Notification and Live Activity can be visible in parallel.
 - Dynamic Island supported devices show compact Live Activity initially.
 - Tapping compact Dynamic Island Live Activity expands it.

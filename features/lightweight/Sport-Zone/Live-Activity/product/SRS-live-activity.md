@@ -2,23 +2,23 @@
 
 ## 1. Objective
 
-Provide persistent Sport Zone Live Activity for engaged matches across Dynamic Island and lock-screen surfaces, triggered at match start and maintained throughout the match.
+Provide persistent Sport Zone Live Activity for active viewed matches across Dynamic Island and lock-screen surfaces, triggered at match start and maintained throughout the match.
 
 ## 2. Users and Permissions
 
 | User / actor | Permission / constraint |
 |---|---|
-| Authenticated match-engaged user | Can receive personalized Live Activity for engaged match. |
+| Authenticated active match viewer | Can receive personalized Live Activity for active viewed match. |
 | Dynamic Island-capable iOS device user | Can see compact Live Activity and expand it. |
 | Lock-screen iOS user | Can see expanded Live Activity on lock screen. |
-| Notification service | Coordinates match start notification and Live Activity start. |
+| Live Activity service | Coordinates Live Activity start/update/end. |
 | Match event service | Provides match start/update/end events. |
 
 ## 3. Scope
 
 ### In scope
 
-- Start Live Activity at match start for engaged match.
+- Start Live Activity at match start/live-state only for matches currently open in Match Detail/Player screen or Player screen.
 - Show compact Live Activity on Dynamic Island-capable device.
 - Show expanded Live Activity after compact tap on Dynamic Island.
 - Show expanded Live Activity on lock screen.
@@ -35,7 +35,7 @@ Provide persistent Sport Zone Live Activity for engaged matches across Dynamic I
 
 ## 4. Functional Requirements
 
-### FR-001 — Start Live Activity at engaged match start
+### FR-001 — Start Live Activity at active viewed match start
 
 Acceptance criteria:
 
@@ -87,7 +87,7 @@ Acceptance criteria:
 
 | ID | Rule |
 |---|---|
-| BR-001 | Live Activity requires a followed/subscribed match and eligible device/platform state. Match Detail/Player screen is optional context, not a start gate. |
+| BR-001 | Live Activity requires a actively viewing match and eligible device/platform state. Match Detail/Player screen is optional context, not a start gate. |
 | BR-002 | At match start, normal notification and Live Activity are both triggered when eligible. |
 | BR-003 | Dynamic Island initial state is compact. |
 | BR-004 | Dynamic Island compact tap expands Live Activity. |
@@ -138,26 +138,14 @@ Draft copy pending final design/content.
 
 ## Accepted Update — Engagement Eligibility
 
-Live Activity eligibility requires both match follow/subscription and match engagement. A user is eligible after entering Match Detail/Player screen for the match. Follow/subscription is required and must be checked before Live Activity start.
+Live Activity eligibility requires both match active screen presence and match engagement. A user is eligible after entering Match Detail/Player screen for the match. Active screen presence is required and must be checked before Live Activity start.
 
-When two or more engaged matches are live, the system maintains one aggregate Live Activity. Compact Dynamic Island displays the deterministic primary match; expanded Dynamic Island and lock screen display the multi-match summary.
+When two or more active viewed matches are live, the system maintains one aggregate Live Activity. Compact Dynamic Island displays the deterministic primary match; expanded Dynamic Island and lock screen display the multi-match summary.
 
 PiP is independent from Live Activity. Closing PiP does not end Live Activity, and dismissing Live Activity does not close PiP.
 
-## Superseded Note — Follow Required, Screen Context Optional
-
-Final eligibility is an AND condition:
-
-```text
-User follows/subscribes to the match
-AND device/platform is eligible
-→ start/show Live Activity
-```
-
-Follow/subscription is required because the notification workflow needs a recipient/subscription signal. Detail/player engagement is required so Live Activity only appears for matches the user has actively opened.
-
-## Final Correction — Follow Is the Start Gate
+## Final Correction — Active Screen Is the Start Gate
 
 Mobile Sport Zone detail and player are one shared **Match Detail/Player screen**.
 
-Live Activity starts from match follow/subscription at match start, subject to device/platform eligibility. User does not need to currently be in Match Detail/Player screen for Live Activity to appear on Dynamic Island or lock screen.
+Live Activity starts only while the user is currently in Match Detail/Player screen or Player screen for the match, subject to device/platform eligibility. Follow/subscription state is ignored for Live Activity eligibility. If the user is outside Match Detail/Player screen, Live Activity must be suppressed for this feature.

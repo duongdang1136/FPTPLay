@@ -41,7 +41,7 @@ type SportLiveActivityContentStateDto = {
 
 ### Internal API: POST /api/v1/internal/sport-zone/live-activities/start
 
-Purpose: Start Live Activity for eligible match-engaged users at match start.
+Purpose: Start Live Activity for eligible active Match Detail/Player screen users at match start.
 
 Request:
 

@@ -2,13 +2,13 @@
 
 ## 1. Executive Summary
 
-Sport Zone Live Activity gives users a persistent real-time match surface after they enter a match Match Detail/Player screen. When the match starts, the system sends both a normal notification and a Live Activity for eligible match-engaged users. Users can ignore the normal notification and still access match state from Dynamic Island or the lock screen throughout the match.
+Sport Zone Live Activity gives users a persistent real-time match surface while they are in a match Match Detail/Player screen. When the viewed match starts/is live, the system starts Live Activity for eligible active Match Detail/Player screen users. Normal notification behavior remains owned by Notifications & Alert.
 
 ## 2. Users
 
 | User | Need |
 |---|---|
-| Match-engaged user | See engaged match activity persistently without opening app. |
+| Match-engaged user | See active viewed match activity persistently without opening app. |
 | Dynamic Island device user | See compact status, expand on tap, then deeplink into app. |
 | Lock-screen user | See expanded status on lock screen and tap into app. |
 | Product/ops | Ensure Live Activity starts/updates/ends reliably and does not duplicate normal notification logic. |
@@ -17,7 +17,7 @@ Sport Zone Live Activity gives users a persistent real-time match surface after 
 
 ### In scope
 
-- Start Live Activity when engaged match starts.
+- Start Live Activity when active viewed match starts.
 - Show Live Activity in Dynamic Island compact form where supported.
 - Expand Dynamic Island Live Activity on tap.
 - Open app via deeplink from expanded Dynamic Island Live Activity.
@@ -39,8 +39,8 @@ Sport Zone Live Activity gives users a persistent real-time match surface after 
 
 | ID | Rule |
 |---|---|
-| BR-001 | Live Activity starts for followed/subscribed matches at match start when device/platform eligibility passes. User does not need to currently be in Match Detail/Player screen. |
-| BR-002 | Match start triggers both normal notification and Live Activity when eligible. |
+| BR-001 | Live Activity starts only while the user is currently in Match Detail/Player screen or Player screen for the match and device/platform eligibility passes. |
+| BR-002 | Match start/live-state triggers Live Activity when the user is currently in Match Detail/Player screen or Player screen and eligible. |
 | BR-003 | Normal notification and Live Activity may display in parallel. |
 | BR-004 | Dynamic Island-capable devices show compact Live Activity first. |
 | BR-005 | Tapping compact Dynamic Island Live Activity expands it, not directly deeplink. |
@@ -55,39 +55,27 @@ Sport Zone Live Activity gives users a persistent real-time match surface after 
 - Confirm data shown in compact/expanded states.
 - Confirm update frequency and data source for score/match clock.
 - Confirm final deeplink route.
-- Confirm whether Live Activity starts for all engaged matches or only selected sports/leagues.
+- Confirm whether Live Activity starts for all active viewed matches or only selected sports/leagues.
 
 ## Accepted Update — Engagement Eligibility, Multi-Match, PiP
 
-- User follow/subscription is required for MVP Live Activity eligibility, together with Match Detail/Player screen engagement.
+- User active screen presence is required for MVP Live Activity eligibility, together with Match Detail/Player screen engagement.
 - User becomes eligible after entering the match Match Detail/Player screen for that match within the configured eligibility window.
-- If multiple engaged matches are live, use one aggregated Live Activity per user.
+- If multiple active viewed matches are live, use one aggregated Live Activity per user.
 - Dynamic Island compact shows one primary match selected by deterministic ranking: latest event time, event priority, engagement time, scheduled start time, match id.
-- Expanded Dynamic Island and lock screen show a multi-match summary and open Engaged Live Matches Hub when two or more matches are active.
+- Expanded Dynamic Island and lock screen show a multi-match summary and open Active Live Matches Hub when two or more matches are active.
 - PiP and Live Activity are independent: PiP is video playback, Live Activity is match status.
 
-## Superseded Note — Follow Required, Screen Context Optional
-
-Final eligibility is an AND condition:
-
-```text
-User follows/subscribes to the match
-AND device/platform is eligible
-→ start/show Live Activity
-```
-
-Follow/subscription is required because the notification workflow needs a recipient/subscription signal. Detail/player engagement is required so Live Activity only appears for matches the user has actively opened.
-
-## Final Correction — Follow Is the Start Gate
+## Final Correction — Active Screen Is the Start Gate
 
 Mobile Sport Zone detail and player are one shared **Match Detail/Player screen**.
 
 Final Live Activity start eligibility:
 
 ```text
-User follows/subscribes to the match
+User is currently in Match Detail/Player screen or Player screen for the match
 AND device/platform is eligible
-→ match start triggers normal notification + Live Activity
+→ match start/live-state triggers Live Activity
 ```
 
-User does **not** need to currently be in Match Detail/Player screen. That screen is used for deeplink/resume/player context, analytics, and restore flows, not as a mandatory start gate.
+Follow/subscription state is ignored for Live Activity eligibility. If the user is outside Match Detail/Player screen, Live Activity must be suppressed for this feature.

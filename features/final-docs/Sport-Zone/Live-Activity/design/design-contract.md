@@ -35,7 +35,7 @@ Show a persistent, glanceable match state for engaged Sport Zone matches on Dyna
 | Dynamic Island compact | iOS system surface | Persistent glanceable match state. | Tap to expand | UC-001 |
 | Dynamic Island expanded | iOS system surface | Richer match state. | Tap to open app | UC-002 |
 | Lock-screen expanded | iOS system surface | Persistent match state on lock screen. | Tap to open app | UC-003, UC-004 |
-| App deeplink target | `fptplay://sport-zone/matches/{match_id}/live` | Watch live match or return to the engaged match. | Watch | UC-002, UC-004 |
+| App deeplink target | `fptplay://sport-zone/matches/{match_id}/live` | Watch live match or return to the active viewed match. | Watch | UC-002, UC-004 |
 | Fallback target | match detail → Sport Zone home | Safe unavailable route. | Continue browsing | UC-002, UC-004 |
 
 ## 4. Route / Surface Contract
@@ -144,7 +144,7 @@ User wants to quickly know the current match state and open the match when inter
 
 | Interaction | Trigger | UI behavior | API/route |
 |---|---|---|---|
-| Start Live Activity | Match starts for engaged match | Compact on Dynamic Island; expanded on lock screen. | Start API/internal platform payload |
+| Start Live Activity | Match starts for active viewed match | Compact on Dynamic Island; expanded on lock screen. | Start API/internal platform payload |
 | Compact tap | User taps Dynamic Island compact | Expanded Live Activity appears. | Platform behavior |
 | Expanded Dynamic Island tap | User taps expanded activity | App opens deeplink. | `deeplink` then fallback |
 | Lock-screen expanded tap | User taps lock-screen activity | App opens deeplink. | `deeplink` then fallback |
@@ -164,7 +164,7 @@ User wants to quickly know the current match state and open the match when inter
 
 ## 10A. Multiple Engaged Matches UX
 
-When two or more followed matches are live, the product must render one aggregated Live Activity.
+When two or more active viewed matches are live, the product must render one aggregated Live Activity.
 
 ### Dynamic Island compact
 
@@ -175,7 +175,7 @@ When two or more followed matches are live, the product must render one aggregat
 ```text
 1. latest_event_at DESC
 2. event_priority ASC
-3. followed_at DESC
+3. last_screen_seen_at DESC
 4. scheduled_start_at ASC
 5. match_id ASC
 ```
@@ -196,16 +196,16 @@ FPT Play · 2 trận đang diễn ra
 ⚽ Team A 1 - 0 Team B   35'
 Team C 0 - 0 Team D      21'
 
-Xem các trận đang theo dõi
+Xem các trận đang mở
 ```
 
-Tap expanded Live Activity opens Followed Live Matches Hub when two or more matches are active.
+Tap expanded Live Activity opens Active Live Matches Hub when two or more matches are active.
 
 ### Lock screen expanded
 
 Shows the same aggregate summary as Dynamic Island expanded, adapted to lock-screen size.
 
-Tap opens Followed Live Matches Hub when two or more matches are active.
+Tap opens Active Live Matches Hub when two or more matches are active.
 
 ## 10B. PiP + Live Activity UX
 

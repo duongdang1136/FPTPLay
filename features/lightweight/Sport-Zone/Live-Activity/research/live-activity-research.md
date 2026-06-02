@@ -40,14 +40,12 @@ There are two Live Activity channels/surfaces:
 This follows a multi-channel notification pattern:
 
 ```text
-Match start event
-→ Notification workflow
-→ Check engaged match + platform eligibility
-→ Send normal notification
+Match start/live-state event
+→ Check active Match Detail/Player screen session + platform eligibility
 → Start Live Activity
 → Update Live Activity during match
 → End Live Activity at match end
-→ Track delivery/open/update/end status
+→ Track start/open/update/end status
 ```
 
 The normal notification is not redefined here; it remains under Notifications & Alert. Live Activity is a parallel persistent channel with its own lifecycle.

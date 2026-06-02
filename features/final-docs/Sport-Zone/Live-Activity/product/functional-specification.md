@@ -20,17 +20,17 @@
 
 ### 1.1 Goal
 
-Provide a persistent Live Activity for engaged Sport Zone matches so users can monitor match state from Dynamic Island or lock screen and deeplink into FPT Play when they want to watch.
+Provide a persistent Live Activity for Sport Zone matches the user is actively viewing in Match Detail/Player screen so users can monitor match state from Dynamic Island or lock screen and deeplink into FPT Play when they want to watch.
 
 ### 1.2 Product context
 
-Live Activity complements the Notifications & Alert feature. At match start, users receive both a normal notification and Live Activity. The normal notification handles one-time alerting; Live Activity owns persistent match presence throughout the match.
+Live Activity complements the Notifications & Alert feature. Live Activity is started only when the user is currently in the Match Detail/Player screen for that match; normal notifications remain owned by Notifications & Alert and may have separate recipient rules.
 
 ### 1.3 Success signals
 
 | Signal | Target behavior |
 |---|---|
-| Live Activity start reliability | Eligible engaged matches create Live Activity at match start. |
+| Live Activity start reliability | Eligible active Match Detail/Player screen sessions create Live Activity when the viewed match starts/is live. |
 | Return-to-live | Users tap expanded Live Activity and deeplink into match. |
 | Match state visibility | Live Activity stays updated during match and ends correctly. |
 | Quality | No stale Live Activity after match end; no duplicate activity for same user/match. |
@@ -43,7 +43,7 @@ Live Activity complements the Notifications & Alert feature. At match start, use
 - Dynamic Island compact state.
 - Dynamic Island expanded state after compact tap.
 - Lock-screen expanded state.
-- Match-start trigger that sends normal notification and starts Live Activity in parallel.
+- Match-start/live-state trigger that starts Live Activity only for users currently in Match Detail/Player screen.
 - Deeplink from expanded Live Activity into app.
 - Live Activity score/status updates throughout match.
 - Live Activity termination at match end/cancel/unavailable.
@@ -70,7 +70,7 @@ Live Activity complements the Notifications & Alert feature. At match start, use
 | Dynamic Island compact | Small Dynamic Island representation shown on supported devices. |
 | Dynamic Island expanded | Larger view shown after compact Live Activity is tapped/expanded. |
 | Lock-screen expanded | Live Activity view shown on iOS lock screen. |
-| Followed match | Match explicitly followed/subscribed by the user. This is the primary eligibility gate for notification + Live Activity start. |
+| Active viewed match | Match currently open in Match Detail/Player screen or Player screen. This is the primary Live Activity eligibility gate. |
 | Normal notification | Push notification defined by Notifications & Alert. |
 | Deeplink | App route that opens live match/detail. |
 
@@ -78,10 +78,10 @@ Live Activity complements the Notifications & Alert feature. At match start, use
 
 | Actor | Permission / Constraint |
 |---|---|
-| Authenticated match-engaged user | Can receive Live Activity for engaged match. |
+| Authenticated active match viewer | Can receive Live Activity for the match currently active in Match Detail/Player screen. |
 | Dynamic Island-capable device user | Can see compact and expanded Dynamic Island states. |
 | Lock-screen iOS user | Can see expanded lock-screen Live Activity. |
-| Notification service | Coordinates normal notification + Live Activity start. |
+| Live Activity service | Coordinates Live Activity start/update/end. |
 | Match event service | Emits match start/update/end events. |
 | Mobile app | Resolves deeplink and renders target match screen. |
 
@@ -89,7 +89,7 @@ Live Activity complements the Notifications & Alert feature. At match start, use
 
 | Entry | Behavior |
 |---|---|
-| Match start event | Trigger normal notification and Live Activity start for eligible match-engaged users. |
+| Match start/live-state event | Trigger Live Activity start for users currently in Match Detail/Player screen. |
 | Dynamic Island compact tap | Expand Live Activity. |
 | Dynamic Island expanded tap | Open app via deeplink. |
 | Lock-screen expanded tap | Open app via deeplink. |
@@ -100,9 +100,9 @@ Live Activity complements the Notifications & Alert feature. At match start, use
 
 | UC | Actor | Goal | Main path | Alternate / error paths |
 |---|---|---|---|---|
-| UC-001 | Dynamic Island user | Monitor engaged match from Dynamic Island. | Enter Match Detail/Player screen → match starts → normal notification + compact Live Activity → compact tap expands. | Device not supported: no Dynamic Island compact state. |
+| UC-001 | Dynamic Island user | Monitor active viewed match from Dynamic Island. | Enter Match Detail/Player screen → match starts/is live → compact Live Activity starts → compact tap expands. | Device not supported: no Dynamic Island compact state. |
 | UC-002 | Dynamic Island user | Open match from expanded Live Activity. | Expanded state visible → user taps → app opens deeplink. | Target unavailable → fallback route. |
-| UC-003 | Lock-screen user | Monitor engaged match on lock screen. | Enter Match Detail/Player screen → device locked → match starts → normal notification + expanded Live Activity. | Live Activity start fails → normal notification still follows Notifications & Alert. |
+| UC-003 | Lock-screen user | Monitor active viewed match on lock screen. | Enter Match Detail/Player screen → device locked → match starts/is live → expanded Live Activity starts. | Live Activity start fails → no Live Activity; normal notification behavior remains separate. |
 | UC-004 | Lock-screen user | Open match from lock screen. | Expanded lock-screen Live Activity visible → user taps → app opens deeplink. | Target unavailable → fallback route. |
 | UC-005 | System | Keep Live Activity accurate. | Match update events → update content state → end at match end. | Update fails → retry/log; stale activity must end safely. |
 
@@ -110,8 +110,8 @@ Live Activity complements the Notifications & Alert feature. At match start, use
 
 | ID | Rule | Applies to |
 |---|---|---|
-| BR-001 | Live Activity starts for users who follow/subscribe to the match when the match starts, subject to device/platform eligibility. User does not need to currently be in Match Detail/Player screen. | Product/API |
-| BR-002 | Match start triggers normal notification and Live Activity when eligible. | Product/API |
+| BR-001 | Live Activity starts only for users currently in Match Detail/Player screen or Player screen for the match, subject to device/platform eligibility. | Product/API |
+| BR-002 | Match start/live-state trigger starts Live Activity when eligible. Normal notification rules remain owned by Notifications & Alert. | Product/API |
 | BR-003 | Normal notification and Live Activity may display in parallel. | Product/Design |
 | BR-004 | Dynamic Island-capable devices show compact Live Activity initially. | Product/Design |
 | BR-005 | Tapping compact Dynamic Island Live Activity expands it; it does not deeplink directly. | Product/Design |
@@ -121,10 +121,10 @@ Live Activity complements the Notifications & Alert feature. At match start, use
 | BR-009 | Live Activity remains visible throughout match until end/cancel/unavailable. | Product/API/Design |
 | BR-010 | Live Activity start/update/end must be idempotent per `user_id + match_id + event_id`. | API |
 | BR-011 | Live Activity fallback route order: live match screen → match detail → Sport Zone home. | Product/Design/API |
-| BR-012 | Follow/subscription is required to push notification and resolve recipient. Match Detail/Player screen is a context/resume surface, not a mandatory start gate. | Product/API |
-| BR-013 | When a user has multiple engaged live matches, the system uses one aggregated Live Activity per user. | Product/API/Design |
+| BR-012 | Active Match Detail/Player screen presence is the mandatory Live Activity eligibility gate. Follow/subscription state must not be used for Live Activity eligibility. | Product/API |
+| BR-013 | When a user has multiple active viewed live matches, the system uses one aggregated Live Activity per user. | Product/API/Design |
 | BR-014 | Dynamic Island compact always displays one primary match selected by deterministic ranking. | Product/Design/API |
-| BR-015 | With two or more engaged live matches, expanded Dynamic Island and lock screen open Engaged Live Matches Hub, not a single match. | Product/Design |
+| BR-015 | With two or more active viewed live matches, expanded Dynamic Island and lock screen open Active Live Matches Hub, not a single match. | Product/Design |
 | BR-016 | PiP and Live Activity are independent surfaces: PiP represents video playback; Live Activity represents match status. | Product/Design |
 | BR-017 | Closing PiP does not end Live Activity; dismissing Live Activity does not close PiP. | Product/Design/API |
 | BR-018 | If user manually dismisses Live Activity, system must not recreate it immediately for the same match without renewed in-app engagement. | Product/API |
@@ -133,15 +133,15 @@ Live Activity complements the Notifications & Alert feature. At match start, use
 
 ### F-001 — Start Live Activity at match start
 
-**Description:** Start a Live Activity for eligible users who follow/subscribe to the match when the match starts, even if the user is outside the match/app.
+**Description:** Start a Live Activity only for eligible users currently in Match Detail/Player screen or Player screen for the match when the match starts/is live.
 
-**Input:** Match start event, followed/subscribed user list, platform/device eligibility, optional Match Detail/Player screen context, content state, deeplink.
+**Input:** Match start/live-state event, active Match Detail/Player screen user list, platform/device eligibility, content state, deeplink.
 
-**System behavior:** Send normal notification via Notifications & Alert and start Live Activity in parallel.
+**System behavior:** Start Live Activity for active screen sessions. Normal notification behavior remains a separate Notifications & Alert concern.
 
 **Output:** Live Activity started or safe suppression/failure reason.
 
-**Errors:** Duplicate start request is idempotent; unsupported devices are skipped. If the user does not follow/subscribe to the match, suppress with `NOT_FOLLOWING_MATCH`. Being outside Match Detail/Player screen must not suppress Live Activity.
+**Errors:** Duplicate start request is idempotent; unsupported devices are skipped. If the user is not currently in Match Detail/Player screen or Player screen for the match, suppress with `NOT_IN_MATCH_DETAIL_OR_PLAYER`.
 
 ### F-002 — Render Dynamic Island compact state
 
@@ -245,8 +245,8 @@ Live Activity complements the Notifications & Alert feature. At match start, use
 
 | Match state | Live Activity behavior |
 |---|---|
-| Followed, not started | No visible Live Activity before match start unless future pre-match scope enabled; follow/subscription is stored for match-start eligibility. |
-| Multiple engaged live matches | One aggregate Live Activity; compact shows primary match; expanded/lock screen show multi-match summary. |
+| Active viewed, not started | No visible Live Activity before match start unless future pre-match scope enabled; active screen presence is stored for match-start eligibility. |
+| Multiple active viewed live matches | One aggregate Live Activity; compact shows primary match; expanded/lock screen show multi-match summary. |
 | PiP active | PiP continues video playback; Live Activity continues match status independently. |
 | PiP closed | Video playback stops; Live Activity remains active if match is still eligible/live. |
 | Live Activity manually dismissed | Live Activity stops for that match/user and is not recreated immediately without renewed in-app engagement. |
@@ -261,7 +261,7 @@ Live Activity complements the Notifications & Alert feature. At match start, use
 | `error_code` | User-facing message | UI behavior |
 |---|---|---|
 | `UNSUPPORTED_DEVICE` | Thiết bị chưa hỗ trợ Live Activity. | Internal/silent for delivery; no user-blocking error. |
-| `NOT_FOLLOWING_MATCH` | User has not followed/subscribed to the match, so push recipient cannot be resolved for this feature. | Suppress notification + Live Activity for this match. |
+| `NOT_IN_MATCH_DETAIL_OR_PLAYER` | User is not currently in Match Detail/Player screen or Player screen for the match. | Suppress Live Activity for this match. |
 | `LIVE_ACTIVITY_DISMISSED` | User manually dismissed Live Activity for this match/session. | Do not recreate immediately; wait for renewed engagement/new lifecycle trigger. |
 | `TARGET_UNAVAILABLE` | Nội dung này hiện không còn khả dụng. | Route to fallback screen. |
 | `VALIDATION_ERROR` | Có thông tin chưa hợp lệ. Vui lòng thử lại. | Internal/service error; log. |
@@ -272,12 +272,11 @@ Live Activity complements the Notifications & Alert feature. At match start, use
 
 | API | Purpose | Required? | Notes |
 |---|---|---:|---|
-| `POST /api/v1/internal/sport-zone/live-activities/start` | Start Live Activity for eligible match-engaged users. | Yes | Internal/service auth. |
+| `POST /api/v1/internal/sport-zone/live-activities/start` | Start Live Activity for eligible active Match Detail/Player screen users. | Yes | Internal/service auth. |
 | `PATCH /api/v1/internal/sport-zone/live-activities/{activity_id}/update` | Update score/time/status. | Yes | Internal/service auth. |
 | `PATCH /api/v1/internal/sport-zone/live-activities/{activity_id}/end` | End Live Activity. | Yes | Internal/service auth. |
-| Notifications & Alert match-start notification | Send normal notification in parallel. | Yes | See related feature. |
-| Match follow/subscription state | Resolve notification recipient and Live Activity eligibility. | Yes | Existing/future follow/subscription service. |
-| Match Detail/Player screen context | Resume/deeplink context and analytics; not an eligibility gate. | No | Existing/future match screen/session tracking. |
+| Notifications & Alert match-start notification | Related parallel notification behavior. | No | See related feature; not an eligibility source for Live Activity. |
+| Active Match Detail/Player screen state | Resolve Live Activity eligibility from current screen/session state. | Yes | Existing/future match screen/session tracking. |
 
 Success envelope:
 
@@ -337,9 +336,9 @@ Error envelope:
 
 | ID | Scenario | Given | When | Then |
 |---|---|---|---|---|
-| QA-001 | Start on followed match | User follows match and device eligible; user may be outside app/match screen | Match starts | Normal notification + Live Activity are triggered. |
-| QA-001A | Followed while outside match/app | User follows match, is on another screen/app, and device eligible | Match starts | Normal notification + Live Activity are triggered. |
-| QA-001B | Match screen opened but not followed | User entered Match Detail/Player screen but did not follow match | Match starts | Notification + Live Activity are suppressed for this feature. |
+| QA-001 | Start while on Match Detail/Player screen | User is currently in Match Detail/Player screen for the match and device eligible | Match starts/is live | Live Activity is triggered. |
+| QA-001A | Outside Match Detail/Player screen | User is on another screen/app, even if they previously opened or followed the match | Match starts/is live | Live Activity is suppressed with `NOT_IN_MATCH_DETAIL_OR_PLAYER`. |
+| QA-001B | Match screen opened, no follow state | User is currently in Match Detail/Player screen and device eligible; no follow/subscription state exists | Match starts/is live | Live Activity is still triggered. |
 | QA-002 | Dynamic Island compact | Device supports Dynamic Island | Live Activity starts | Compact Live Activity is visible. |
 | QA-003 | Dynamic Island expand | Compact state visible | User taps compact | Expanded Live Activity appears. |
 | QA-004 | Expanded deeplink | Expanded Dynamic Island visible | User taps expanded | App opens match deeplink/fallback. |
