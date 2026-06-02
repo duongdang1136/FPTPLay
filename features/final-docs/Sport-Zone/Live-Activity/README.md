@@ -32,7 +32,7 @@ features/lightweight/Sport-Zone/Live-Activity/api/API-live-activity.md
 
 ## Implementation scope
 
-- iOS Live Activity for Sport Zone matches where the user entered match detail or player. Follow/bookmark is not required for MVP eligibility.
+- iOS Live Activity for Sport Zone matches where the user both follows/subscribes to the match and entered match detail or player.
 - Dynamic Island compact and expanded states.
 - Lock-screen expanded state.
 - Match-start trigger in parallel with normal Notifications & Alert notification.

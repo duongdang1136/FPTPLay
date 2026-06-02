@@ -59,9 +59,22 @@ Sport Zone Live Activity gives users a persistent real-time match surface after 
 
 ## Accepted Update — Engagement Eligibility, Multi-Match, PiP
 
-- User follow/bookmark is not required for MVP Live Activity eligibility.
+- User follow/subscription is required for MVP Live Activity eligibility, together with match detail/player engagement.
 - User becomes eligible after entering the match detail screen or player for that match within the configured eligibility window.
 - If multiple engaged matches are live, use one aggregated Live Activity per user.
 - Dynamic Island compact shows one primary match selected by deterministic ranking: latest event time, event priority, engagement time, scheduled start time, match id.
 - Expanded Dynamic Island and lock screen show a multi-match summary and open Engaged Live Matches Hub when two or more matches are active.
 - PiP and Live Activity are independent: PiP is video playback, Live Activity is match status.
+
+## Accepted Correction — Follow + Engagement Required
+
+Final eligibility is an AND condition:
+
+```text
+User follows/subscribes to the match
+AND user entered match detail or player within the eligibility window
+AND device/platform is eligible
+→ start/show Live Activity
+```
+
+Follow/subscription is required because the notification workflow needs a recipient/subscription signal. Detail/player engagement is required so Live Activity only appears for matches the user has actively opened.

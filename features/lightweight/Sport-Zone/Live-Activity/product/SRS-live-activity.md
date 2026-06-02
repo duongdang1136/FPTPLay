@@ -138,8 +138,21 @@ Draft copy pending final design/content.
 
 ## Accepted Update — Engagement Eligibility
 
-Live Activity eligibility is based on match engagement, not follow state. A user is eligible after entering match detail or player for the match. Follow/bookmark remains optional and must not block MVP Live Activity.
+Live Activity eligibility requires both match follow/subscription and match engagement. A user is eligible after entering match detail or player for the match. Follow/subscription is required and must be checked before Live Activity start.
 
 When two or more engaged matches are live, the system maintains one aggregate Live Activity. Compact Dynamic Island displays the deterministic primary match; expanded Dynamic Island and lock screen display the multi-match summary.
 
 PiP is independent from Live Activity. Closing PiP does not end Live Activity, and dismissing Live Activity does not close PiP.
+
+## Accepted Correction — Follow + Engagement Required
+
+Final eligibility is an AND condition:
+
+```text
+User follows/subscribes to the match
+AND user entered match detail or player within the eligibility window
+AND device/platform is eligible
+→ start/show Live Activity
+```
+
+Follow/subscription is required because the notification workflow needs a recipient/subscription signal. Detail/player engagement is required so Live Activity only appears for matches the user has actively opened.

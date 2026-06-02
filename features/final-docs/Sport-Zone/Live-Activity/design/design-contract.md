@@ -225,7 +225,7 @@ PiP and Live Activity are independent surfaces.
 |---|---|---|---|
 | Starting delay | None | System surface | Wait; do not show custom error. |
 | `UNSUPPORTED_DEVICE` | None | Silent suppression | Normal notification still works. |
-| `NOT_MATCH_ENGAGED` | None | Silent suppression | User can renew eligibility by entering match detail/player. |
+| `NOT_MATCH_ENGAGED` | None | Silent suppression | User can renew engagement by entering match detail/player, but follow/subscription is still required. |
 | `LIVE_ACTIVITY_DISMISSED` | None | Silent suppression | Do not recreate immediately; wait for renewed in-app engagement. |
 | `TARGET_UNAVAILABLE` | Nội dung này hiện không còn khả dụng. | App fallback route/toast | Continue browsing. |
 | `SERVER_ERROR` | None on Live Activity surface | Internal logging | Retry/update/end safely. |
