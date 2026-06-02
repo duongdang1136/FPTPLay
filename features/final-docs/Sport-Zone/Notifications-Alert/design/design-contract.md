@@ -26,6 +26,7 @@ Provide timely Sport Zone notifications without disrupting live-viewing experien
 |---|---|---|
 | Product spec | `../product/functional-specification.md` | Product behavior source. |
 | API contract | `../api/technical-contract.md` | Data/error source. |
+| Related Live Activity contract | `../../Live-Activity/design/design-contract.md` | Persistent Dynamic Island/lock-screen Live Activity behavior. |
 | Figma — notification | https://www.figma.com/design/2vVoXYxr0Qz2wbpaCpwB5h/-Mobile----Sports-zone?node-id=6525-125305&t=gFJGLJ61KkHX1qUU-11 | Source Notion reference. |
 | Figma — live | https://www.figma.com/design/2vVoXYxr0Qz2wbpaCpwB5h/-Mobile----Sports-zone?node-id=3754-154559 | Source Notion reference. |
 
@@ -33,7 +34,7 @@ Provide timely Sport Zone notifications without disrupting live-viewing experien
 
 | Screen / Surface | Route | Purpose | Primary CTA | Related UC |
 |---|---|---|---|---|
-| Lock-screen/live notification | OS surface | Bring user back for urgent event. | Open/Xem ngay | UC-001, UC-002 |
+| Lock-screen/live notification | OS surface | Bring user back for urgent event. Persistent expanded Live Activity on lock screen is specified in `Sport-Zone / Live-Activity`. | Open/Xem ngay | UC-001, UC-002 |
 | Background push | OS surface | Notify background/closed app user. | Open/Xem ngay | UC-001, UC-002 |
 | In-app banner/toast | Current app screen | Foreground contextual alert. | Xem | UC-001, UC-002 |
 | Mailbox list | `/mailbox` or existing notification center route | Review missed important notifications. | Open item | UC-003 |

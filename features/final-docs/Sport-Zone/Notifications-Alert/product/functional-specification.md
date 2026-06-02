@@ -49,6 +49,7 @@ Sports content is highly time-sensitive. Users can miss match starts, goals, red
 - Lock-screen/live notification where supported.
 - Out-of-app/background push.
 - In-app only notification.
+- Triggering/coordination point for Sport Zone Live Activity at match start for followed matches; Live Activity lifecycle is specified in `../Live-Activity/` final docs.
 - Mailbox history for important notifications.
 - User notification preferences.
 - Quiet hours, rate limit, TTL, dedup/collapse, priority, and fallback deeplink rules.
@@ -71,7 +72,7 @@ Sports content is highly time-sensitive. Users can miss match starts, goals, red
 
 | Term | Meaning |
 |---|---|
-| Lock-screen/live notification | Platform-level persistent/real-time notification for urgent events when supported. |
+| Lock-screen/live notification | Platform-level urgent notification surface where supported. Persistent Live Activity behavior is covered by `Sport-Zone / Live-Activity`. |
 | Out-of-app push | Push notification delivered while app is backgrounded or closed. |
 | In-app only | Foreground notification rendered inside FPT Play only. |
 | Mailbox | In-app notification history/list where important notifications can be reviewed. |
@@ -112,7 +113,7 @@ Sports content is highly time-sensitive. Users can miss match starts, goals, red
 
 | ID | Rule | Applies to |
 |---|---|---|
-| BR-001 | Delivery channels are lock-screen/live, out-of-app push, and in-app only. | Product/API/Design |
+| BR-001 | Delivery channels are lock-screen/live, out-of-app push, and in-app only. Persistent Live Activity is a related parallel surface with a separate contract. | Product/API/Design |
 | BR-002 | Out-of-app push must respect OS permission, user settings, quiet hours, rate limit, dedup/collapse, and TTL. | Product/API |
 | BR-003 | Do not show duplicate notification when user is currently viewing the same match/content. | Product/Design |
 | BR-004 | Important notifications must be persisted in Mailbox. | Product/API/Design |

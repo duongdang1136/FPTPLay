@@ -88,3 +88,10 @@ features/final-docs/Pre-Waiting-Room/Pre-Live-Waiting-Room/
 features/lightweight/Sport-Zone/Notifications-Alert/
 features/final-docs/Sport-Zone/Notifications-Alert/
 ```
+
+### Sport-Zone / Live-Activity
+
+```text
+features/lightweight/Sport-Zone/Live-Activity/
+features/final-docs/Sport-Zone/Live-Activity/
+```

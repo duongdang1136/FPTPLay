@@ -11,6 +11,14 @@
 
 This folder is the implementation source of truth for the Sport Zone Notifications & Alert feature after promotion from lightweight Research + BA docs.
 
+## Related features
+
+```text
+features/final-docs/Sport-Zone/Live-Activity/
+```
+
+Live Activity is a parallel persistent surface triggered with match-start notification for followed matches. Normal push/notification rules remain owned by this Notifications & Alert contract; compact/expanded Live Activity lifecycle and deeplink behavior are owned by the Live Activity contract.
+
 ## Artifacts
 
 ```text
