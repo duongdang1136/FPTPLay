@@ -32,7 +32,7 @@ features/lightweight/Sport-Zone/Live-Activity/api/API-live-activity.md
 
 ## Implementation scope
 
-- iOS Live Activity for Sport Zone matches where the user both follows/subscribes to the match and entered match detail or player.
+- iOS Live Activity for Sport Zone matches followed/subscribed by the user. User does not need to currently be in Match Detail/Player screen.
 - Dynamic Island compact and expanded states.
 - Lock-screen expanded state.
 - Match-start trigger in parallel with normal Notifications & Alert notification.
@@ -59,7 +59,7 @@ features/lightweight/Sport-Zone/Live-Activity/api/API-live-activity.md
 
 ## Multiple-match / PiP policy
 
-- If the user has two or more engaged live matches, use one aggregated Live Activity.
+- If the user has two or more followed live matches, use one aggregated Live Activity.
 - Dynamic Island compact shows one primary match selected by deterministic event ranking.
-- Expanded Dynamic Island and lock screen show multi-match summary and open Engaged Live Matches Hub.
+- Expanded Dynamic Island and lock screen show multi-match summary and open Followed Live Matches Hub.
 - PiP and Live Activity are independent: closing PiP does not end Live Activity; dismissing Live Activity does not close PiP.

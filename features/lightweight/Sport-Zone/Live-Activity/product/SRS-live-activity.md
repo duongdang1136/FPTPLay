@@ -39,7 +39,7 @@ Provide persistent Sport Zone Live Activity for engaged matches across Dynamic I
 
 Acceptance criteria:
 
-- Given a user has entered match detail or player and the match starts, when platform eligibility passes, then the system starts a Live Activity and sends the normal match-start notification.
+- Given a user has entered Match Detail/Player screen and the match starts, when platform eligibility passes, then the system starts a Live Activity and sends the normal match-start notification.
 
 ### FR-002 — Display Dynamic Island compact state
 
@@ -124,7 +124,7 @@ Draft copy pending final design/content.
 ## 8. Assumptions
 
 - Live Activity is iOS-first.
-- User has entered match detail or player before or during the match eligibility window.
+- User has entered Match Detail/Player screen before or during the match eligibility window.
 - Normal notification is still sent using Notifications & Alert rules.
 - Match deeplink resolves to live match screen when available, then match detail, then Sport Zone home.
 - Data source can provide match start/update/end events.
@@ -138,21 +138,27 @@ Draft copy pending final design/content.
 
 ## Accepted Update — Engagement Eligibility
 
-Live Activity eligibility requires both match follow/subscription and match engagement. A user is eligible after entering match detail or player for the match. Follow/subscription is required and must be checked before Live Activity start.
+Live Activity eligibility requires both match follow/subscription and match engagement. A user is eligible after entering Match Detail/Player screen for the match. Follow/subscription is required and must be checked before Live Activity start.
 
 When two or more engaged matches are live, the system maintains one aggregate Live Activity. Compact Dynamic Island displays the deterministic primary match; expanded Dynamic Island and lock screen display the multi-match summary.
 
 PiP is independent from Live Activity. Closing PiP does not end Live Activity, and dismissing Live Activity does not close PiP.
 
-## Accepted Correction — Follow + Engagement Required
+## Superseded Note — Follow Required, Screen Context Optional
 
 Final eligibility is an AND condition:
 
 ```text
 User follows/subscribes to the match
-AND user entered match detail or player within the eligibility window
+AND user entered Match Detail/Player screen within the eligibility window
 AND device/platform is eligible
 → start/show Live Activity
 ```
 
 Follow/subscription is required because the notification workflow needs a recipient/subscription signal. Detail/player engagement is required so Live Activity only appears for matches the user has actively opened.
+
+## Final Correction — Follow Is the Start Gate
+
+Mobile Sport Zone detail and player are one shared **Match Detail/Player screen**.
+
+Live Activity starts from match follow/subscription at match start, subject to device/platform eligibility. User does not need to currently be in Match Detail/Player screen for Live Activity to appear on Dynamic Island or lock screen.

@@ -164,7 +164,7 @@ User wants to quickly know the current match state and open the match when inter
 
 ## 10A. Multiple Engaged Matches UX
 
-When two or more engaged matches are live, the product must render one aggregated Live Activity.
+When two or more followed matches are live, the product must render one aggregated Live Activity.
 
 ### Dynamic Island compact
 
@@ -175,7 +175,7 @@ When two or more engaged matches are live, the product must render one aggregate
 ```text
 1. latest_event_at DESC
 2. event_priority ASC
-3. engagement_at DESC
+3. followed_at DESC
 4. scheduled_start_at ASC
 5. match_id ASC
 ```
@@ -199,13 +199,13 @@ Team C 0 - 0 Team D      21'
 Xem các trận đang theo dõi
 ```
 
-Tap expanded Live Activity opens Engaged Live Matches Hub when two or more matches are active.
+Tap expanded Live Activity opens Followed Live Matches Hub when two or more matches are active.
 
 ### Lock screen expanded
 
 Shows the same aggregate summary as Dynamic Island expanded, adapted to lock-screen size.
 
-Tap opens Engaged Live Matches Hub when two or more matches are active.
+Tap opens Followed Live Matches Hub when two or more matches are active.
 
 ## 10B. PiP + Live Activity UX
 
@@ -225,7 +225,6 @@ PiP and Live Activity are independent surfaces.
 |---|---|---|---|
 | Starting delay | None | System surface | Wait; do not show custom error. |
 | `UNSUPPORTED_DEVICE` | None | Silent suppression | Normal notification still works. |
-| `NOT_MATCH_ENGAGED` | None | Silent suppression | User can renew engagement by entering match detail/player, but follow/subscription is still required. |
 | `LIVE_ACTIVITY_DISMISSED` | None | Silent suppression | Do not recreate immediately; wait for renewed in-app engagement. |
 | `TARGET_UNAVAILABLE` | Nội dung này hiện không còn khả dụng. | App fallback route/toast | Continue browsing. |
 | `SERVER_ERROR` | None on Live Activity surface | Internal logging | Retry/update/end safely. |
