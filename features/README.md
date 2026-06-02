@@ -81,3 +81,10 @@ features/final-docs/Event/Bookmark-Event/
 features/lightweight/Pre-Waiting-Room/Pre-Live-Waiting-Room/
 features/final-docs/Pre-Waiting-Room/Pre-Live-Waiting-Room/
 ```
+
+### Sport-Zone / Notifications-Alert
+
+```text
+features/lightweight/Sport-Zone/Notifications-Alert/
+features/final-docs/Sport-Zone/Notifications-Alert/
+```
