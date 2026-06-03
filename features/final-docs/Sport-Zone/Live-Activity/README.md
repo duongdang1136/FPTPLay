@@ -32,21 +32,25 @@ features/lightweight/Sport-Zone/Live-Activity/api/API-live-activity.md
 
 ## Implementation scope
 
+- Live Activity is treated as a **Notification + Widget** hybrid: APN/APNS-style remote updates feed constrained system UI surfaces.
 - iOS Live Activity for Sport Zone matches explicitly followed by the user.
 - Followed-match based eligibility: user may follow one match or multiple matches.
 - **Option A MVP:** one visible Live Activity match at a time, selected by priority from followed matches.
-- Dynamic Island compact and expanded states.
-- Lock-screen expanded state.
+- Dynamic Island compact and expanded states on iOS devices that support Dynamic Island.
+- Lock-screen expanded state; default shows one match and OS handles expansion/presentation behavior where applicable.
+- Product-defined template and data fields within OS UI constraints.
 - Live Activity update lifecycle throughout the selected followed match.
 - Deeplink behavior from compact/expanded Dynamic Island and lock screen into app.
 - Safe fallback routing if exact live target is unavailable.
+- Android equivalent is not APN/APNS-based; if pursued, phase separately by major OEM capability, starting with Samsung only if confirmed feasible.
 
 ## Explicitly out of scope
 
 - Active Match Detail/Player screen as a mandatory start gate.
-- Multi-match expanded list, `+N` aggregation, or multiple simultaneous Live Activities per match.
+- Multi-match expanded list, `+N` aggregation, or multiple simultaneous Live Activities per match controlled by app.
+- App-controlled override of OS expansion behavior on lock screen/Dynamic Island.
 - Redefining normal push notification behavior/copy.
-- Android persistent notification equivalent.
+- Android Dynamic Island / persistent notification equivalent for MVP.
 - Payment/entitlement changes.
 - Full in-app match detail implementation.
 - Admin campaign/CMS tooling.
@@ -55,7 +59,11 @@ features/lightweight/Sport-Zone/Live-Activity/api/API-live-activity.md
 
 - User explicit **Follow Match** action is the Live Activity intent source.
 - Match Detail/Player screen presence is optional context only; it must not be required for start eligibility.
+- Dynamic Island default selection: first followed match, then continuously re-check followed matches that are still live/eligible.
 - If the user follows multiple live matches, the system shows only one priority match in Live Activity for MVP.
-- Priority order: latest key event requiring attention → currently live over scheduled/ended → user most recently followed/opened match → backend deterministic tie-breaker.
+- Priority order: first followed match by default → followed match still live/eligible → latest key event requiring attention → most recently followed/opened → backend deterministic tie-breaker.
+- Lock screen default shows one selected match; richer/more presentation is constrained/handled by OS behavior and product template.
 - Tap opens the selected match deeplink; fallback order is live match screen → match detail → Sport Zone home.
 - Live Activity ends when the selected match ends/cancels/unavailable or user unfollows all eligible matches.
+- APN/APNS feasibility must be confirmed by iOS/backend: iOS uses Apple Push Notification service for remote Live Activity updates; Android does not use APN/APNS and must be scoped separately.
+- Analytics/performance must measure update delivery, UI exposure, tap-through, staleness, priority switch quality, and device/OEM coverage.

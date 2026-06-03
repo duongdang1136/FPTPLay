@@ -18,7 +18,7 @@
 
 ## 1. Design Goal
 
-Show a persistent, glanceable match state for the user’s **selected followed match** on Dynamic Island and lock screen. If the user follows multiple matches, MVP still shows one priority match only.
+Show a persistent, glanceable match state for the user’s **selected followed match** on Dynamic Island and lock screen. This is a Notification + Widget hybrid: update delivery comes from provider/APNS path, while display is constrained by OS templates. If the user follows multiple matches, MVP still shows one priority match only.
 
 ## 2. References
 
@@ -56,7 +56,10 @@ User has followed match(es) and wants a lightweight realtime score/status surfac
 ### 5.2 Principles
 
 - Keep compact state glanceable: score/status only.
-- Expanded state shows the selected followed match, not a multi-match list for MVP.
+- Dynamic Island can display only one selected match for MVP.
+- Lock screen displays one selected match by default; OS controls richer expansion/presentation behavior where applicable.
+- Expanded state shows the selected followed match, not an app-controlled multi-match list for MVP.
+- Product defines template/data; design must respect OS UI constraints.
 - Make selection feel stable; do not visually flap between matches on minor updates.
 - Prioritize key events when they change the selected match.
 - Do not duplicate normal notification content inside Live Activity more than needed.
@@ -70,17 +73,18 @@ User has followed match(es) and wants a lightweight realtime score/status surfac
 - Must fit very small space.
 - Show selected followed match score/status only.
 - Use abbreviations or icons where necessary.
-- No `+N`, no multi-match count, and no mini-list for MVP.
+- No `+N`, no multi-match count, and no mini-list controlled by app for MVP.
 
 ### 6.2 Dynamic Island expanded
 
-- Show selected match teams, score, period/clock, status, and subtle FPT Play/Sport Zone brand.
+- Show selected match teams, score, period/clock, status, and subtle FPT Play/Sport Zone brand within OS constraints.
 - If selection changed due to key event, content updates to the newly selected match.
 - Entire expanded area can act as deeplink tap target where platform allows.
 
 ### 6.3 Lock screen
 
-- Show expanded selected-match state by default.
+- Show one selected-match state by default.
+- OS handles lock-screen expansion/presentation behavior; app should not assume custom multi-match layout control.
 - Avoid private user information.
 - Must remain readable with lock-screen constraints and system theming.
 
@@ -176,7 +180,7 @@ User has followed match(es) and wants a lightweight realtime score/status surfac
 
 ## 10. Option A — Single Selected Followed Match UX
 
-Live Activity expanded Dynamic Island and lock-screen states show only **one selected followed match**. The selected match is chosen by Product/API priority rules. No multi-match list, `+N` indicator, hub CTA, or ranking UI is required for MVP.
+Live Activity Dynamic Island and lock-screen states show **one selected followed match by default**. The selected match is chosen by Product/API priority rules: first followed match → still live/eligible → key event → recency → deterministic tie-breaker. No app-controlled multi-match list, `+N` indicator, hub CTA, or ranking UI is required for MVP.
 
 ### Dynamic Island compact
 
@@ -237,3 +241,20 @@ Shows the same selected-match summary as Dynamic Island expanded, adapted to loc
 - Selected match switch updates deeplink and displayed teams/score together.
 - No multi-match list/`+N` appears in MVP.
 - Tap/long-press behavior matches platform expectations.
+
+
+## 16. Android Design Scope Note
+
+Android does not use APN/APNS or Apple Dynamic Island. Any Android Dynamic Island-style feature should be treated as a separate future phase because OEM behavior differs by device family. Recommended sequencing if product opens Android scope:
+
+1. Samsung large-device/top-market segment feasibility.
+2. Xiaomi/other major OEMs only after Samsung pattern is validated.
+3. Generic Android persistent notification/widget fallback if OEM-specific dynamic surface is not feasible.
+
+## 17. Analytics / Performance UX Checks
+
+- Track exposure by surface: Dynamic Island compact, expanded, lock screen.
+- Track taps by surface and deeplink result.
+- Track stale UI cases after score/status/end events.
+- Track selected-match switches to detect priority flapping.
+- Track unsupported device/OEM suppression for Android planning.

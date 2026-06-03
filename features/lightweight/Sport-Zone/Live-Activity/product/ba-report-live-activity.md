@@ -2,7 +2,7 @@
 
 ## 1. Executive Summary
 
-Sport Zone Live Activity gives users a persistent real-time surface for matches they explicitly follow. A user may follow one or multiple matches; for MVP, the Live Activity shows one selected followed match using Option A priority. Normal notification behavior remains owned by Notifications & Alert.
+Sport Zone Live Activity gives users a persistent real-time surface for matches they explicitly follow. It is best modeled as Notification + Widget: provider/APNS sends updates, while the OS renders a highly constrained UI surface. A user may follow one or multiple matches; for MVP, the Live Activity shows one selected followed match using Option A priority. Normal notification behavior remains owned by Notifications & Alert.
 
 ## 2. Users
 
@@ -46,10 +46,10 @@ Sport Zone Live Activity gives users a persistent real-time surface for matches 
 | BR-002 | Match Detail/Player screen presence is optional context and must not be required for Live Activity start. |
 | BR-003 | Follow/subscription state is required for Live Activity eligibility. |
 | BR-004 | Option A MVP shows only one selected followed match even if user follows multiple matches. |
-| BR-005 | Priority order: latest key event → live status → most recently followed/opened → deterministic tie-breaker. |
-| BR-006 | Dynamic Island-capable devices show compact Live Activity first. |
+| BR-005 | Priority order: first followed match by default → still live/eligible followed match → latest key event → most recently followed/opened → deterministic tie-breaker. |
+| BR-006 | Dynamic Island-capable iOS devices show compact Live Activity first; only one selected match is displayed. |
 | BR-007 | Compact tap opens selected match deeplink; long press/hold expands. |
-| BR-008 | Expanded Dynamic Island and lock-screen tap opens selected match deeplink/fallback. |
+| BR-008 | Expanded Dynamic Island and lock-screen tap opens selected match deeplink/fallback; lock-screen expansion/presentation is OS-handled. |
 | BR-009 | Live Activity persists while selected followed match is eligible. |
 | BR-010 | Unfollow selected match switches to next eligible followed match or ends activity. |
 
@@ -73,3 +73,22 @@ AND match is live/eligible for Live Activity
 ```
 
 If user follows multiple matches, display only one selected match using priority. Do not require active Match Detail/Player screen presence.
+
+
+## 6. Platform / Provider Clarification
+
+- iOS: remote Live Activity updates should be confirmed through APNS/ActivityKit provider capability.
+- Android: APN/APNS is not applicable. Android Dynamic Island-like behavior is OEM/custom, not one universal implementation.
+- Android recommendation: exclude from MVP; if product needs it later, start with Samsung major device segment, then evaluate Xiaomi/others.
+
+## 7. Analytics / Performance Clarification
+
+Performance evaluation should not be only app performance. It should answer:
+
+1. Did eligible follows create a Live Activity?
+2. Did APNS/provider accept start/update/end?
+3. How long from match event to activity update?
+4. Did UI become stale after score/status/end?
+5. Did user tap it and did deeplink succeed?
+6. Did priority switching select the expected match without flapping?
+7. Which device/OS/OEM segments are supported or suppressed?

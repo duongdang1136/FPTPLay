@@ -2,7 +2,7 @@
 
 ## 1. Objective
 
-Provide persistent Sport Zone Live Activity for the user's selected followed match across Dynamic Island and lock-screen surfaces, triggered by Follow Match subscription and maintained throughout the match.
+Provide persistent Sport Zone Live Activity for the user's selected followed match across Dynamic Island and lock-screen surfaces, triggered by Follow Match subscription and maintained throughout the match. Treat it as Notification + Widget: remote update delivery plus constrained OS-rendered UI.
 
 ## 2. Users and Permissions
 
@@ -21,7 +21,7 @@ Provide persistent Sport Zone Live Activity for the user's selected followed mat
 
 - Register Live Activity eligibility from explicit Follow Match action.
 - Support 1 or n followed matches.
-- Option A MVP: display one selected followed match at a time.
+- Option A MVP: display one selected followed match at a time; default first followed match, then re-check live/eligible followed matches.
 - Show compact Live Activity on Dynamic Island-capable device.
 - Show expanded Live Activity after long press/hold on compact Dynamic Island.
 - Show expanded Live Activity on lock screen.
@@ -34,7 +34,7 @@ Provide persistent Sport Zone Live Activity for the user's selected followed mat
 - Multi-match list/`+N` summary.
 - Multiple simultaneous Live Activities per followed match.
 - Normal notification rules already covered by Notifications & Alert.
-- Android equivalent.
+- Android Dynamic Island-style equivalent for MVP; Android does not use APN/APNS and should be a future OEM-specific phase.
 - Figma-final visual spec if not available.
 - Entitlement/payment flow.
 
@@ -143,3 +143,10 @@ Acceptance criteria:
 - Confirm UI fields for compact/expanded states.
 - Confirm update cadence and score/time data source.
 - Confirm final deeplink path.
+
+
+## 10. Platform / Analytics Notes
+
+- iOS remote Live Activity updates require APNS/ActivityKit capability confirmation.
+- Android APN/APNS is not applicable; future Android dynamic surface should be OEM-scoped, Samsung-first if feasible.
+- Analytics/performance should track follow registration, selected match, APNS start/update/end result, latency, staleness, tap-through, deeplink success, priority switching, and unsupported device/OEM suppression.

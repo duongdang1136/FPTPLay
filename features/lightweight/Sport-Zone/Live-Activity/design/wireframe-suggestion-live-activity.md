@@ -43,10 +43,20 @@
 
 ## 3. UX Notes
 
-- Live Activity represents one selected followed match for MVP.
-- If user follows multiple matches, backend/product priority selects the visible match; UI does not show a multi-match list or `+N`.
+- Live Activity represents one selected followed match for MVP; Dynamic Island cannot show multiple matches in the MVP template.
+- If user follows multiple matches, backend/product priority defaults to first followed match, then re-checks followed matches still live/eligible; UI does not show a multi-match list or `+N`.
 - Dynamic Island compact tap should open selected match deeplink; long press/hold should expand Live Activity.
 - Expanded tap should open selected match deeplink.
-- Lock-screen expanded tap should open selected match deeplink.
+- Lock-screen default shows one selected match; OS handles expansion/presentation where applicable. Tap should open selected match deeplink.
 - Live Activity must not replace normal notification; both can be visible depending on notification rules.
 - Live Activity should show stale/unavailable state safely if match data becomes unavailable before termination.
+
+
+## Platform Note
+
+- iOS: Dynamic Island/lock-screen Live Activity uses APNS/ActivityKit update path and OS-constrained templates.
+- Android: no APN/APNS; Dynamic Island-style implementation is OEM-specific future scope, recommended Samsung-first if feasible.
+
+## Analytics Note
+
+Design/QA should validate exposure, tap-through, deeplink success, stale UI after match updates/end, selected-match switch behavior, and unsupported device suppression.

@@ -4,6 +4,7 @@
 > Feature/Sub-feature: Sport Zone / Live Activity
 > Audience: BE, FE, QA, iOS
 > API prefix: `/api/v1/internal/sport-zone/live-activities`
+> Provider note: iOS remote Live Activity updates use Apple Push Notification service / ActivityKit path. Android does not use APN/APNS.
 > Status: Implementation-ready contract
 > Last updated: 2026-06-03
 > Source-of-truth note: no dev-owned code-backed API doc exists under `features/api-docs/**` yet. Reconcile with backend/iOS implementation once published.
@@ -19,7 +20,7 @@
 
 ## 1. Auth, Ownership & Envelope
 
-Internal Live Activity orchestration endpoints require service-to-service auth and must not be called directly by public clients. Public app follow/unfollow actions are owned by the Sport Zone follow service; this contract consumes that state for Live Activity.
+Internal Live Activity orchestration endpoints require service-to-service auth and must not be called directly by public clients. Public app follow/unfollow actions are owned by the Sport Zone follow service; this contract consumes that state for Live Activity. Live Activity is a Notification + Widget hybrid: provider/API delivers updates, while iOS/OS renders constrained system UI templates.
 
 ```text
 Authorization: Bearer <serviceToken>
@@ -69,6 +70,8 @@ type MatchLiveStatus =
   | 'unavailable';
 
 type LiveActivityPriorityReason =
+  | 'first_followed_default'
+  | 'still_live_eligible'
   | 'latest_key_event'
   | 'live_status'
   | 'recently_followed'
@@ -99,7 +102,8 @@ type FollowedMatchLiveActivitySubscriptionDto = {
   device_id: string;
   match_id: string;
   follow_status: 'followed' | 'unfollowed';
-  platform: 'ios';
+  platform: 'ios' | 'android';
+  os_provider?: 'apns_activitykit' | 'android_oem_custom' | 'none';
   activity_token?: string | null;
   device_supported: boolean;
   manual_dismissed_until?: string | null;
@@ -130,7 +134,8 @@ type LiveActivityRegisterFollowRequest = {
   device_id: string;
   match_id: string;
   action: 'follow' | 'unfollow';
-  platform: 'ios';
+  platform: 'ios' | 'android';
+  os_provider?: 'apns_activitykit' | 'android_oem_custom' | 'none';
   activity_token?: string;
   device_supported: boolean;
   source: 'match_card' | 'match_detail' | 'player' | 'notification' | 'other';
@@ -172,6 +177,7 @@ type LiveActivityEndRequest = {
 |---|---|---|
 | `POST /subscriptions` | F-001 | Creates/updates followed-match Live Activity subscription. |
 | `POST /select` | F-002, F-003, F-006 | Selects one followed match and starts/switches Live Activity. |
+| `POST /telemetry` | F-009 | Records analytics/performance lifecycle events. |
 | `PATCH /{activity_id}/update` | F-007 | Updates score/status/content and optional selected match. |
 | `PATCH /{activity_id}/end` | F-008 | Ends Live Activity. |
 
@@ -199,6 +205,7 @@ Request:
   "match_id": "match_123",
   "action": "follow",
   "platform": "ios",
+  "os_provider": "apns_activitykit",
   "activity_token": "activity-token-value",
   "device_supported": true,
   "source": "match_card",
@@ -382,16 +389,18 @@ Success response:
 
 When multiple followed matches are eligible, backend/iOS orchestration must select one match using this order:
 
-1. Match with latest key event requiring attention: goal, red card, penalty, VAR decision, half-time/full-time.
-2. Live match over scheduled/not-started/ended match.
-3. Most recently followed or most recently opened match.
-4. Deterministic tie-breaker, e.g. nearest kickoff or lexical `match_id`, to avoid flapping.
+1. First followed match as the default visible match.
+2. Followed match that is still live/eligible over non-live/ineligible matches.
+3. Match with latest key event requiring attention: goal, red card, penalty, VAR decision, half-time/full-time.
+4. Most recently followed or most recently opened match.
+5. Deterministic tie-breaker, e.g. nearest kickoff or lexical `match_id`, to avoid flapping.
 
 The selected match must remain stable unless a higher-priority event occurs, user follows/unfollows, or selected match ends/unavailable.
 
 ## 7. Client State Contract
 
-- iOS app provides/refreshes ActivityKit token when available.
+- iOS app provides/refreshes ActivityKit/APNS Live Activity token when available.
+- Android app must not use APN/APNS; Android Dynamic Island-style support is future OEM-specific custom implementation, recommended Samsung-first if product opens that phase.
 - App must not require current Match Detail/Player screen presence for Live Activity start.
 - App must resolve selected match deeplink first, then fallback.
 - App should track open source as `live_activity_dynamic_island` or `live_activity_lock_screen` when available.
@@ -412,6 +421,7 @@ Persist:
 | Config | Recommended value | Notes |
 |---|---:|---|
 | `LIVE_ACTIVITY_MAX_SELECTED_MATCHES` | `1` | Option A MVP. |
+| `LIVE_ACTIVITY_DEFAULT_SELECTION` | `first_followed_match` | Default selected match before live/priority re-check. |
 | `LIVE_ACTIVITY_CLOCK_UPDATE_SECONDS` | `30-60` | Coalesce clock updates. |
 | `LIVE_ACTIVITY_KEY_EVENT_UPDATE` | immediate | Goal/red card/status changes. |
 | `LIVE_ACTIVITY_FINAL_STATE_TTL_SECONDS` | `300-900` | Keep final score briefly before ending if platform allows. |
@@ -447,3 +457,32 @@ Track:
 | Unfollow selected with another eligible match | `/select` switches activity. |
 | Unfollow all | `/end` ends activity. |
 | Invalid deeplink | Fallback deeplink used by app. |
+
+
+## 13. Telemetry Endpoint Draft
+
+### `POST /api/v1/internal/sport-zone/live-activities/telemetry`
+
+Purpose: record analytics/performance events without blocking delivery.
+
+Request:
+
+```json
+{
+  "event_name": "live_activity_update_requested",
+  "activity_id": "activity_789",
+  "user_id_hash": "hash_user_123",
+  "device_id_hash": "hash_device_abc",
+  "match_id": "match_456",
+  "platform": "ios",
+  "os_provider": "apns_activitykit",
+  "surface": "dynamic_island",
+  "display_mode": "compact",
+  "priority_reason": "still_live_eligible",
+  "latency_ms": 1200,
+  "error_code": null,
+  "occurred_at": "2026-06-03T21:10:00+07:00"
+}
+```
+
+Key events: `live_activity_follow_registered`, `live_activity_selected`, `live_activity_start_requested`, `live_activity_update_requested`, `live_activity_displayed`, `live_activity_tapped`, `live_activity_switched_match`, `live_activity_ended`, `live_activity_error`.

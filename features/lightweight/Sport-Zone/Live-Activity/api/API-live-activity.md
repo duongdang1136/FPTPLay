@@ -3,7 +3,7 @@
 ## Auth
 
 - User-facing Follow Match action requires user auth and is owned by Sport Zone follow/engagement service.
-- Internal Live Activity subscription/select/update/end endpoints require service auth.
+- Internal Live Activity subscription/select/update/end endpoints require service auth. iOS remote updates use APNS/ActivityKit; Android does not use APN/APNS.
 - API envelope follows FPTPlay convention unless code-backed docs override it.
 
 ## Data Contract
@@ -11,7 +11,7 @@
 ```ts
 type LiveActivitySurface = 'dynamic_island' | 'lock_screen';
 type LiveActivityState = 'not_started' | 'eligible' | 'starting' | 'active' | 'switching_match' | 'ended' | 'suppressed' | 'failed';
-type LiveActivityPriorityReason = 'latest_key_event' | 'live_status' | 'recently_followed' | 'recently_opened' | 'deterministic_tie_breaker';
+type LiveActivityPriorityReason = 'first_followed_default' | 'still_live_eligible' | 'latest_key_event' | 'live_status' | 'recently_followed' | 'recently_opened' | 'deterministic_tie_breaker';
 
 type SportLiveActivityDto = {
   activity_id: string;
@@ -36,6 +36,7 @@ type FollowedMatchLiveActivitySubscriptionDto = {
   follow_status: 'followed' | 'unfollowed';
   activity_token?: string | null;
   device_supported: boolean;
+  os_provider?: 'apns_activitykit' | 'android_oem_custom' | 'none';
 };
 
 type SportLiveActivityContentStateDto = {
@@ -112,6 +113,24 @@ Purpose: End Live Activity when no eligible followed match remains.
 
 ## Confirmation Needed
 
-- Confirm APNS payload schema and token handling.
+- Confirm APNS/ActivityKit payload schema and token handling for iOS.
+- Confirm Android is excluded from MVP; if not, define OEM-specific Samsung-first custom path.
 - Confirm update cadence and max update policy.
 - Confirm final priority ownership between BE and iOS orchestration.
+
+
+## Analytics / Performance Events
+
+Recommended events:
+
+- `live_activity_follow_registered`
+- `live_activity_selected`
+- `live_activity_start_requested`
+- `live_activity_update_requested`
+- `live_activity_displayed`
+- `live_activity_tapped`
+- `live_activity_switched_match`
+- `live_activity_ended`
+- `live_activity_error`
+
+Core properties: `activity_id`, `match_id`, `surface`, `display_mode`, `priority_reason`, `platform`, `os_provider`, `latency_ms`, `error_code`, `device_model`, `os_version`.
