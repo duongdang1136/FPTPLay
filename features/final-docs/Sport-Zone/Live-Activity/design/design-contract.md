@@ -180,7 +180,7 @@ User has followed match(es) and wants a lightweight realtime score/status surfac
 
 ## 10. Option A — Single Selected Followed Match UX
 
-Live Activity Dynamic Island and lock-screen states show **one selected followed match by default**. The selected match is chosen by Product/API priority rules: first followed match → still live/eligible → key event → recency → deterministic tie-breaker. No app-controlled multi-match list, `+N` indicator, hub CTA, or ranking UI is required for MVP.
+Live Activity Dynamic Island and lock-screen states show **one selected followed match by default**. The selected match is chosen by Product/API priority rules: first followed match stays selected until it ends or is unfollowed → next followed match currently live/eligible → deterministic tie-breaker. Key events update the currently selected match content, but do not switch selection in MVP unless product later approves. No app-controlled multi-match list, `+N` indicator, hub CTA, or ranking UI is required for MVP.
 
 ### Dynamic Island compact
 

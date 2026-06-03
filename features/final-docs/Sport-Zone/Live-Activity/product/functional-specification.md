@@ -131,7 +131,7 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 | BR-002 | Match Detail/Player screen presence is optional context and must not be required as a Live Activity start gate. | Product/API |
 | BR-003 | Follow/subscription state is required for Live Activity eligibility. | Product/API |
 | BR-004 | Option A MVP shows only one selected followed match in Live Activity, even if the user follows multiple matches. | Product/API/Design |
-| BR-005 | Default selected match is the first followed match; after that the system re-checks followed matches and prefers matches still live/eligible, then latest key event, then most recently followed/opened, then deterministic tie-breaker. | Product/API |
+| BR-005 | Default selected match is the first followed match; if it ends or user unfollows it, system selects the next followed match that is currently live/eligible, then deterministic tie-breaker. | Product/API |
 | BR-006 | Dynamic Island-capable devices show compact Live Activity initially. | Product/Design |
 | BR-007 | Tapping compact Dynamic Island Live Activity opens the selected match deeplink; long press/hold expands it. | Product/Design |
 | BR-008 | Tapping expanded Dynamic Island or lock-screen Live Activity opens the selected match deeplink. | Product/Design |
@@ -169,7 +169,7 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 
 **Input:** Followed match list, first-follow order, match statuses, key events, recency data.
 
-**System behavior:** Default to the first followed match, then continuously re-check followed matches and prefer matches that are still live/eligible; apply key-event/recency/tie-breaker rules only after those defaults.
+**System behavior:** Default to the first followed match. Keep it selected until it ends or user unfollows it. Then select the next followed match that is currently live/eligible; use deterministic tie-breaker if multiple candidates remain.
 
 **Output:** Selected Live Activity match.
 
@@ -252,7 +252,7 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 
 **Description:** Capture analytics/performance events across Live Activity lifecycle.
 
-**Input:** Follow/register, selected-match decision, APNS/update send, OS/client callback where available, exposure/open events, deeplink open, errors.
+**Input:** Follow/register, follow button click, selected-match decision, APNS/update send, OS/client callback where available, exposure/open events, deeplink open, errors.
 
 **System behavior:** Emit consistent telemetry with `activity_id`, `user_id` hash, `device_id` hash, `match_id`, `surface`, `priority_reason`, `latency_ms`, `error_code`, and app/platform/OEM metadata.
 
@@ -317,7 +317,7 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 ## 14. Risks / Accepted Assumptions
 
 - Accepted: Option A one selected followed match is MVP; no app-controlled multi-match list.
-- Accepted: Default selected match starts from first followed match, then re-checks live/eligible followed matches by priority.
+- Accepted: Default selected match is the first followed match. Re-check next followed live/eligible match only when current selected match ends or user unfollows it.
 - Accepted: Follow Match is explicit Live Activity intent.
 - Accepted: Match Detail/Player screen state is not a start gate.
 - Accepted: Live Activity is a Notification + Widget hybrid: iOS uses APNS/ActivityKit update path, UI is constrained by OS.
@@ -377,13 +377,37 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 | Event-to-activity latency | match event time → Live Activity update request/visible callback | p50/p95 by event type. |
 | Staleness rate | active Live Activity older than allowed freshness threshold | Alert when stale after key events/end. |
 | Tap-through rate | taps / displayed activities | Product engagement signal. |
-| Priority switch accuracy | switch reason distribution and user taps after switch | Detect surprising/flapping priority. |
+| Follow button CTR | Theo dõi Trận đấu clicks / eligible match impressions | Primary MVP product-performance indicator. |
+| Follow conversion | successful follow registrations / follow button clicks | Detect API or UX failure after click. |
+| Priority switch accuracy | switch reason distribution and user taps after switch | For MVP, switch should mostly happen only when selected match ends or is unfollowed. |
 | End correctness | ended on FT/unfollow/no eligible match | Prevent stale lock-screen activity. |
 | Device coverage | eligible devices / active users by model/OS | Helps Android/OEM phase planning. |
 
 ### 17.3 Evaluation approach
 
-- Product analytics: follow → selected → displayed → tapped → deeplink success.
+- Primary MVP performance indicator: number/rate of **Theo dõi Trận đấu** button clicks.
+- Product analytics: Theo dõi Trận đấu click → follow registered → selected → displayed → tapped → deeplink success.
 - Reliability analytics: APNS/start/update/end success, retry, token invalidation, stale content.
 - UX quality: selected-match switches should be rare and explainable by priority reason; excessive switching indicates priority flapping.
 - Android feasibility analytics: separate report by OEM/device family; do not mix with iOS APNS metrics.
+
+
+### 17.4 Follow button analytics details
+
+The MVP product-performance baseline is the **Theo dõi Trận đấu** button because it represents explicit user intent to activate followed-match Live Activity.
+
+Recommended follow-button events:
+
+| Event | When | Key properties |
+|---|---|---|
+| `follow_match_button_impression` | Button is visible on match card/detail/player where applicable. | `match_id`, `screen`, `match_status`, `is_live`, `device_supported` |
+| `follow_match_button_clicked` | User taps Theo dõi Trận đấu. | `match_id`, `screen`, `match_status`, `followed_match_count_before` |
+| `follow_match_registered` | Follow subscription saved successfully. | `match_id`, `activity_eligible`, `platform`, `provider` |
+| `follow_match_failed` | Follow action fails. | `match_id`, `error_code`, `platform` |
+
+Core metrics:
+
+- Follow CTR = `follow_match_button_clicked / follow_match_button_impression`.
+- Follow success rate = `follow_match_registered / follow_match_button_clicked`.
+- Live Activity eligible rate = eligible followed matches / registered follows.
+- Follow-to-tap return = Live Activity taps / registered follows.

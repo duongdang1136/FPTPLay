@@ -400,7 +400,7 @@ The selected match must remain stable unless a higher-priority event occurs, use
 ## 7. Client State Contract
 
 - iOS app provides/refreshes ActivityKit/APNS Live Activity token when available.
-- Android app must not use APN/APNS; Android Dynamic Island-style support is future OEM-specific custom implementation, recommended Samsung-first if product opens that phase.
+- Android app must not use APN/APNS; Android Dynamic custom support is future OEM-specific implementation, recommended Samsung-first if product opens that phase because one implementation may not cover Samsung/Xiaomi/all devices.
 - App must not require current Match Detail/Player screen presence for Live Activity start.
 - App must resolve selected match deeplink first, then fallback.
 - App should track open source as `live_activity_dynamic_island` or `live_activity_lock_screen` when available.
@@ -485,4 +485,4 @@ Request:
 }
 ```
 
-Key events: `live_activity_follow_registered`, `live_activity_selected`, `live_activity_start_requested`, `live_activity_update_requested`, `live_activity_displayed`, `live_activity_tapped`, `live_activity_switched_match`, `live_activity_ended`, `live_activity_error`.
+Key events: `follow_match_button_impression`, `follow_match_button_clicked`, `follow_match_registered`, `follow_match_failed`, `live_activity_selected`, `live_activity_start_requested`, `live_activity_update_requested`, `live_activity_displayed`, `live_activity_tapped`, `live_activity_switched_match`, `live_activity_ended`, `live_activity_error`.

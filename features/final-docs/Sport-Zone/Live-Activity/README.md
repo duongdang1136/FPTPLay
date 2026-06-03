@@ -59,11 +59,11 @@ features/lightweight/Sport-Zone/Live-Activity/api/API-live-activity.md
 
 - User explicit **Follow Match** action is the Live Activity intent source.
 - Match Detail/Player screen presence is optional context only; it must not be required for start eligibility.
-- Dynamic Island default selection: first followed match, then continuously re-check followed matches that are still live/eligible.
+- Dynamic Island default selection: first followed match. If the first followed match ends or is unfollowed, switch to the next followed match that is currently live/eligible.
 - If the user follows multiple live matches, the system shows only one priority match in Live Activity for MVP.
-- Priority order: first followed match by default → followed match still live/eligible → latest key event requiring attention → most recently followed/opened → backend deterministic tie-breaker.
+- Priority order: first followed match by default → if that match ends/unfollowed, next followed match currently live/eligible → deterministic tie-breaker. Key events update displayed data but do not automatically steal selection in MVP unless product later approves.
 - Lock screen default shows one selected match; richer/more presentation is constrained/handled by OS behavior and product template.
 - Tap opens the selected match deeplink; fallback order is live match screen → match detail → Sport Zone home.
 - Live Activity ends when the selected match ends/cancels/unavailable or user unfollows all eligible matches.
-- APN/APNS feasibility must be confirmed by iOS/backend: iOS uses Apple Push Notification service for remote Live Activity updates; Android does not use APN/APNS and must be scoped separately.
+- APN/APNS feasibility must be confirmed by iOS/backend: APN/APNS is the iOS provider path for remote Live Activity updates. Android does not use APN/APNS and must be scoped separately with custom Dynamic handling.
 - Analytics/performance must measure update delivery, UI exposure, tap-through, staleness, priority switch quality, and device/OEM coverage.

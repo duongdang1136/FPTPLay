@@ -39,7 +39,7 @@ api/API-live-activity.md
 - Dynamic Island: only one selected match; default is the first followed match, then re-check followed matches still live/eligible.
 - Lock screen: default one selected match; OS handles expansion/presentation behavior where applicable.
 - Product defines template/data within OS constraints.
-- Selection priority: first followed match by default → still live/eligible followed match → latest key event → most recently followed/opened → deterministic tie-breaker.
+- Selection priority: first followed match by default → if first ends/unfollowed, next followed match currently live/eligible → deterministic tie-breaker.
 - Dynamic Island supported devices show compact Live Activity initially.
 - Tapping compact Dynamic Island Live Activity opens the selected match deeplink; long press/hold expands it.
 - Lock screen shows one selected followed match by default; OS controls richer expansion/presentation.

@@ -46,7 +46,7 @@ Sport Zone Live Activity gives users a persistent real-time surface for matches 
 | BR-002 | Match Detail/Player screen presence is optional context and must not be required for Live Activity start. |
 | BR-003 | Follow/subscription state is required for Live Activity eligibility. |
 | BR-004 | Option A MVP shows only one selected followed match even if user follows multiple matches. |
-| BR-005 | Priority order: first followed match by default → still live/eligible followed match → latest key event → most recently followed/opened → deterministic tie-breaker. |
+| BR-005 | Priority order: first followed match by default → if first ends/unfollowed, next followed match currently live/eligible → deterministic tie-breaker. |
 | BR-006 | Dynamic Island-capable iOS devices show compact Live Activity first; only one selected match is displayed. |
 | BR-007 | Compact tap opens selected match deeplink; long press/hold expands. |
 | BR-008 | Expanded Dynamic Island and lock-screen tap opens selected match deeplink/fallback; lock-screen expansion/presentation is OS-handled. |
@@ -85,10 +85,11 @@ If user follows multiple matches, display only one selected match using priority
 
 Performance evaluation should not be only app performance. It should answer:
 
-1. Did eligible follows create a Live Activity?
-2. Did APNS/provider accept start/update/end?
-3. How long from match event to activity update?
-4. Did UI become stale after score/status/end?
-5. Did user tap it and did deeplink succeed?
-6. Did priority switching select the expected match without flapping?
-7. Which device/OS/OEM segments are supported or suppressed?
+1. How many users saw and clicked **Theo dõi Trận đấu**?
+2. Did eligible follows create a Live Activity?
+3. Did APNS/provider accept start/update/end?
+4. How long from match event to activity update?
+5. Did UI become stale after score/status/end?
+6. Did user tap it and did deeplink succeed?
+7. Did priority switching happen only when current selected match ended/unfollowed?
+8. Which device/OS/OEM segments are supported or suppressed?
