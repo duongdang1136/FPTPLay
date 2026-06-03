@@ -5,11 +5,11 @@
 > Sub-feature: Live Activity
 > Stage: Lightweight Research + BA
 > Related feature: `features/final-docs/Sport-Zone/Notifications-Alert/`
-> Last updated: 2026-06-02
+> Last updated: 2026-06-03
 
 ## Purpose
 
-Clarify Sport Zone Live Activity behavior for users currently in Match Detail/Player screen. This feature is related to Notifications & Alert, but Live Activity eligibility is screen-based: follow/subscription is ignored, and normal notification behavior remains owned by Notifications & Alert.
+Clarify Sport Zone Live Activity behavior using UniScore-style **followed-match based** intent. Live Activity eligibility is based on user follow/subscription for match(es), not on current Match Detail/Player screen presence.
 
 ## Framework mapping
 
@@ -31,15 +31,15 @@ api/API-live-activity.md
 
 ## Current decision summary
 
-- Live Activity starts when a active viewed match starts.
-- At match start/live-state, the system starts Live Activity only for users currently in Match Detail/Player screen or Player screen.
-- Notification and Live Activity can be visible in parallel.
+- User explicit Follow Match action is the Live Activity intent source.
+- User may follow 1 match or n matches.
+- Match Detail/Player screen presence is optional context only and must not be a mandatory start gate.
+- **Option A MVP:** show one selected followed match in Live Activity at a time.
+- Selection priority: latest key event → live status → most recently followed/opened → deterministic tie-breaker.
 - Dynamic Island supported devices show compact Live Activity initially.
-- Tapping compact Dynamic Island Live Activity opens the app via deeplink; long press/hold expands it.
-- Tapping expanded Dynamic Island Live Activity opens the app via deeplink.
-- Lock screen shows expanded Live Activity throughout the match.
-- Tapping expanded lock-screen Live Activity opens the app via deeplink.
-- Live Activity should remain visible throughout the match until end/termination.
+- Tapping compact Dynamic Island Live Activity opens the selected match deeplink; long press/hold expands it.
+- Lock screen shows expanded Live Activity for the selected followed match.
+- Live Activity remains visible while an eligible selected followed match exists and ends/switches safely when match ends or user unfollows.
 
 ## Promotion target
 
@@ -49,4 +49,4 @@ features/final-docs/Sport-Zone/Live-Activity/
 
 ## Promotion status
 
-Promoted to final docs using accepted assumptions where platform/API details are not yet code-backed.
+Promoted to final docs using accepted Followed-match Option A assumptions.

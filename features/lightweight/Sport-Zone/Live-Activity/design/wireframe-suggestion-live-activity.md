@@ -4,9 +4,9 @@
 
 | Surface | Purpose |
 |---|---|
-| Dynamic Island compact | Small persistent match state after match start. |
-| Dynamic Island expanded | Larger match snapshot after long press/hold on compact Live Activity. |
-| Lock-screen expanded | Persistent match snapshot on lock screen. |
+| Dynamic Island compact | Small persistent state for selected followed match. |
+| Dynamic Island expanded | Larger selected-match snapshot after long press/hold on compact Live Activity. |
+| Lock-screen expanded | Persistent selected-match snapshot on lock screen. |
 
 ## 2. Low-fidelity layouts
 
@@ -14,7 +14,7 @@
 
 ```text
 ┌───────────────┐
-│ FPT  0 - 0 ⚽ │
+│ FPT  1 - 0 ⚽ │
 └───────────────┘
 ```
 
@@ -23,8 +23,9 @@
 ```text
 ┌──────────────────────────────┐
 │ FPT Play · Sport Zone        │
-│ Team A        0 - 0   Team B │
-│ 12' · Đang diễn ra           │
+│ Team A        1 - 0   Team B │
+│ 42' · Đang diễn ra           │
+│ ⚽ Có bàn thắng mới           │
 │ Tap để xem trận đấu          │
 └──────────────────────────────┘
 ```
@@ -34,16 +35,18 @@
 ```text
 ┌──────────────────────────────┐
 │ FPT Play                     │
-│ Team A        0 - 0   Team B │
-│ 12' · Đang diễn ra           │
+│ Team A        1 - 0   Team B │
+│ 42' · Đang diễn ra           │
 │ Xem trực tiếp trên FPT Play  │
 └──────────────────────────────┘
 ```
 
 ## 3. UX Notes
 
-- Dynamic Island compact tap should open the deeplink; long press/hold should expand Live Activity.
-- Expanded tap should open match deeplink.
-- Lock-screen expanded tap should open match deeplink.
-- Live Activity must not replace normal notification; both can be visible in parallel at match start.
+- Live Activity represents one selected followed match for MVP.
+- If user follows multiple matches, backend/product priority selects the visible match; UI does not show a multi-match list or `+N`.
+- Dynamic Island compact tap should open selected match deeplink; long press/hold should expand Live Activity.
+- Expanded tap should open selected match deeplink.
+- Lock-screen expanded tap should open selected match deeplink.
+- Live Activity must not replace normal notification; both can be visible depending on notification rules.
 - Live Activity should show stale/unavailable state safely if match data becomes unavailable before termination.

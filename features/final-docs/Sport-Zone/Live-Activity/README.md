@@ -5,7 +5,7 @@
 > Sub-feature: Live Activity
 > Stage: Final implementation handoff
 > Related feature: `features/final-docs/Sport-Zone/Notifications-Alert/`
-> Last updated: 2026-06-02
+> Last updated: 2026-06-03
 
 ## Purpose
 
@@ -32,34 +32,30 @@ features/lightweight/Sport-Zone/Live-Activity/api/API-live-activity.md
 
 ## Implementation scope
 
-- iOS Live Activity for the Sport Zone match currently open in Match Detail/Player screen or Player screen.
+- iOS Live Activity for Sport Zone matches explicitly followed by the user.
+- Followed-match based eligibility: user may follow one match or multiple matches.
+- **Option A MVP:** one visible Live Activity match at a time, selected by priority from followed matches.
 - Dynamic Island compact and expanded states.
 - Lock-screen expanded state.
-- Match-start/live-state trigger for users currently in Match Detail/Player screen or Player screen.
-- Live Activity update lifecycle throughout the match.
-- Deeplink behavior from expanded Dynamic Island and lock screen into app.
+- Live Activity update lifecycle throughout the selected followed match.
+- Deeplink behavior from compact/expanded Dynamic Island and lock screen into app.
 - Safe fallback routing if exact live target is unavailable.
 
 ## Explicitly out of scope
 
+- Active Match Detail/Player screen as a mandatory start gate.
+- Multi-match expanded list, `+N` aggregation, or multiple simultaneous Live Activities per match.
 - Redefining normal push notification behavior/copy.
 - Android persistent notification equivalent.
 - Payment/entitlement changes.
 - Full in-app match detail implementation.
 - Admin campaign/CMS tooling.
 
-## Pending implementation confirmations
+## Final decision summary — Followed-match Option A
 
-1. Final iOS/device support matrix.
-2. Final Live Activity compact/expanded visual data fields.
-3. APNS Live Activity payload/update cadence and ownership.
-4. Final deeplink route and fallback order.
-5. Whether start/update/end is backend-only, client-initiated, or hybrid.
-
-
-## Single-match / PiP policy
-
-- Live Activity shows only the one match currently open in Match Detail/Player screen or Player screen.
-- Compact, expanded Dynamic Island, and lock screen all represent that same match.
-- If the user switches to another match detail/player screen, Live Activity should move to the new active match according to platform/client orchestration.
-- PiP and Live Activity are independent: closing PiP does not end Live Activity; dismissing Live Activity does not close PiP.
+- User explicit **Follow Match** action is the Live Activity intent source.
+- Match Detail/Player screen presence is optional context only; it must not be required for start eligibility.
+- If the user follows multiple live matches, the system shows only one priority match in Live Activity for MVP.
+- Priority order: latest key event requiring attention → currently live over scheduled/ended → user most recently followed/opened match → backend deterministic tie-breaker.
+- Tap opens the selected match deeplink; fallback order is live match screen → match detail → Sport Zone home.
+- Live Activity ends when the selected match ends/cancels/unavailable or user unfollows all eligible matches.

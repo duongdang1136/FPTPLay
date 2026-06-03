@@ -5,6 +5,7 @@
 > Audience: BE, FE, QA, iOS
 > API prefix: `/api/v1/internal/sport-zone/live-activities`
 > Status: Implementation-ready contract
+> Last updated: 2026-06-03
 > Source-of-truth note: no dev-owned code-backed API doc exists under `features/api-docs/**` yet. Reconcile with backend/iOS implementation once published.
 
 ## 0. Document Status
@@ -12,13 +13,13 @@
 | Field | Value |
 |---|---|
 | Maturity | Implementation-ready |
-| Source of truth | Accepted assumptions from product flow |
+| Source of truth | Accepted Followed-match Option A product flow |
 | Critical open questions | None for final docs |
 | Last reviewed by | BE / FE / QA / iOS pending |
 
 ## 1. Auth, Ownership & Envelope
 
-Internal Live Activity orchestration endpoints require service-to-service auth and must not be called by public clients.
+Internal Live Activity orchestration endpoints require service-to-service auth and must not be called directly by public clients. Public app follow/unfollow actions are owned by the Sport Zone follow service; this contract consumes that state for Live Activity.
 
 ```text
 Authorization: Bearer <serviceToken>
@@ -48,11 +49,14 @@ type LiveActivityDisplayMode = 'compact' | 'expanded';
 
 type LiveActivityState =
   | 'not_started'
+  | 'eligible'
   | 'starting'
   | 'active_compact'
   | 'active_expanded'
+  | 'switching_match'
   | 'updating'
   | 'ended'
+  | 'suppressed'
   | 'failed';
 
 type MatchLiveStatus =
@@ -64,6 +68,13 @@ type MatchLiveStatus =
   | 'cancelled'
   | 'unavailable';
 
+type LiveActivityPriorityReason =
+  | 'latest_key_event'
+  | 'live_status'
+  | 'recently_followed'
+  | 'recently_opened'
+  | 'deterministic_tie_breaker';
+
 type SportLiveActivityContentStateDto = {
   match_id: string;
   home_team: string;
@@ -73,16 +84,38 @@ type SportLiveActivityContentStateDto = {
   match_clock?: string;
   period?: string;
   status: MatchLiveStatus;
+  latest_event?: {
+    event_id: string;
+    type: 'goal' | 'red_card' | 'penalty' | 'var' | 'half_time' | 'full_time' | 'other';
+    label: string;
+    occurred_at: string;
+  } | null;
   updated_at: string;
+};
+
+type FollowedMatchLiveActivitySubscriptionDto = {
+  subscription_id: string;
+  user_id: string;
+  device_id: string;
+  match_id: string;
+  follow_status: 'followed' | 'unfollowed';
+  platform: 'ios';
+  activity_token?: string | null;
+  device_supported: boolean;
+  manual_dismissed_until?: string | null;
+  followed_at: string;
+  unfollowed_at?: string | null;
 };
 
 type SportLiveActivityDto = {
   activity_id: string;
   user_id: string;
-  match_id: string;
+  device_id: string;
+  selected_match_id: string;
   state: LiveActivityState;
   surfaces: LiveActivitySurface[];
   display_mode: LiveActivityDisplayMode;
+  priority_reason: LiveActivityPriorityReason;
   deeplink: string;
   fallback_deeplink: string;
   content_state: SportLiveActivityContentStateDto;
@@ -91,80 +124,145 @@ type SportLiveActivityDto = {
   ended_at?: string | null;
 };
 
-type LiveActivityStartRequest = {
+type LiveActivityRegisterFollowRequest = {
   event_id: string;
+  user_id: string;
+  device_id: string;
   match_id: string;
-  active_screen_required: true;
-  context_source: 'match_detail_player_screen' | 'player_screen';
-  screen_session_id?: string;
-  last_screen_seen_at: string;
-  source: 'match_start' | 'match_live_state';
+  action: 'follow' | 'unfollow';
+  platform: 'ios';
+  activity_token?: string;
+  device_supported: boolean;
+  source: 'match_card' | 'match_detail' | 'player' | 'notification' | 'other';
+  occurred_at: string;
+};
+
+type LiveActivityStartOrSelectRequest = {
+  event_id: string;
+  user_id: string;
+  device_id: string;
+  followed_match_ids: string[];
+  selected_match_id: string;
+  priority_reason: LiveActivityPriorityReason;
+  source: 'follow' | 'match_start' | 'match_live_state' | 'priority_change';
   content_state: SportLiveActivityContentStateDto;
   deeplink: string;
   fallback_deeplink: string;
-  target_user_ids?: string[];
 };
 
 type LiveActivityUpdateRequest = {
   event_id: string;
+  selected_match_id: string;
+  priority_reason?: LiveActivityPriorityReason;
   content_state: SportLiveActivityContentStateDto;
+  deeplink?: string;
+  fallback_deeplink?: string;
 };
 
 type LiveActivityEndRequest = {
   event_id: string;
-  reason: 'match_ended' | 'match_cancelled' | 'match_unavailable' | 'manual_termination' | 'ttl_expired';
+  reason: 'match_ended' | 'match_cancelled' | 'match_unavailable' | 'user_unfollowed_all' | 'manual_termination' | 'ttl_expired';
   final_content_state?: SportLiveActivityContentStateDto;
 };
 ```
 
 ## 3. Endpoint Traceability
 
-| Endpoint | Product requirement | Screen / Surface | Side effects |
-|---|---|---|---|
-| `POST /start` | F-001, F-002, F-005 | Dynamic Island / lock screen | Starts Live Activity for eligible active Match Detail/Player screen user/session. |
-| `PATCH /{activity_id}/update` | F-007 | Dynamic Island / lock screen | Updates content state. |
-| `PATCH /{activity_id}/end` | F-008 | Dynamic Island / lock screen | Ends Live Activity. |
+| Endpoint | Product requirement | Side effects |
+|---|---|---|
+| `POST /subscriptions` | F-001 | Creates/updates followed-match Live Activity subscription. |
+| `POST /select` | F-002, F-003, F-006 | Selects one followed match and starts/switches Live Activity. |
+| `PATCH /{activity_id}/update` | F-007 | Updates score/status/content and optional selected match. |
+| `PATCH /{activity_id}/end` | F-008 | Ends Live Activity. |
 
 ## 4. Endpoints
 
-### 4.1 `POST /api/v1/internal/sport-zone/live-activities/start`
+### 4.1 `POST /api/v1/internal/sport-zone/live-activities/subscriptions`
 
-Purpose: Start Live Activity only for eligible users currently in Match Detail/Player screen or Player screen for the match when that match starts/is live. Follow/subscription state is ignored for Live Activity eligibility.
-
-Auth / ownership: service-to-service only.
+Purpose: Register follow/unfollow intent for Live Activity eligibility. Follow state is the eligibility source; Match Detail/Player screen presence is not required.
 
 Headers:
 
 ```text
 Authorization: Bearer <serviceToken>
 Content-Type: application/json
-Idempotency-Key: <event_id>:<match_id>
+Idempotency-Key: <event_id>:<user_id>:<device_id>:<match_id>
 ```
 
 Request:
 
 ```json
 {
-  "event_id": "evt_match_start_123",
+  "event_id": "evt_follow_123",
+  "user_id": "user_123",
+  "device_id": "ios_device_abc",
   "match_id": "match_123",
-  "source": "match_start",
-  "active_screen_required": true,
-  "context_source": "match_detail_player_screen",
-  "screen_session_id": "screen_session_123",
-  "last_screen_seen_at": "2026-06-02T19:59:55+07:00",
+  "action": "follow",
+  "platform": "ios",
+  "activity_token": "activity-token-value",
+  "device_supported": true,
+  "source": "match_card",
+  "occurred_at": "2026-06-03T20:00:00+07:00"
+}
+```
+
+Success response:
+
+```json
+{
+  "status": "1",
+  "error_code": "0",
+  "msg": "Success",
+  "data": {
+    "subscription_id": "sub_123",
+    "eligible": true,
+    "suppressed_reason": null
+  }
+}
+```
+
+### 4.2 `POST /api/v1/internal/sport-zone/live-activities/select`
+
+Purpose: Apply Option A priority and start/switch Live Activity to one selected followed match.
+
+Headers:
+
+```text
+Authorization: Bearer <serviceToken>
+Content-Type: application/json
+Idempotency-Key: <event_id>:<user_id>:<device_id>:<selected_match_id>
+```
+
+Request:
+
+```json
+{
+  "event_id": "evt_select_456",
+  "user_id": "user_123",
+  "device_id": "ios_device_abc",
+  "followed_match_ids": ["match_123", "match_456"],
+  "selected_match_id": "match_456",
+  "priority_reason": "latest_key_event",
+  "source": "priority_change",
   "content_state": {
-    "match_id": "match_123",
-    "home_team": "Team A",
-    "away_team": "Team B",
-    "home_score": 0,
+    "match_id": "match_456",
+    "home_team": "Team C",
+    "away_team": "Team D",
+    "home_score": 1,
     "away_score": 0,
-    "match_clock": "0'",
+    "match_clock": "42'",
     "period": "1H",
     "status": "live",
-    "updated_at": "2026-06-02T20:00:00+07:00"
+    "latest_event": {
+      "event_id": "evt_goal_456",
+      "type": "goal",
+      "label": "Goal Team C",
+      "occurred_at": "2026-06-03T20:42:00+07:00"
+    },
+    "updated_at": "2026-06-03T20:42:05+07:00"
   },
-  "deeplink": "fptplay://sport-zone/matches/match_123/live",
-  "fallback_deeplink": "fptplay://sport-zone/matches/match_123"
+  "deeplink": "fptplay://sport-zone/matches/match_456/live",
+  "fallback_deeplink": "fptplay://sport-zone/matches/match_456"
 }
 ```
 
@@ -177,29 +275,17 @@ Success response:
   "msg": "Success",
   "data": {
     "accepted": true,
-    "match_id": "match_123",
-    "target_count": 1250,
-    "started_count": 980,
-    "suppressed_count": 270
+    "activity_id": "activity_789",
+    "selected_match_id": "match_456",
+    "state": "active_compact",
+    "priority_reason": "latest_key_event"
   }
 }
 ```
 
-Error responses:
+### 4.3 `PATCH /api/v1/internal/sport-zone/live-activities/{activity_id}/update`
 
-| HTTP | `error_code` | Meaning |
-|---:|---|---|
-| 400 | `VALIDATION_ERROR` | Invalid request/content state. |
-| 401 | `UNAUTHORIZED` | Missing/invalid service token. |
-| 403 | `FORBIDDEN` | Service lacks permission. |
-| 409 | `DUPLICATE_EVENT` | Event already processed; must not create duplicate activity. |
-| 500 | `SERVER_ERROR` | Unexpected server failure. |
-
-### 4.2 `PATCH /api/v1/internal/sport-zone/live-activities/{activity_id}/update`
-
-Purpose: Update score, match clock, period, and match status during an active Live Activity.
-
-Auth / ownership: service-to-service only.
+Purpose: Update score, match clock, period, match status, and selected-match content during active Live Activity.
 
 Headers:
 
@@ -213,18 +299,23 @@ Request:
 
 ```json
 {
-  "event_id": "evt_goal_456",
+  "event_id": "evt_score_update_789",
+  "selected_match_id": "match_456",
+  "priority_reason": "latest_key_event",
   "content_state": {
-    "match_id": "match_123",
-    "home_team": "Team A",
-    "away_team": "Team B",
-    "home_score": 1,
+    "match_id": "match_456",
+    "home_team": "Team C",
+    "away_team": "Team D",
+    "home_score": 2,
     "away_score": 0,
-    "match_clock": "12'",
-    "period": "1H",
-    "status": "live",
-    "updated_at": "2026-06-02T20:12:00+07:00"
-  }
+    "match_clock": "55'",
+    "period": "2H",
+    "status": "second_half",
+    "latest_event": null,
+    "updated_at": "2026-06-03T21:10:00+07:00"
+  },
+  "deeplink": "fptplay://sport-zone/matches/match_456/live",
+  "fallback_deeplink": "fptplay://sport-zone/matches/match_456"
 }
 ```
 
@@ -236,57 +327,25 @@ Success response:
   "error_code": "0",
   "msg": "Success",
   "data": {
-    "activity_id": "la_123",
-    "state": "active_expanded",
-    "updated_at": "2026-06-02T20:12:01+07:00"
+    "accepted": true,
+    "activity_id": "activity_789",
+    "selected_match_id": "match_456",
+    "state": "updating"
   }
 }
 ```
 
-Error responses:
+### 4.4 `PATCH /api/v1/internal/sport-zone/live-activities/{activity_id}/end`
 
-| HTTP | `error_code` | Meaning |
-|---:|---|---|
-| 400 | `VALIDATION_ERROR` | Invalid content state. |
-| 401 | `UNAUTHORIZED` | Missing/invalid service token. |
-| 403 | `FORBIDDEN` | Service lacks permission. |
-| 404 | `NOT_FOUND` | Activity not found/already unavailable. |
-| 409 | `DUPLICATE_EVENT` | Update already processed. |
-| 410 | `ACTIVITY_ENDED` | Activity already ended. |
-| 429 | `RATE_LIMITED` | Update cadence exceeds provider/platform limit. |
-| 500 | `SERVER_ERROR` | Unexpected server failure. |
-
-### 4.3 `PATCH /api/v1/internal/sport-zone/live-activities/{activity_id}/end`
-
-Purpose: End Live Activity at match end/cancel/unavailable or manual termination.
-
-Auth / ownership: service-to-service only.
-
-Headers:
-
-```text
-Authorization: Bearer <serviceToken>
-Content-Type: application/json
-Idempotency-Key: <event_id>:<activity_id>:end
-```
+Purpose: End Live Activity when selected match ends and no switch is required, user unfollows all eligible matches, or activity becomes unavailable.
 
 Request:
 
 ```json
 {
-  "event_id": "evt_match_end_789",
-  "reason": "match_ended",
-  "final_content_state": {
-    "match_id": "match_123",
-    "home_team": "Team A",
-    "away_team": "Team B",
-    "home_score": 2,
-    "away_score": 1,
-    "match_clock": "90+4'",
-    "period": "FT",
-    "status": "ended",
-    "updated_at": "2026-06-02T21:55:00+07:00"
-  }
+  "event_id": "evt_activity_end_123",
+  "reason": "user_unfollowed_all",
+  "final_content_state": null
 }
 ```
 
@@ -298,120 +357,93 @@ Success response:
   "error_code": "0",
   "msg": "Success",
   "data": {
-    "activity_id": "la_123",
-    "state": "ended",
-    "ended_at": "2026-06-02T21:55:01+07:00"
+    "accepted": true,
+    "activity_id": "activity_789",
+    "state": "ended"
   }
 }
 ```
 
-Error responses:
+## 5. Error responses
 
-| HTTP | `error_code` | Meaning |
-|---:|---|---|
-| 400 | `VALIDATION_ERROR` | Invalid reason/content state. |
-| 401 | `UNAUTHORIZED` | Missing/invalid service token. |
-| 403 | `FORBIDDEN` | Service lacks permission. |
-| 404 | `NOT_FOUND` | Activity not found. |
-| 409 | `DUPLICATE_EVENT` | End already processed. |
-| 500 | `SERVER_ERROR` | Unexpected server failure. |
+| HTTP | `error_code` | Meaning | FE/iOS behavior |
+|---:|---|---|---|
+| 400 | `VALIDATION_ERROR` | Invalid request/content state. | Internal only; log. |
+| 401 | `UNAUTHORIZED` | Missing/invalid service token. | Internal only. |
+| 403 | `FORBIDDEN` | Service lacks permission. | Internal only. |
+| 404 | `SUBSCRIPTION_NOT_FOUND` | No followed-match subscription for user/device/match. | Do not start; normal follow state reconciliation. |
+| 409 | `DUPLICATE_EVENT` | Event already processed. | Treat as idempotent success; must not duplicate activity. |
+| 409 | `MANUAL_DISMISSAL_COOLDOWN` | User dismissed Live Activity recently. | Suppress until renewed eligible event/action. |
+| 422 | `NO_ELIGIBLE_FOLLOWED_MATCH` | User has no eligible followed match for Live Activity. | End/suppress Live Activity. |
+| 422 | `UNSUPPORTED_DEVICE` | Device/platform cannot show Live Activity. | Follow remains valid; suppress Live Activity. |
+| 500 | `SERVER_ERROR` | Unexpected server failure. | Retry/log within platform limits. |
 
-## 5. Error Code Matrix
+## 6. Priority Selection Contract
 
-| Code | Meaning | FE/Product behavior |
-|---|---|---|
-| `VALIDATION_ERROR` | Request invalid. | Internal log; fix producer payload. |
-| `UNAUTHORIZED` | Missing/invalid token. | Internal auth error. |
-| `FORBIDDEN` | Service lacks permission. | Internal authz error. |
-| `NOT_FOUND` | Activity not found. | Safe no-op if already ended/unavailable. |
-| `DUPLICATE_EVENT` | Event already processed. | Do not duplicate Live Activity. |
-| `ACTIVITY_ENDED` | Update attempted after end. | Stop retrying update; ensure state ended. |
-| `UNSUPPORTED_DEVICE` | User device not eligible. | Suppress Live Activity silently. |
-| `NOT_IN_MATCH_DETAIL_OR_PLAYER` | User is not currently in Match Detail/Player screen or Player screen for the match. | Suppress Live Activity for this feature; normal notification behavior is handled separately. |
-| `LIVE_ACTIVITY_DISMISSED` | User manually dismissed Live Activity for this match/session. | Do not recreate immediately without renewed in-app engagement. |
-| `RATE_LIMITED` | Update cadence too high. | Back off/coalesce updates. |
-| `SERVER_ERROR` | Unexpected failure. | Retry if safe; alert if persistent. |
+When multiple followed matches are eligible, backend/iOS orchestration must select one match using this order:
 
-## 6. Client State Contract
+1. Match with latest key event requiring attention: goal, red card, penalty, VAR decision, half-time/full-time.
+2. Live match over scheduled/not-started/ended match.
+3. Most recently followed or most recently opened match.
+4. Deterministic tie-breaker, e.g. nearest kickoff or lexical `match_id`, to avoid flapping.
 
-| API/result | FE/iOS state | Required behavior |
-|---|---|---|
-| Start success | active compact/expanded by surface | Render Live Activity. |
-| Update success | active updated | Refresh displayed content state. |
-| End success | ended | Remove/finish ongoing Live Activity. |
-| Unsupported device | no activity | Do not show blocking error. |
-| Deeplink open | app route | Open live match, then fallback match detail, then Sport Zone home. |
+The selected match must remain stable unless a higher-priority event occurs, user follows/unfollows, or selected match ends/unavailable.
 
-## 7. Side Effects & Persistence
+## 7. Client State Contract
 
-| Operation | Server-side side effects | Persistence / schema impact |
-|---|---|---|
-| Start | Resolves active Match Detail/Player screen user/session and eligible devices, starts Live Activity, records activity state. Follow/subscription state is ignored for Live Activity eligibility. | Live Activity table/log keyed by user + match + screen session. |
-| Update | Sends platform update and records last content state. | Update event log / last state. |
-| End | Sends end/final state and marks activity ended. | `ended_at`, reason. |
-| Deeplink open | App opens route and tracks source if available. | Analytics event. |
+- iOS app provides/refreshes ActivityKit token when available.
+- App must not require current Match Detail/Player screen presence for Live Activity start.
+- App must resolve selected match deeplink first, then fallback.
+- App should track open source as `live_activity_dynamic_island` or `live_activity_lock_screen` when available.
+- If user manually dismisses Live Activity, do not immediately recreate for the same match without renewed follow/action or priority-changing event.
 
-## 8. Security / Privacy
+## 8. Side Effects / Persistence
 
-- Internal endpoints require service auth and are not public.
-- Do not expose push tokens/device tokens/provider credentials.
-- Live Activity content appears on lock screen; do not include private user data.
-- Use match/content identifiers safe for deeplink exposure.
-- Sanitize team/match display strings before payload construction.
+Persist:
+
+- `subscription_id`, `user_id`, `device_id`, `match_id`, follow status.
+- Activity token/device support metadata.
+- Current `activity_id`, selected match, state, priority reason.
+- Idempotency keys for follow/select/update/end events.
+- Manual dismissal cooldown if provided by client/platform handling.
 
 ## 9. Rate Limits / Config
 
-| Config / Limit | Value | Used by | QA note |
-|---|---|---|---|
-| Feature flag | `sport_zone_live_activity_enabled` | All Live Activity behavior | Verify disabled flag prevents start. |
-| Dynamic Island capability | Platform/device-detected | Surface eligibility | Verify unsupported device suppression. |
-| Update cadence | Config/platform-limited | Update API | Verify coalescing/rate-limit handling. |
-| Activity TTL | Match duration + safe buffer | End/cleanup | Verify stale activity cleanup. |
-| Deeplink fallback order | live → match detail → Sport Zone home | App route | Verify unavailable target fallback. |
+| Config | Recommended value | Notes |
+|---|---:|---|
+| `LIVE_ACTIVITY_MAX_SELECTED_MATCHES` | `1` | Option A MVP. |
+| `LIVE_ACTIVITY_CLOCK_UPDATE_SECONDS` | `30-60` | Coalesce clock updates. |
+| `LIVE_ACTIVITY_KEY_EVENT_UPDATE` | immediate | Goal/red card/status changes. |
+| `LIVE_ACTIVITY_FINAL_STATE_TTL_SECONDS` | `300-900` | Keep final score briefly before ending if platform allows. |
+| `LIVE_ACTIVITY_MANUAL_DISMISS_COOLDOWN_SECONDS` | `900+` | Avoid recreating immediately after dismissal. |
 
-## 10. Observability / Audit
+## 10. Security / Privacy
 
-| Event / Metric | Trigger | Properties | Required? |
-|---|---|---|---:|
-| `sport_live_activity_start_requested` | Start API receives match start. | event_id, match_id, target_count | Yes |
-| `sport_live_activity_started` | Activity start succeeds. | activity_id, user_id_hash, match_id, surfaces | Yes |
-| `sport_live_activity_suppressed` | User/device not eligible. | reason, match_id, platform | Yes |
-| `sport_live_activity_update_sent` | Update sent. | activity_id, match_id, status | Yes |
-| `sport_live_activity_update_rate_limited` | Update exceeds cadence. | activity_id, match_id | Yes |
-| `sport_live_activity_opened` | User opens app from activity. | activity_id, source_surface, deeplink_result | Yes |
-| `sport_live_activity_ended` | Activity ended. | activity_id, match_id, reason | Yes |
-| `sport_live_activity_failed` | Start/update/end failure. | action, reason, retryable | Yes |
+- Activity tokens are sensitive device-scoped data; store securely and cleanup invalid tokens.
+- Service endpoints require S2S auth and audit logging.
+- Lock-screen payload must not include private account data.
+- Followed-match subscriptions are scoped to authenticated user/device.
 
-## 10A. Single Active Match Contract
+## 11. Observability / Audit
 
-Live Activity is scoped to the one match currently open in Match Detail/Player screen or Player screen. Because a user can only be in one match detail/player context at a time, this feature must not aggregate multiple matches in expanded Dynamic Island or lock-screen states.
+Track:
 
-If the user switches from match A to match B, client/backend orchestration should end or replace the existing Live Activity for match A according to platform constraints, then start/update Live Activity for match B when eligible.
+- subscription created/updated/unfollowed
+- activity selected/switched
+- APNS start/update/end accepted/failed
+- selected-match priority reason
+- deeplink opened by surface
+- suppress reasons: unsupported device, no eligible match, manual dismissal cooldown, invalid token
 
-Expanded Dynamic Island and lock screen always show the same single active viewed match. Tap opens that match deeplink/fallback.
+## 12. API Test Matrix
 
-## 10B. PiP / Dismissal Contract
-
-- PiP state is playback state and must not override the active viewed match shown in Live Activity.
-- Closing PiP must not call Live Activity end.
-- Manual Live Activity dismissal must not close PiP.
-- Manual Live Activity dismissal should produce/surface a suppression state equivalent to `LIVE_ACTIVITY_DISMISSED` for that match/session.
-- Recreate Live Activity only after renewed in-app engagement or a new match lifecycle trigger.
-
-## 11. API Test Matrix
-
-| ID | Scenario | Expected |
-|---|---|---|
-| API-001 | Start success | Returns accepted counts; creates activities for eligible active Match Detail/Player screen user/session. |
-| API-002 | Duplicate start | Returns idempotent result or `DUPLICATE_EVENT`; no duplicate activity. |
-| API-003 | Update success | Updates content state. |
-| API-004 | Update ended activity | Returns `ACTIVITY_ENDED` or safe no-op. |
-| API-005 | End success | Marks activity ended and sends end state. |
-| API-006 | Duplicate end | Safe idempotent result. |
-| API-007 | Invalid content state | Returns `VALIDATION_ERROR`. |
-| API-008 | Update cadence exceeded | Returns/coalesces `RATE_LIMITED`. |
-| API-009 | User is outside Match Detail/Player screen | Live Activity is suppressed with `NOT_IN_MATCH_DETAIL_OR_PLAYER` for this feature. |
-| API-009A | User is currently in Match Detail/Player screen without follow state | Live Activity is triggered when device/platform eligible. |
-| API-010 | User switches from match A to match B | Live Activity is ended/replaced for match A and started/updated for match B when eligible; no multi-match aggregation is shown. |
-| API-011 | User closes PiP | No Live Activity end call is triggered. |
-| API-012 | User dismisses Live Activity | Suppress recreation until renewed in-app engagement/new lifecycle trigger. |
+| Test | Expected result |
+|---|---|
+| Follow match with eligible iOS token | Subscription active; eligible true. |
+| Follow match on unsupported device | Subscription active; Live Activity suppressed. |
+| Select among multiple followed matches | One selected match returned. |
+| Key event for non-selected followed match | Priority may switch to event match. |
+| Duplicate select/update event | Idempotent; no duplicate activity. |
+| Unfollow selected with another eligible match | `/select` switches activity. |
+| Unfollow all | `/end` ends activity. |
+| Invalid deeplink | Fallback deeplink used by app. |

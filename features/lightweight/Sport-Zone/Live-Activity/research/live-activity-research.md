@@ -3,57 +3,61 @@
 > Project: FPTPlay
 > Feature: Sport Zone Live Activity
 > Related feature: Notifications & Alert
-> Last updated: 2026-06-02
+> Last updated: 2026-06-03
 
 ## 1. Input Summary
 
-The requested feature adds a Live Activity layer related to the previously documented Sport Zone Notifications & Alert feature.
+The requested feature adds a Live Activity layer similar to UniScore-style live score apps. Corrected model: Live Activity is driven by user **Follow Match** intent for one or more matches, not by checking whether the user is currently in Match Detail/Player screen.
 
 There are two Live Activity channels/surfaces:
 
 1. Devices with Dynamic Island.
 2. Lock screen.
 
-## 2. Dynamic Island Flow
+## 2. Followed-match Flow
 
-1. User enters Match Detail/Player screen.
-2. When the match starts, the system pushes a normal notification plus a Live Activity.
-3. UI shows both normal notification and compact Live Activity in parallel.
-4. Live Activity stays visible throughout the match.
-5. Ignoring the normal notification, user taps compact Live Activity in Dynamic Island to open deeplink, or long-presses/holds to expand it.
-6. System shows expanded Live Activity.
-7. User taps expanded Live Activity.
-8. System opens the app by deeplink.
+1. User taps Follow on match A.
+2. App/server records followed-match subscription and Live Activity eligibility metadata.
+3. If match A is live or becomes live, Live Activity can start/update for that match.
+4. If user follows matches A/B/C, system applies Option A priority and displays one selected followed match.
+5. Score/status/key events update the selected match Live Activity.
+6. User taps Live Activity to deeplink into selected match.
+7. User unfollows selected match or match ends; system switches to next eligible followed match or ends Live Activity.
 
-## 3. Lock Screen Flow
+## 3. Dynamic Island Flow
 
-1. User enters Match Detail/Player screen.
-2. User/device is on lock screen.
-3. When the match starts, the system pushes a normal notification plus a Live Activity.
-4. Lock screen shows both normal notification and expanded Live Activity in parallel.
-5. Live Activity stays visible throughout the match.
-6. Ignoring the normal notification, user taps expanded lock-screen Live Activity.
-7. System opens the app by deeplink.
+1. Selected followed match becomes eligible.
+2. Dynamic Island compact Live Activity appears on supported devices.
+3. User taps compact Live Activity to open selected match deeplink, or long-presses/holds to expand it.
+4. Expanded Live Activity shows the same selected followed match.
+5. User taps expanded Live Activity to open app by deeplink.
 
-## 4. Domain Pattern Alignment
+## 4. Lock Screen Flow
 
-This follows a multi-channel notification pattern:
+1. Selected followed match is active while device is locked.
+2. Lock screen shows expanded Live Activity for selected followed match.
+3. Score/status/key event updates continue within platform limits.
+4. User taps expanded lock-screen Live Activity.
+5. App opens selected match deeplink/fallback.
+
+## 5. Domain Pattern Alignment
 
 ```text
-Match start/live-state event
-→ Check active Match Detail/Player screen session + platform eligibility
-→ Start Live Activity
-→ Update Live Activity during match
-→ End Live Activity at match end
-→ Track start/open/update/end status
+Follow Match action
+→ Create user/device/match subscription
+→ Match start/live/key-event event
+→ Select one followed match by priority
+→ Start/update Live Activity
+→ Deeplink to selected match on tap
+→ Switch/end when selected match ends or user unfollows
 ```
 
-The normal notification is not redefined here; it remains under Notifications & Alert. Live Activity is a parallel persistent channel with its own lifecycle.
+Normal notification behavior remains under Notifications & Alert. Live Activity is a parallel persistent channel with its own subscription and lifecycle.
 
-## 5. Research Notes
+## 6. Research Notes
 
-- Live Activity requires platform capability detection, especially Dynamic Island support.
-- Dynamic Island compact and expanded states need separate UI contracts.
-- Lock-screen surface starts in expanded form.
-- Match lifecycle events should update Live Activity score/time/status until match end.
-- Deeplink target should be the match live/detail screen, with fallback to Sport Zone match detail or Sport Zone home.
+- Follow state is the primary eligibility source.
+- Match Detail/Player screen may be a follow source or recency signal, but not a hard start gate.
+- Option A avoids multi-match UI complexity and OS surface crowding.
+- Multiple per-match Live Activities are not recommended for MVP because they can spam lock screen and complicate lifecycle.
+- Deeplink target should be selected match live/detail screen, with fallback to match detail or Sport Zone home.

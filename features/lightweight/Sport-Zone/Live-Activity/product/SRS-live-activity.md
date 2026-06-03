@@ -2,32 +2,37 @@
 
 ## 1. Objective
 
-Provide persistent Sport Zone Live Activity for the active viewed match across Dynamic Island and lock-screen surfaces, triggered at match start and maintained throughout the match.
+Provide persistent Sport Zone Live Activity for the user's selected followed match across Dynamic Island and lock-screen surfaces, triggered by Follow Match subscription and maintained throughout the match.
 
 ## 2. Users and Permissions
 
 | User / actor | Permission / constraint |
 |---|---|
-| Authenticated active match viewer | Can receive personalized Live Activity for active viewed match. |
+| Authenticated match follower | Can receive Live Activity for followed match(es). |
+| Multi-match follower | Can follow multiple matches; MVP shows one selected followed match. |
 | Dynamic Island-capable iOS device user | Can see compact Live Activity and expand it. |
 | Lock-screen iOS user | Can see expanded Live Activity on lock screen. |
-| Live Activity service | Coordinates Live Activity start/update/end. |
-| Match event service | Provides match start/update/end events. |
+| Live Activity service | Coordinates subscription, priority, start/update/end. |
+| Match event service | Provides match start/update/key-event/end events. |
 
 ## 3. Scope
 
 ### In scope
 
-- Start Live Activity at match start/live-state only for match currently open in Match Detail/Player screen or Player screen.
+- Register Live Activity eligibility from explicit Follow Match action.
+- Support 1 or n followed matches.
+- Option A MVP: display one selected followed match at a time.
 - Show compact Live Activity on Dynamic Island-capable device.
 - Show expanded Live Activity after long press/hold on compact Dynamic Island.
 - Show expanded Live Activity on lock screen.
-- Deeplink from expanded Live Activity into app.
-- Keep Live Activity throughout match.
-- Update/terminate Live Activity based on match lifecycle.
+- Deeplink from Live Activity into selected match.
+- Update/terminate/switch Live Activity based on followed match lifecycle.
 
 ### Out of scope
 
+- Active Match Detail/Player screen as mandatory start gate.
+- Multi-match list/`+N` summary.
+- Multiple simultaneous Live Activities per followed match.
 - Normal notification rules already covered by Notifications & Alert.
 - Android equivalent.
 - Figma-final visual spec if not available.
@@ -35,99 +40,102 @@ Provide persistent Sport Zone Live Activity for the active viewed match across D
 
 ## 4. Functional Requirements
 
-### FR-001 — Start Live Activity at active viewed match start
+### FR-001 — Register Follow Match subscription
 
 Acceptance criteria:
 
-- Given a user has entered Match Detail/Player screen and the match starts, when platform eligibility passes, then the system starts a Live Activity and sends the normal match-start notification.
+- Given a user follows a match on an eligible iOS device, when follow is saved, then Live Activity eligibility is registered for that user/device/match.
 
-### FR-002 — Display Dynamic Island compact state
-
-Acceptance criteria:
-
-- Given the user's device supports Dynamic Island, when Live Activity starts, then Dynamic Island displays compact Live Activity in parallel with the normal notification.
-
-### FR-003 — Expand Dynamic Island Live Activity
+### FR-002 — Select one followed match for MVP
 
 Acceptance criteria:
 
-- Given compact Live Activity is visible in Dynamic Island, when the user long-presses/holds it, then the system displays expanded Live Activity. When the user taps compact, the app opens via deeplink.
+- Given user follows multiple eligible matches, when Live Activity is started/updated, then exactly one selected match is displayed based on priority.
 
-### FR-004 — Deeplink from expanded Dynamic Island Live Activity
-
-Acceptance criteria:
-
-- Given expanded Dynamic Island Live Activity is visible, when the user taps it, then the app opens via match deeplink.
-
-### FR-005 — Display lock-screen expanded Live Activity
+### FR-003 — Display Dynamic Island compact state
 
 Acceptance criteria:
 
-- Given Live Activity starts while the lock screen is visible, then lock screen displays expanded Live Activity in parallel with the normal notification.
+- Given selected followed match is active and device supports Dynamic Island, when Live Activity starts, then Dynamic Island displays compact selected-match score/status.
 
-### FR-006 — Deeplink from lock-screen Live Activity
-
-Acceptance criteria:
-
-- Given expanded lock-screen Live Activity is visible, when the user taps it, then the app opens via match deeplink.
-
-### FR-007 — Maintain Live Activity throughout match
+### FR-004 — Expand Dynamic Island Live Activity
 
 Acceptance criteria:
 
-- Given match is ongoing, when match updates arrive, then Live Activity remains visible and updates its display until match ends or is terminated.
+- Given compact Live Activity is visible, when user long-presses/holds it, then expanded Live Activity displays selected match. When user taps compact, app opens selected match deeplink.
+
+### FR-005 — Deeplink from expanded Dynamic Island Live Activity
+
+Acceptance criteria:
+
+- Given expanded Dynamic Island Live Activity is visible, when user taps it, then app opens selected match deeplink/fallback.
+
+### FR-006 — Display lock-screen expanded Live Activity
+
+Acceptance criteria:
+
+- Given selected followed match Live Activity is active and lock screen is visible, then lock screen displays expanded selected-match Live Activity.
+
+### FR-007 — Maintain and switch Live Activity throughout match
+
+Acceptance criteria:
+
+- Given match updates/key events arrive, when selected match changes or score/status updates, then Live Activity updates display/deeplink accordingly without duplicates.
 
 ### FR-008 — End Live Activity
 
 Acceptance criteria:
 
-- Given match ends/cancels/becomes unavailable, when termination condition is received, then Live Activity ends and no stale activity remains.
+- Given no eligible followed match remains, when termination condition is received, then Live Activity ends and no stale activity remains.
 
 ## 5. Business Rules
 
 | ID | Rule |
 |---|---|
-| BR-001 | Live Activity requires a actively viewing match and eligible device/platform state. Match Detail/Player screen is optional context, not a start gate. |
-| BR-002 | At match start, normal notification and Live Activity are both triggered when eligible. |
-| BR-003 | Dynamic Island initial state is compact. |
-| BR-004 | Dynamic Island compact tap opens deeplink; long press/hold expands Live Activity. |
-| BR-005 | Expanded Live Activity tap opens deeplink. |
-| BR-006 | Lock screen displays expanded Live Activity. |
-| BR-007 | Live Activity persists throughout the match. |
-| BR-008 | Live Activity ends at match end/cancel/unavailable. |
-| BR-009 | Normal notification behavior is delegated to Notifications & Alert. |
+| BR-001 | Live Activity requires explicit followed-match subscription and eligible iOS/device/platform state. |
+| BR-002 | Active Match Detail/Player screen is not a start gate. |
+| BR-003 | Option A MVP shows one selected followed match. |
+| BR-004 | Priority order: latest key event → live status → recently followed/opened → deterministic tie-breaker. |
+| BR-005 | Dynamic Island initial state is compact. |
+| BR-006 | Dynamic Island compact tap opens deeplink; long press/hold expands Live Activity. |
+| BR-007 | Expanded Live Activity tap opens deeplink. |
+| BR-008 | Lock screen displays expanded Live Activity. |
+| BR-009 | Live Activity ends/switches when selected match ends/unfollowed/unavailable. |
+| BR-010 | Normal notification behavior is delegated to Notifications & Alert. |
 
 ## 6. State Model
 
 | State | Meaning |
 |---|---|
 | `not_started` | No Live Activity created. |
+| `eligible` | Followed-match subscription exists. |
 | `starting` | Start request sent. |
 | `active_compact` | Dynamic Island compact state. |
 | `active_expanded` | Expanded Dynamic Island or lock-screen state. |
+| `switching_match` | Selected followed match is changing. |
 | `updating` | Match data update is being applied. |
-| `deeplink_opened` | User tapped compact or expanded activity and app route opened. |
+| `deeplink_opened` | User tapped activity and app route opened. |
 | `ended` | Live Activity ended normally. |
+| `suppressed` | Activity intentionally not started. |
 | `failed` | Start/update/end failed. |
 
 ## 7. Copy Requirements
-
-Draft copy pending final design/content.
 
 | Surface | Draft copy |
 |---|---|
 | Compact Dynamic Island | `{home_score} - {away_score}` / match status. |
 | Expanded title | `{home_team} vs {away_team}` |
 | Expanded status | `Đang diễn ra` / `{match_clock}` / `{period}` |
+| Latest event | `Có bàn thắng mới` / event-specific short label. |
 | CTA/deeplink hint | `Xem trận đấu` |
 
 ## 8. Assumptions
 
 - Live Activity is iOS-first.
-- User has entered Match Detail/Player screen before or during the match eligibility window.
-- Normal notification is still sent using Notifications & Alert rules.
+- User Follow Match action is explicit Live Activity intent.
+- Normal notification is still sent using Notifications & Alert rules where applicable.
 - Match deeplink resolves to live match screen when available, then match detail, then Sport Zone home.
-- Data source can provide match start/update/end events.
+- Data source can provide match start/update/key-event/end events.
 
 ## 9. Non-blocking confirmations
 
@@ -135,17 +143,3 @@ Draft copy pending final design/content.
 - Confirm UI fields for compact/expanded states.
 - Confirm update cadence and score/time data source.
 - Confirm final deeplink path.
-
-## Accepted Update — Engagement Eligibility
-
-Live Activity eligibility requires both match active screen presence and match engagement. A user is eligible after entering Match Detail/Player screen for the match. Active screen presence is required and must be checked before Live Activity start.
-
-Live Activity shows only the one match currently open in Match Detail/Player screen or Player screen. Compact, expanded Dynamic Island, and lock screen all represent that same match; no multi-match aggregation is required.
-
-PiP is independent from Live Activity. Closing PiP does not end Live Activity, and dismissing Live Activity does not close PiP.
-
-## Final Correction — Active Screen Is the Start Gate
-
-Mobile Sport Zone detail and player are one shared **Match Detail/Player screen**.
-
-Live Activity starts only while the user is currently in Match Detail/Player screen or Player screen for the match, subject to device/platform eligibility. Follow/subscription state is ignored for Live Activity eligibility. If the user is outside Match Detail/Player screen, Live Activity must be suppressed for this feature.
