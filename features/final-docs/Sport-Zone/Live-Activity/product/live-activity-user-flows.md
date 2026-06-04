@@ -17,6 +17,8 @@
 - OS quyết định cách hiển thị thực tế trên Lock Screen: một hay nhiều activities, thứ tự, collapse/expand.
 - Dynamic Island compact hỗ trợ 2 interaction chính: tap để mở Match Detail của selected match, long press/hold để OS mở expanded Live Activity.
 - Expanded Dynamic Island vẫn hiển thị selected match hiện tại; MVP không dùng expanded Dynamic Island để hiển thị app-controlled multi-match list.
+- PiP và Live Activity là 2 OS surfaces độc lập: PiP phục vụ video playback, Live Activity phục vụ live score/status của followed match.
+- Nếu PiP đang hiển thị song song với Live Activity, tap Live Activity mở màn đích theo `matchId`; PiP tiếp tục phát nếu OS cho phép, chỉ đóng khi user chủ động đóng hoặc OS bắt buộc.
 - Nếu match không đủ điều kiện follow/Live Activity, App disable CTA **Follow Match**.
 
 ## 0.1. Dynamic Island Priority Rule
@@ -508,6 +510,7 @@ sequenceDiagram
 - Expanded Dynamic Island vẫn hiển thị selected match hiện tại.
 - Tap Dynamic Island compact/expanded mở Match Detail của selected match.
 - Nếu Lock Screen hiển thị nhiều Live Activities, App mở match gắn với card được tap.
+- Nếu PiP đang hiển thị song song, tap/long press Live Activity vẫn xử lý theo Live Activity; PiP tiếp tục phát nếu OS cho phép.
 - Mỗi Live Activity card phải có đúng `matchId`.
 - App fetch latest match detail trước khi render màn hình.
 - Nếu deeplink data thiếu/không hợp lệ, App mở **Followed Matches / Live Matches** làm fallback.
@@ -525,6 +528,9 @@ sequenceDiagram
 
 - **User tap một card trên Lock Screen multi-match**
   Hành vi mong đợi: App mở Match Detail của đúng match gắn với card được tap.
+
+- **PiP đang hiển thị song song với Live Activity**
+  Hành vi mong đợi: Tap Live Activity mở màn đích theo `matchId`; PiP tiếp tục phát nếu OS cho phép, chỉ đóng khi user chủ động đóng hoặc OS bắt buộc.
 
 - **Deeplink có matchId hợp lệ**
   Hành vi mong đợi: App mở màn Match Detail của match tương ứng.
@@ -628,6 +634,29 @@ User tap card Man City
 App mở Match Detail Man City vs Liverpool
 ```
 
+### PiP hiển thị song song với Live Activity
+
+```text
+Screen
+┌─────────────────────────────────────┐
+│ PiP Video Player                     │
+│ ┌───────────────┐                    │
+│ │ Live video    │                    │
+│ └───────────────┘                    │
+│                                     │
+│ Live Activity                        │
+│ ┌───────────────────────────────┐    │
+│ │ ARS 1 - 0 CHE        39' LIVE │    │
+│ └───────────────────────────────┘    │
+└─────────────────────────────────────┘
+
+User tap Live Activity
+      ↓
+
+App mở Match Detail theo matchId.
+PiP tiếp tục phát nếu OS cho phép.
+```
+
 ### Deeplink thiếu/không hợp lệ — fallback
 
 ```text
@@ -660,6 +689,8 @@ App mở fallback
 - Expanded Dynamic Island vẫn chỉ hiển thị selected match.
 - Tap Dynamic Island compact/expanded mở current selected match.
 - Tap Lock Screen card mở match gắn với card đó.
+- Khi PiP và Live Activity cùng hiển thị, OS quyết định vị trí/lớp hiển thị; App không tự kiểm soát toàn bộ layout song song này.
+- PiP không thay thế Live Activity; PiP phục vụ video playback, Live Activity phục vụ live score/status.
 - Mỗi Live Activity card phải có `matchId` hợp lệ.
 - Nếu deeplink không hợp lệ, fallback là **Followed Matches / Live Matches**.
 - App cần fetch latest match detail trước khi render.
