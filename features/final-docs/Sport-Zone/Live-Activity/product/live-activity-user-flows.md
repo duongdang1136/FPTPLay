@@ -15,7 +15,21 @@
 - Server vẫn update các Live Activity subscriptions hợp lệ cho những followed live matches đủ điều kiện.
 - App/Product định nghĩa template và data hiển thị theo từng match.
 - OS quyết định cách hiển thị thực tế trên Lock Screen: một hay nhiều activities, thứ tự, collapse/expand.
+- Dynamic Island compact hỗ trợ 2 interaction chính: tap để mở Match Detail của selected match, long press/hold để OS mở expanded Live Activity.
+- Expanded Dynamic Island vẫn hiển thị selected match hiện tại; MVP không dùng expanded Dynamic Island để hiển thị app-controlled multi-match list.
 - Nếu match không đủ điều kiện follow/Live Activity, App disable CTA **Follow Match**.
+
+## 0.1. Dynamic Island Priority Rule
+
+Dynamic Island chỉ hiển thị 1 selected followed match tại một thời điểm.
+
+Thứ tự chọn selected match:
+
+1. Chọn match user follow sớm nhất và đang Live/eligible.
+2. Nếu selected match hiện tại End, bị Unfollow, hoặc không còn eligible, chuyển sang followed match tiếp theo đang Live/eligible.
+3. Nếu không còn followed match nào đang Live/eligible, kết thúc Dynamic Island Live Activity.
+
+Không tự động đổi selected match chỉ vì match khác có goal/key event, để tránh Dynamic Island nhảy qua lại gây rối user.
 
 ---
 
@@ -231,7 +245,7 @@ sequenceDiagram
   Hành vi mong đợi: Server có thể bỏ qua update để tránh gửi quá nhiều lần.
 
 - **Gửi update Live Activity thất bại**
-  Hành vi mong đợi: Server retry theo retry rule, UI giữ trạng thái hiển thị gần nhất.
+  Hành vi mong đợi: Server thử gửi lại trong giới hạn cho phép; nếu vẫn thất bại, UI giữ trạng thái hiển thị thành công gần nhất.
 
 - **Token/device Live Activity không hợp lệ**
   Hành vi mong đợi: Server đánh dấu subscription/device không hợp lệ và ngừng gửi update cho device đó.
@@ -351,7 +365,7 @@ sequenceDiagram
 ## Alternate / Error paths
 
 - **Match End nhưng còn followed match khác đang Live**
-  Hành vi mong đợi: Server chuyển Dynamic Island sang followed live match tiếp theo theo priority.
+  Hành vi mong đợi: Server chuyển Dynamic Island sang followed live match tiếp theo, ưu tiên match được follow sớm nhất trong danh sách còn Live/eligible.
 
 - **Match End và không còn followed match nào đang Live**
   Hành vi mong đợi: Server kết thúc Live Activity tương ứng.
@@ -375,10 +389,10 @@ sequenceDiagram
   Hành vi mong đợi: Server chọn match cho Dynamic Island theo priority đã định nghĩa, mặc định là match được follow sớm nhất.
 
 - **Update sang match tiếp theo thất bại**
-  Hành vi mong đợi: Server retry theo retry rule, Live Activity giữ trạng thái gần nhất.
+  Hành vi mong đợi: Server thử gửi lại trong giới hạn cho phép; nếu vẫn thất bại, Live Activity giữ trạng thái hiển thị thành công gần nhất.
 
 - **End Live Activity thất bại**
-  Hành vi mong đợi: Server retry/end lại theo retry rule để tránh Live Activity bị treo.
+  Hành vi mong đợi: Server thử end lại trong giới hạn cho phép để tránh Live Activity bị treo.
 
 - **User unfollow trong lúc Server đang switch match**
   Hành vi mong đợi: Server check lại trạng thái followed mới nhất trước khi gửi update.
@@ -448,11 +462,11 @@ Vẫn active nếu OS cho phép
 
 ---
 
-# Flow 04 — Tap Live Activity → Deeplink
+# Flow 04 — Interact with Live Activity → Expand or Deeplink
 
 ## Mục đích
 
-Khi user tap Live Activity từ Dynamic Island hoặc Lock Screen, App mở đúng màn Match Detail tương ứng.
+Khi user tương tác với Live Activity từ Dynamic Island hoặc Lock Screen, App xử lý đúng hành vi: long press/hold để mở expanded Live Activity hoặc tap để deeplink vào đúng Match Detail.
 
 ## Sequence Diagram
 
@@ -464,7 +478,11 @@ sequenceDiagram
     participant App
     participant Server
 
-    alt User tap Dynamic Island
+    alt User long press/hold Dynamic Island compact
+        User->>App: Long press/hold Dynamic Island compact
+        App->>App: OS mở expanded Live Activity
+        App-->>User: Hiển thị expanded Live Activity của selected match
+    else User tap Dynamic Island compact/expanded
         User->>App: Tap Dynamic Island Live Activity
         App->>App: Đọc selected matchId
     else User tap Lock Screen Live Activity card
@@ -472,19 +490,23 @@ sequenceDiagram
         App->>App: Đọc matchId từ card được tap
     end
 
-    alt matchId hợp lệ
+    alt Interaction là long press/hold
+        App-->>User: Không deeplink, chỉ hiển thị expanded Live Activity
+    else matchId hợp lệ
         App->>Server: Lấy latest match detail
         Server-->>App: Trả latest match detail
-        App-->>User: Mở màn Match Detail
+        App-->>User: Mở Match Detail theo matchId
     else matchId thiếu hoặc không hợp lệ
-        App-->>User: Mở màn Followed Matches / Live Matches
+        App-->>User: Mở Followed Matches / Live Matches
     end
 ```
 
 ## Tóm tắt main flow
 
-- User tap Live Activity trên Dynamic Island hoặc Lock Screen.
-- Nếu user tap Dynamic Island, App mở selected match.
+- User có thể tap hoặc long press/hold Live Activity trên Dynamic Island.
+- Long press/hold Dynamic Island compact chỉ mở expanded Live Activity, không điều hướng vào App ngay.
+- Expanded Dynamic Island vẫn hiển thị selected match hiện tại.
+- Tap Dynamic Island compact/expanded mở Match Detail của selected match.
 - Nếu Lock Screen hiển thị nhiều Live Activities, App mở match gắn với card được tap.
 - Mỗi Live Activity card phải có đúng `matchId`.
 - App fetch latest match detail trước khi render màn hình.
@@ -492,7 +514,13 @@ sequenceDiagram
 
 ## Alternate / Error paths
 
-- **User tap Dynamic Island**
+- **User long press/hold Dynamic Island compact**
+  Hành vi mong đợi: OS mở expanded Live Activity của selected match, App không điều hướng sang Match Detail ngay.
+
+- **User tap Dynamic Island compact**
+  Hành vi mong đợi: App mở Match Detail của selected match hiện tại.
+
+- **User tap expanded Dynamic Island**
   Hành vi mong đợi: App mở Match Detail của selected match hiện tại.
 
 - **User tap một card trên Lock Screen multi-match**
@@ -530,7 +558,28 @@ sequenceDiagram
 
 ## Wireframe
 
-### Tap Dynamic Island
+### Long press/hold Dynamic Island
+
+```text
+Dynamic Island compact
+┌───────────────────────────────┐
+│ ARS 1 - 0 CHE        39' LIVE │
+└───────────────────────────────┘
+
+User long press/hold
+      ↓
+
+Expanded Dynamic Island
+┌─────────────────────────────────────┐
+│ Arsenal                         1   │
+│ Chelsea                         0   │
+│                                     │
+│ 39' · Live                           │
+│ Tap to view match detail             │
+└─────────────────────────────────────┘
+```
+
+### Tap Dynamic Island compact/expanded
 
 ```text
 Live Activity
@@ -607,7 +656,9 @@ App mở fallback
 
 ## Ghi chú wireframe
 
-- Tap Dynamic Island mở current selected match.
+- Long press/hold Dynamic Island mở expanded Live Activity, không deeplink ngay.
+- Expanded Dynamic Island vẫn chỉ hiển thị selected match.
+- Tap Dynamic Island compact/expanded mở current selected match.
 - Tap Lock Screen card mở match gắn với card đó.
 - Mỗi Live Activity card phải có `matchId` hợp lệ.
 - Nếu deeplink không hợp lệ, fallback là **Followed Matches / Live Matches**.
