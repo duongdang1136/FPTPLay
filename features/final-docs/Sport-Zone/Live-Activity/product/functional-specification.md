@@ -20,11 +20,11 @@
 
 ### 1.1 Goal
 
-Provide a persistent Live Activity-style experience for the user’s **followed Sport Zone match**, combining notification delivery with constrained widget-like system UI so users can monitor score/status from Dynamic Island or lock screen without needing to stay in Match Detail/Player screen.
+Provide a persistent Live Activity-style experience for the user’s **followed Sport Zone match(es)**, combining notification delivery with constrained widget-like system UI so users can monitor score/status from Dynamic Island or lock screen without needing to stay in Match Detail/Player screen.
 
 ### 1.2 Product context
 
-Live Activity complements the Notifications & Alert feature but has a separate lifecycle. It behaves like a **Notification + Widget** hybrid: server-side match events are delivered through iOS APNS/Live Activity update mechanisms, while the UI is rendered inside OS-constrained Dynamic Island/lock-screen templates. The user’s explicit **Follow Match** action is the Live Activity intent source. A user may follow one match or multiple matches; for MVP, the Live Activity surface displays one priority followed match at a time.
+Live Activity complements the Notifications & Alert feature but has a separate lifecycle. It behaves like a **Notification + Widget** hybrid: server-side match events are delivered through iOS APNS/Live Activity update mechanisms, while the UI is rendered inside OS-constrained Dynamic Island/lock-screen templates. The user’s explicit **Follow Match** action is the Live Activity intent source. A user may follow one match or multiple matches. For MVP, Dynamic Island displays one selected followed match at a time; Lock Screen may display multiple followed live match activities if OS allows.
 
 ### 1.3 Success signals
 
@@ -43,10 +43,10 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 - iOS Live Activity for authenticated users who explicitly follow Sport Zone match(es).
 - Notification + Widget hybrid behavior: remote match updates delivered via iOS APNS/Live Activity update path and rendered in OS-constrained surfaces.
 - Followed-match based start/update/end eligibility.
-- Option A MVP: one visible selected followed match in Live Activity at a time.
+- Option A MVP for Dynamic Island: one visible selected followed match at a time.
 - Dynamic Island compact state on supported iOS devices.
 - Dynamic Island expanded state after long press/hold on compact Live Activity.
-- Lock-screen expanded state with one selected match by default; OS controls expansion/presentation behavior.
+- Lock-screen Live Activity state: may show one or multiple followed live match activities if OS allows; OS controls expansion/presentation behavior.
 - Product-defined template and data fields within OS UI constraints.
 - Deeplink from Live Activity into selected match.
 - Score/status/clock updates throughout the selected match.
@@ -57,8 +57,8 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 ### 2.2 Out of scope
 
 - Active Match Detail/Player screen as a mandatory eligibility gate.
-- Multi-match expanded list or `+N` summary in Live Activity.
-- Multiple simultaneous Live Activities, one per followed match.
+- App-controlled multi-match expanded list or `+N` summary in Live Activity.
+- App-controlled override of OS multi-activity presentation on Lock Screen.
 - Normal notification rules/copy, owned by `Sport-Zone / Notifications-Alert`.
 - Android Dynamic Island-style equivalent for MVP; Android does not use APN/APNS and any OEM-specific solution must be phased separately.
 - Marketing notifications.
@@ -67,7 +67,7 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 
 ### 2.3 Future scope / later
 
-- Multi-match expanded summary for followed matches, if OS/template constraints allow later.
+- App-controlled multi-match expanded summary for followed matches, if OS/template constraints allow later.
 - Interactive Live Activity actions if platform/product supports later.
 - Android OEM-specific Dynamic Island/persistent widget equivalents, starting with Samsung if feasibility is confirmed, then Xiaomi/other OEMs later.
 - Sport-specific expanded layouts.
@@ -79,11 +79,11 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 |---|---|
 | Live Activity | iOS persistent system surface that shows real-time match state. |
 | Followed match | A match explicitly followed by the user. This is the primary Live Activity intent source. |
-| Selected Live Activity match | The one followed match currently represented by Live Activity under Option A. Default selection starts from the first followed match, then re-checks live/eligible followed matches by priority. |
+| Selected Live Activity match | The one followed match currently represented on Dynamic Island under Option A. Default selection starts from the first followed match, then re-checks live/eligible followed matches by priority. |
 | Priority rule | Deterministic rule that selects one match when user follows multiple eligible matches. |
 | Dynamic Island compact | Small Dynamic Island representation shown on supported iOS devices; severe UI constraint, one selected match only. |
 | Dynamic Island expanded | Larger view shown after compact Live Activity is long-pressed/held. |
-| Lock-screen expanded | Live Activity view shown on iOS lock screen; default one selected match, with richer presentation constrained/handled by OS. |
+| Lock-screen Live Activity | Live Activity view shown on iOS lock screen; may show one or multiple followed live match activities if OS allows, with presentation constrained/handled by OS. |
 | Normal notification | Push notification defined by Notifications & Alert. Live Activity uses notification delivery concepts but is a separate persistent system surface. |
 | Deeplink | App route that opens live match/detail. |
 
@@ -104,12 +104,12 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 |---|---|
 | User follows match | Create/update followed-match subscription and register Live Activity eligibility. |
 | Followed match starts/is live | Start Live Activity if selected match is eligible. |
-| User follows multiple matches | Apply Option A priority rule and show one selected match. |
+| User follows multiple matches | Apply Option A priority rule for Dynamic Island; register/update eligible followed matches for Lock Screen where OS allows. |
 | Match update/key event | Update Live Activity and re-evaluate whether another followed match is live/eligible or has higher priority. |
 | User unfollows selected match | Switch to next eligible followed match or end Live Activity. |
 | Dynamic Island compact tap | Open selected match via deeplink. |
 | Dynamic Island compact long press/hold | Expand Live Activity. |
-| Expanded Dynamic Island / lock-screen tap | Open selected match via deeplink. |
+| Expanded Dynamic Island / lock-screen tap | Open selected match for Dynamic Island, or the specific tapped match card on Lock Screen. |
 | Match end/cancel/unavailable | Show final state briefly or end; switch/end based on remaining followed matches. |
 
 ## 6. Use Case Summary
@@ -117,10 +117,10 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 | UC | Actor | Goal | Main path | Alternate / error paths |
 |---|---|---|---|---|
 | UC-001 | Match follower | Follow one match and monitor it from Live Activity. | Follow match → match starts/live → Live Activity starts → score/status update. | Unsupported device: suppress Live Activity; normal notifications remain separate. |
-| UC-002 | Match follower | Follow multiple matches but see one priority Live Activity. | Follow A/B/C → priority rule selects one match → Live Activity displays selected match. | Priority changes: update selected match content/deeplink. |
+| UC-002 | Match follower | Follow multiple matches while Dynamic Island stays focused. | Follow A/B/C → priority rule selects one Dynamic Island match → Lock Screen may show multiple eligible activities if OS allows. | Priority changes: update Dynamic Island selected match; Lock Screen keeps valid per-match activities. |
 | UC-003 | Dynamic Island user | Open selected match from compact Live Activity. | Compact visible → tap → app opens selected match deeplink. | Target unavailable → fallback route. |
 | UC-004 | Dynamic Island user | Expand compact state. | Long press/hold → expanded Live Activity appears → tap opens selected match. | Expansion unavailable: compact tap still works. |
-| UC-005 | Lock-screen user | Monitor followed match on lock screen. | Lock screen visible → expanded Live Activity shows selected match. | Start/update fails: retry/log; no custom lock-screen error. |
+| UC-005 | Lock-screen user | Monitor followed live match(es) on lock screen. | Lock screen visible → OS may show one or multiple eligible followed match activities. | Start/update fails: retry/log; no custom lock-screen error. |
 | UC-006 | System | Keep selected match accurate and lifecycle-safe. | Match events → update/re-prioritize/end. | Duplicate/stale events are idempotent and must not create duplicates. |
 
 ## 7. Business Rules
@@ -130,20 +130,20 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 | BR-001 | Live Activity eligibility is based on explicit user Follow Match subscription plus iOS/device/platform eligibility. | Product/API |
 | BR-002 | Match Detail/Player screen presence is optional context and must not be required as a Live Activity start gate. | Product/API |
 | BR-003 | Follow/subscription state is required for Live Activity eligibility. | Product/API |
-| BR-004 | Option A MVP shows only one selected followed match in Live Activity, even if the user follows multiple matches. | Product/API/Design |
+| BR-004 | Option A MVP shows only one selected followed match on Dynamic Island, even if the user follows multiple matches. | Product/API/Design |
 | BR-005 | Default selected match is the first followed match; if it ends or user unfollows it, system selects the next followed match that is currently live/eligible, then deterministic tie-breaker. | Product/API |
 | BR-006 | Dynamic Island-capable devices show compact Live Activity initially. | Product/Design |
 | BR-007 | Tapping compact Dynamic Island Live Activity opens the selected match deeplink; long press/hold expands it. | Product/Design |
-| BR-008 | Tapping expanded Dynamic Island or lock-screen Live Activity opens the selected match deeplink. | Product/Design |
-| BR-009 | Lock screen shows one selected match by default; OS handles lock-screen expansion/presentation behavior within platform constraints. | Product/Design |
+| BR-008 | Tapping expanded Dynamic Island opens the selected match deeplink; tapping a Lock Screen Live Activity card opens the match linked to that card. | Product/Design |
+| BR-009 | Lock Screen may show one or multiple followed live match activities if OS allows; OS handles expansion/presentation behavior within platform constraints. | Product/Design |
 | BR-010 | Live Activity remains visible while there is an eligible selected followed match and ends when none remain. | Product/API/Design |
 | BR-011 | Live Activity start/update/end must be idempotent per `user_id + device_id + match_id + event_id`. | API |
-| BR-012 | Deeplink fallback route order: live match screen → match detail → Sport Zone home. | Product/Design/API |
+| BR-012 | Deeplink fallback route order: Match Detail by valid matchId → Followed Matches / Live Matches when missing/invalid/unavailable. | Product/Design/API |
 | BR-013 | Normal notification and Live Activity may display in parallel but are owned by separate rules. | Product/Design |
 | BR-014 | If user manually dismisses Live Activity, system must not recreate it immediately without renewed follow/action or priority-changing match event. | Product/API |
 | BR-015 | If the user unfollows selected match, switch to next eligible followed match; if none exists, end Live Activity. | Product/API |
-| BR-016 | Multiple simultaneous per-match Live Activities are out of scope. | Product/API/Design |
-| BR-017 | Multi-match list/`+N` aggregation controlled by app is out of scope for MVP; lock-screen OS expansion behavior is platform-handled. | Product/Design |
+| BR-016 | Server may update multiple valid followed-match Live Activity subscriptions for Lock Screen; Dynamic Island still displays one selected match. | Product/API/Design |
+| BR-017 | App-controlled multi-match list/`+N` aggregation is out of scope for MVP; lock-screen OS multi-activity behavior is platform-handled. | Product/Design |
 | BR-018 | iOS remote Live Activity update feasibility depends on APNS/ActivityKit confirmation by iOS/backend. | API/iOS |
 | BR-019 | Android does not use APN/APNS; Android Dynamic Island-style behavior is out of MVP and should be phased by OEM capability, with Samsung as the first recommended candidate if confirmed feasible. | Product/API/Design |
 | BR-020 | Product owns template/data definition; engineering must implement within OS UI constraints. | Product/Design/API |
@@ -165,13 +165,13 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 
 ### F-002 — Select one followed match for Option A
 
-**Description:** When user follows multiple eligible matches, select exactly one match for the visible Live Activity.
+**Description:** When user follows multiple eligible matches, select exactly one match for Dynamic Island while allowing Lock Screen to receive/update eligible per-match activities where OS allows.
 
 **Input:** Followed match list, first-follow order, match statuses, key events, recency data.
 
 **System behavior:** Default to the first followed match. Keep it selected until it ends or user unfollows it. Then select the next followed match that is currently live/eligible; use deterministic tie-breaker if multiple candidates remain.
 
-**Output:** Selected Live Activity match.
+**Output:** Selected Dynamic Island match and eligible Lock Screen Live Activity subscriptions.
 
 **Errors:** If no eligible match exists, end/suppress Live Activity.
 
@@ -201,23 +201,23 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 
 ### F-005 — Deeplink from Live Activity
 
-**Description:** Open app from compact/expanded Dynamic Island or lock-screen Live Activity.
+**Description:** Open app from compact/expanded Dynamic Island or a lock-screen Live Activity card.
 
 **Input:** User tap on Live Activity.
 
-**System behavior:** Open selected match deeplink; fallback if target unavailable.
+**System behavior:** Open selected match deeplink for Dynamic Island, or the tapped card's match deeplink on Lock Screen; fallback if target unavailable.
 
-**Output:** App opens live match/detail/Sport Zone home.
+**Output:** App opens Match Detail or Followed Matches / Live Matches fallback.
 
 **Errors:** Invalid deeplink uses fallback route.
 
 ### F-006 — Render lock-screen expanded Live Activity
 
-**Description:** Show lock-screen Live Activity for the selected followed match.
+**Description:** Show lock-screen Live Activity for eligible followed live match(es), subject to OS capability.
 
-**Input:** Active Live Activity while device is locked.
+**Input:** Active Live Activity subscription(s) while device is locked.
 
-**System behavior:** Render one selected match by default in parallel with normal notification if any; any richer expansion/presentation behavior is handled by OS constraints and product template.
+**System behavior:** Render one or multiple followed live match activities if OS allows, in parallel with normal notification if any; richer expansion/presentation behavior is handled by OS constraints and product template.
 
 **Output:** Lock-screen expanded UI.
 
@@ -225,11 +225,11 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 
 ### F-007 — Update Live Activity throughout selected match
 
-**Description:** Keep score/status/time current while the selected match is ongoing.
+**Description:** Keep score/status/time current while followed live match activity is ongoing.
 
 **Input:** Match update/key-event events.
 
-**System behavior:** Update content state within platform limits; re-evaluate priority if another followed match has a higher-priority key event.
+**System behavior:** Update content state within platform limits; Dynamic Island selection remains priority-based, while Lock Screen eligible activities can be updated per match/subscription.
 
 **Output:** Updated Live Activity UI and deeplink for selected match.
 
@@ -305,7 +305,7 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 | Requirement | Business rules | API | Design | QA |
 |---|---|---|---|---|
 | F-001 | BR-001, BR-002, BR-003 | Register/start | Follow action + suppress states | Follow creates eligibility. |
-| F-002 | BR-004, BR-005 | Priority selection | One selected match display | Multi-follow selects one. |
+| F-002 | BR-004, BR-005, BR-016 | Priority selection | One selected Dynamic Island match; Lock Screen may show multiple | Multi-follow selects one for Dynamic Island and updates eligible Lock Screen activities. |
 | F-003 | BR-006 | Start/update content | Compact | Compact visible. |
 | F-004 | BR-007 | Platform behavior | Expanded | Long press expands. |
 | F-005 | BR-008, BR-012 | Deeplink fields | Tap behavior | Tap routes correctly. |
@@ -316,14 +316,14 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 
 ## 14. Risks / Accepted Assumptions
 
-- Accepted: Option A one selected followed match is MVP; no app-controlled multi-match list.
+- Accepted: Option A one selected followed match is MVP for Dynamic Island; Lock Screen may show multiple followed live match activities if OS allows.
 - Accepted: Default selected match is the first followed match. Re-check next followed live/eligible match only when current selected match ends or user unfollows it.
 - Accepted: Follow Match is explicit Live Activity intent.
 - Accepted: Match Detail/Player screen state is not a start gate.
 - Accepted: Live Activity is a Notification + Widget hybrid: iOS uses APNS/ActivityKit update path, UI is constrained by OS.
 - Accepted: Android APN/APNS is not applicable; Android Dynamic Island-style work is future OEM-specific scope, recommended Samsung-first if confirmed.
 - Risk: iOS platform may throttle Live Activity updates; score/clock cadence must be coalesced.
-- Risk: multi-follow priority could feel surprising; app should make selected match behavior predictable via recent/key-event priority.
+- Risk: multi-follow priority could feel surprising on Dynamic Island; app should make selected match behavior predictable via first-followed then end/unfollow switch rule.
 
 ## 15. QA Acceptance Matrix
 
@@ -331,13 +331,13 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 |---|---|
 | Follow one live match on eligible iOS device | Live Activity starts for that match. |
 | Follow one non-live match | Subscription saved; Live Activity starts when match becomes live if eligible. |
-| Follow A then B, both live | One Live Activity shown; priority selects B if recency wins. |
-| Follow A, B receives goal/key event | Priority re-evaluates; B may become selected if event priority wins. |
+| Follow A then B, both live | Dynamic Island shows one selected match by priority; Lock Screen may show multiple activities if OS allows. |
+| Follow A, B receives goal/key event | B Live Activity may update on Lock Screen if eligible; Dynamic Island selection does not change unless current selected match ends/unfollowed. |
 | Unfollow selected match with another eligible followed match | Live Activity switches to next selected match. |
 | Unfollow all eligible matches | Live Activity ends. |
 | Tap compact Dynamic Island | App opens selected match deeplink/fallback. |
 | Long press compact | Expanded Live Activity appears. |
-| Tap lock-screen expanded | App opens selected match deeplink/fallback. |
+| Tap Lock Screen activity card | App opens Match Detail for the tapped card's matchId; fallback to Followed Matches / Live Matches if invalid. |
 | Match ends | Final state shown briefly or activity ends; no stale display. |
 | Unsupported iOS device | Follow still works; Live Activity silently suppressed. |
 | Android device in MVP | Follow/normal notification works; iOS Live Activity suppressed/not applicable. |
@@ -349,7 +349,7 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 - BE confirms subscription/priority ownership.
 - iOS confirms ActivityKit token registration and update cadence.
 - FE confirms deeplink/fallback routes.
-- QA covers follow/unfollow, multi-follow priority, update, end, unsupported-device, APNS failure, and analytics/performance cases.
+- QA covers follow/unfollow, Dynamic Island priority, Lock Screen multi-activity behavior, update, end, unsupported-device, APNS failure, deeplink fallback, and analytics/performance cases.
 
 
 ## 17. Analytics & Performance Evaluation
@@ -363,7 +363,7 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 | `live_activity_start_requested` | Start request sent to iOS/APNS path. | `activity_id`, `selected_match_id`, `provider`, `surface` |
 | `live_activity_update_requested` | Score/status update sent. | `event_type`, `latency_ms`, `match_clock`, `priority_reason` |
 | `live_activity_displayed` | Client/OS-visible callback where measurable. | `surface`, `display_mode`, `platform_version` |
-| `live_activity_tapped` | User taps compact/expanded/lock-screen activity. | `surface`, `display_mode`, `deeplink_result` |
+| `live_activity_tapped` | User taps compact/expanded/lock-screen activity. | `surface`, `display_mode`, `match_id`, `deeplink_result` |
 | `live_activity_switched_match` | Priority changes selected match. | `from_match_id`, `to_match_id`, `priority_reason` |
 | `live_activity_ended` | Activity ended/suppressed. | `reason`, `final_status`, `duration_seconds` |
 | `live_activity_error` | Start/update/end fails. | `error_code`, `provider_status`, `retry_count` |
@@ -388,7 +388,7 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 - Primary MVP performance indicator: number/rate of **Theo dõi Trận đấu** button clicks.
 - Product analytics: Theo dõi Trận đấu click → follow registered → selected → displayed → tapped → deeplink success.
 - Reliability analytics: APNS/start/update/end success, retry, token invalidation, stale content.
-- UX quality: selected-match switches should be rare and explainable by priority reason; excessive switching indicates priority flapping.
+- UX quality: Dynamic Island selected-match switches should be rare and explainable by priority reason; excessive switching indicates priority flapping.
 - Android feasibility analytics: separate report by OEM/device family; do not mix with iOS APNS metrics.
 
 

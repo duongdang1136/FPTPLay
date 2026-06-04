@@ -15,6 +15,7 @@ This folder is the implementation source of truth for Sport Zone Live Activity a
 
 ```text
 product/functional-specification.md
+product/live-activity-user-flows.md
 api/technical-contract.md
 design/design-contract.md
 ```
@@ -35,9 +36,9 @@ features/lightweight/Sport-Zone/Live-Activity/api/API-live-activity.md
 - Live Activity is treated as a **Notification + Widget** hybrid: APN/APNS-style remote updates feed constrained system UI surfaces.
 - iOS Live Activity for Sport Zone matches explicitly followed by the user.
 - Followed-match based eligibility: user may follow one match or multiple matches.
-- **Option A MVP:** one visible Live Activity match at a time, selected by priority from followed matches.
+- **Option A MVP:** Dynamic Island shows one visible selected match at a time; Lock Screen may show multiple followed live match activities if OS allows.
 - Dynamic Island compact and expanded states on iOS devices that support Dynamic Island.
-- Lock-screen expanded state; default shows one match and OS handles expansion/presentation behavior where applicable.
+- Lock-screen Live Activity state; OS may show one or multiple followed live match activities and handles expansion/presentation behavior where applicable.
 - Product-defined template and data fields within OS UI constraints.
 - Live Activity update lifecycle throughout the selected followed match.
 - Deeplink behavior from compact/expanded Dynamic Island and lock screen into app.
@@ -47,7 +48,7 @@ features/lightweight/Sport-Zone/Live-Activity/api/API-live-activity.md
 ## Explicitly out of scope
 
 - Active Match Detail/Player screen as a mandatory start gate.
-- Multi-match expanded list, `+N` aggregation, or multiple simultaneous Live Activities per match controlled by app.
+- App-controlled multi-match expanded list, `+N` aggregation, or override of OS Lock Screen multi-activity presentation.
 - App-controlled override of OS expansion behavior on lock screen/Dynamic Island.
 - Redefining normal push notification behavior/copy.
 - Android Dynamic Island / persistent notification equivalent for MVP.
@@ -60,10 +61,10 @@ features/lightweight/Sport-Zone/Live-Activity/api/API-live-activity.md
 - User explicit **Follow Match** action is the Live Activity intent source.
 - Match Detail/Player screen presence is optional context only; it must not be required for start eligibility.
 - Dynamic Island default selection: first followed match. If the first followed match ends or is unfollowed, switch to the next followed match that is currently live/eligible.
-- If the user follows multiple live matches, the system shows only one priority match in Live Activity for MVP.
+- If the user follows multiple live matches, Dynamic Island shows only one priority match for MVP; Lock Screen may show multiple Live Activities if OS allows.
 - Priority order: first followed match by default → if that match ends/unfollowed, next followed match currently live/eligible → deterministic tie-breaker. Key events update displayed data but do not automatically steal selection in MVP unless product later approves.
-- Lock screen default shows one selected match; richer/more presentation is constrained/handled by OS behavior and product template.
-- Tap opens the selected match deeplink; fallback order is live match screen → match detail → Sport Zone home.
+- Lock Screen may show one or multiple followed live match activities; richer/more presentation is constrained/handled by OS behavior and product template.
+- Tap Dynamic Island opens selected match deeplink; tap a Lock Screen card opens that card's matchId. Fallback is Followed Matches / Live Matches when deeplink data is missing/invalid.
 - Live Activity ends when the selected match ends/cancels/unavailable or user unfollows all eligible matches.
 - APN/APNS feasibility must be confirmed by iOS/backend: APN/APNS is the iOS provider path for remote Live Activity updates. Android does not use APN/APNS and must be scoped separately with custom Dynamic handling.
 - Analytics/performance must measure update delivery, UI exposure, tap-through, staleness, priority switch quality, and device/OEM coverage.
