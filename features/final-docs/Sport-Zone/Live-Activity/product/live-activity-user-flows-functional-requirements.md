@@ -1,22 +1,25 @@
-# Live Activity User Flows — Functional Requirements Template
+# Live Activity User Flows — Functional Requirements
 
-> Project: FPTPlay  
-> Feature: Sport Zone / Live Activity  
-> Audience: Product, BA, FE, BE, QA, iOS  
-> Status: Final implementation handoff  
-> Source: Rewritten from `live-activity-user-flows.md` following Functional Requirements / Usecase template  
-> Last updated: 2026-06-04
+> Project: FPTPlay
+> Feature: Sport Zone / Live Activity
+> Audience: Product, BA, FE, BE, QA, iOS
+> Status: Final implementation handoff
+> Source: Rewritten from `live-activity-user-flows.md` following Functional Requirements / Usecase template
+> Writing style: Caveman Vietnam — ít chữ, dễ đọc, đúng ý, không low-level
+> Last updated: 2026-06-05
 
 ---
 
 ## 4. Functional Requirements
 
-### LA-US-001 — Follow match để bật Live Activity
+### LA-US-001 — User follow trận để bật Live Activity
 
-- Example: As a FPTPlay user, I want to follow a live match, so that I can view live score/status on Lock Screen / Dynamic Island without opening the App.
+- User muốn follow trận đang live.
+- User muốn xem tỉ số/trạng thái ngoài Lock Screen / Dynamic Island.
+- User không muốn mở app liên tục.
 
-**Description:**  
-Cho phép user follow một match đang Live để nhận live score/status trên Live Activity. Sau khi follow thành công, App hiển thị trạng thái **Following** và Live Activity được bật nếu device/platform hỗ trợ.
+**Description:**
+User bấm **Follow Match**. App lưu trận user muốn theo dõi. Nếu máy/OS hỗ trợ, Live Activity bật. Nếu không hỗ trợ, user vẫn follow được trận trong app.
 
 #### Usecase
 
@@ -32,44 +35,46 @@ sequenceDiagram
     participant App
     participant Server
 
-    User->>App: Tap "Follow Match"
-    App->>App: Kiểm tra user và điều kiện của match
+    User->>App: Bấm "Follow Match"
+    App->>App: Check login + trận có follow được không
 
     alt User chưa login
-        App-->>User: Yêu cầu login để tiếp tục
-    else Match không đủ điều kiện follow
-        App-->>User: CTA Follow Match ở trạng thái disabled
-    else Match đủ điều kiện follow
-        App->>Server: Lưu match vào danh sách followed matches
-        Server-->>App: Follow thành công
-        App-->>User: CTA đổi thành "Following"
+        App-->>User: Yêu cầu login
+    else Trận không đủ điều kiện
+        App-->>User: Disable CTA Follow Match
+    else Trận đủ điều kiện
+        App->>Server: Lưu trận vào danh sách followed
+        Server-->>App: Follow OK
+        App-->>User: CTA thành "Following"
         App->>App: Bật Live Activity nếu device hỗ trợ
-        Note over App: OS quyết định Live Activity hiển thị trên Lock Screen / Dynamic Island như thế nào
+        Note over App: OS quyết định hiện Lock Screen / Dynamic Island ra sao
     end
 ```
 
 | Field | Details |
 |---|---|
-| Description | User follow một match hợp lệ để xem live score/status trên Live Activity. |
+| Description | User follow 1 trận hợp lệ. App bật Live Activity nếu có thể. |
 | Actor | User, App, Server |
 | Priority | HIGH |
 | Status | FINAL |
-| Triggers | User tap CTA **Follow Match** trên Match Detail hoặc Sport Zone match card. |
-| Pre-condition | User đang xem một match có thể follow. Match đang Live/eligible. CTA **Follow Match** enabled. |
-| Basic Path | 1. User tap **Follow Match**.<br>2. App kiểm tra user đã login và match có đủ điều kiện follow hay không.<br>3. Server lưu match vào danh sách followed matches của user.<br>4. App hiển thị trạng thái **Following**.<br>5. Nếu device/platform hỗ trợ, App bật Live Activity cho match này.<br>6. User có thể thấy Live Activity trên Lock Screen / Dynamic Island theo cách OS cho phép. |
-| Post-condition | Match nằm trong danh sách followed matches. User thấy CTA **Following**. Live Activity hiển thị nếu device/platform hỗ trợ và OS cho phép. |
-| Alternative Path | 1. User chưa login: App yêu cầu login trước khi follow match.<br>2. Device/platform không hỗ trợ Live Activity: User vẫn follow được match, nhưng không thấy Live Activity trên device đó.<br>3. User follow nhiều trận đang Live: App/Server vẫn ghi nhận các trận được follow; Dynamic Island chỉ hiển thị 1 selected match, Lock Screen có thể hiển thị nhiều match nếu OS cho phép. |
-| Exception Handling | 1. Match không hợp lệ: CTA **Follow Match** phải disabled, user không tap được.<br>2. Follow thất bại: App giữ CTA là **Follow Match** và cho user thử lại.<br>3. Live Activity không bật được: App vẫn giữ **Following** nếu follow đã thành công.<br>4. Trạng thái hiển thị chưa cập nhật kịp: App không ghi nhận follow lặp, user vẫn thấy trạng thái cuối cùng hợp lệ. |
-| Business Rules (Optional) | 1. Live Activity chỉ được bật sau khi user chủ động follow match.<br>2. Match không đủ điều kiện phải disable CTA **Follow Match**.<br>3. Follow match và hiển thị Live Activity là 2 việc khác nhau: user vẫn có thể follow nếu device không hỗ trợ Live Activity.<br>4. Dynamic Island chỉ hiển thị 1 selected match.<br>5. Lock Screen có thể hiển thị nhiều Live Activities nếu OS cho phép. |
+| Triggers | User bấm **Follow Match** ở Match Detail hoặc Sport Zone match card. |
+| Pre-condition | User đang xem trận có thể follow. Trận đang Live/eligible. CTA enabled. |
+| Basic Path | 1. User bấm **Follow Match**.<br>2. App check login.<br>3. App check trận có đủ điều kiện không.<br>4. Server lưu trận vào followed matches.<br>5. App đổi CTA thành **Following**.<br>6. App bật Live Activity nếu device/OS hỗ trợ.<br>7. User thấy Live Activity nếu OS cho hiện. |
+| Post-condition | Trận nằm trong followed matches. CTA là **Following**. Live Activity hiện nếu OS cho phép. |
+| Alternative Path | 1. Chưa login → App bắt login trước.<br>2. Device không hỗ trợ Live Activity → vẫn follow được, nhưng không có Live Activity trên máy đó.<br>3. User follow nhiều trận → Server vẫn lưu đủ. Dynamic Island chỉ chọn 1 trận. Lock Screen có thể hiện nhiều nếu OS cho. |
+| Exception Handling | 1. Trận không hợp lệ → disable CTA, user không bấm được.<br>2. Follow fail → giữ CTA **Follow Match**, cho thử lại.<br>3. Live Activity bật fail → vẫn giữ **Following** nếu follow đã OK.<br>4. User bấm lặp → không tạo follow trùng. App giữ trạng thái đúng cuối cùng. |
+| Business Rules Applied | 1. Live Activity chỉ bật sau khi user chủ động follow.<br>2. Trận không đủ điều kiện thì disable CTA.<br>3. Follow match khác với hiển thị Live Activity: follow vẫn OK dù device không hỗ trợ.<br>4. Dynamic Island chỉ hiện 1 selected match.<br>5. Lock Screen có thể hiện nhiều trận nếu OS cho phép. |
 
 ---
 
-### LA-US-002 — Cập nhật Live Activity khi score/status thay đổi
+### LA-US-002 — Score/status đổi thì Live Activity đổi theo
 
-- Example: As a FPTPlay user, I want followed live matches to update automatically, so that I can track match score/status from Live Activity.
+- User đã follow trận.
+- Trận có score/status mới.
+- User muốn thấy thông tin mới mà không mở app.
 
-**Description:**  
-Khi một followed match có thay đổi về score/status, Live Activity cần cập nhật nội dung để user thấy thông tin mới nhất nếu OS đang hiển thị activity đó.
+**Description:**
+Khi trận có tỉ số, phút, trạng thái hoặc event mới, Live Activity cần update. User thấy bản mới nếu OS đang cho activity hiển thị.
 
 #### Usecase
 
@@ -85,41 +90,43 @@ sequenceDiagram
     participant App
     participant Server
 
-    Server->>Server: Nhận thay đổi score/status của match
-    Server->>Server: Xác định match có user follow hay không
+    Server->>Server: Có score/status mới
+    Server->>Server: Check trận có user follow không
 
-    alt Không có user follow match
-        Server->>Server: Không cần cập nhật Live Activity
-    else Có user follow match
-        Server->>App: Gửi thông tin score/status mới
-        App->>App: Cập nhật nội dung Live Activity
-        Note over App: Dynamic Island chỉ hiển thị selected match.<br/>Lock Screen có thể hiển thị nhiều Live Activities nếu OS cho phép.
-        User-->>App: Thấy score/status mới nếu OS đang hiển thị Live Activity
+    alt Không ai follow
+        Server->>Server: Bỏ qua Live Activity update
+    else Có user follow
+        Server->>App: Gửi score/status mới
+        App->>App: Update Live Activity
+        Note over App: Dynamic Island = selected match.<br/>Lock Screen = có thể nhiều match nếu OS cho.
+        User-->>App: Thấy score/status mới nếu OS đang hiển thị
     end
 ```
 
 | Field | Details |
 |---|---|
-| Description | Cập nhật Live Activity khi followed match có thay đổi score/status. |
+| Description | Followed match có thông tin mới. Live Activity cập nhật theo. |
 | Actor | User, App, Server |
 | Priority | HIGH |
 | Status | FINAL |
-| Triggers | Match có thay đổi score, minute, status hoặc sự kiện quan trọng trong trận. |
-| Pre-condition | Match đang Live/eligible. User đã follow match. Live Activity có thể được hiển thị nếu device/platform và OS cho phép. |
-| Basic Path | 1. Server nhận thay đổi mới của match.<br>2. Server xác định match này có user follow hay không.<br>3. Server gửi thông tin mới nhất cho các Live Activities cần cập nhật.<br>4. App/OS cập nhật nội dung Live Activity.<br>5. User thấy score/status mới nếu Live Activity đang được OS hiển thị.<br>6. Dynamic Island chỉ cập nhật selected match; Lock Screen có thể cập nhật nhiều followed matches nếu OS cho phép. |
-| Post-condition | Live Activity hiển thị trạng thái mới nhất của match nếu cập nhật thành công và OS cho phép hiển thị. |
-| Alternative Path | 1. Không có user follow match: Server bỏ qua, không cập nhật Live Activity.<br>2. Match được follow nhưng không phải selected match trên Dynamic Island: Dynamic Island không đổi selected match; Lock Screen vẫn có thể được cập nhật nếu OS cho phép.<br>3. Lock Screen đang có nhiều Live Activities: mỗi activity cập nhật theo match tương ứng; OS quyết định activity nào visible/collapsed/expanded.<br>4. Thay đổi không đáng kể: Server có thể bỏ qua để tránh cập nhật quá nhiều lần. |
-| Exception Handling | 1. Event bị trùng: Server bỏ qua để tránh update lặp.<br>2. Thông tin đến muộn hơn trạng thái hiện tại: Server bỏ qua để tránh hiển thị lại score/status cũ.<br>3. Gửi update thất bại: Server thử gửi lại trong giới hạn cho phép; nếu vẫn thất bại, UI giữ trạng thái hiển thị thành công gần nhất.<br>4. User vừa unfollow match: Server/App không tiếp tục cập nhật Live Activity cho match đó.<br>5. Device/platform không hỗ trợ Live Activity: User không nhận Live Activity update trên device đó. |
-| Business Rules (Optional) | 1. Live Activity phải ưu tiên hiển thị thông tin ngắn gọn: team, score, minute/status.<br>2. Dynamic Island chỉ hiển thị selected match hiện tại.<br>3. Lock Screen có thể hiển thị/cập nhật nhiều followed matches nếu OS cho phép.<br>4. OS quyết định activity nào visible, collapsed, stacked hoặc expanded.<br>5. Nếu update thất bại, UI giữ trạng thái hiển thị thành công gần nhất. |
+| Triggers | Trận đổi score, minute, status hoặc có event quan trọng. |
+| Pre-condition | Trận đang Live/eligible. User đã follow. Device/OS có thể hiển thị Live Activity. |
+| Basic Path | 1. Server nhận thông tin mới của trận.<br>2. Server check trận có user follow không.<br>3. Server gửi update cho activity cần đổi.<br>4. App/OS cập nhật Live Activity.<br>5. User thấy score/status mới nếu OS đang hiển thị.<br>6. Dynamic Island chỉ update selected match. Lock Screen có thể update nhiều trận. |
+| Post-condition | Live Activity hiển thị thông tin mới nhất nếu update OK và OS cho hiện. |
+| Alternative Path | 1. Không ai follow → không update Live Activity.<br>2. Trận được follow nhưng không phải selected match → Dynamic Island không đổi; Lock Screen vẫn có thể update.<br>3. Lock Screen có nhiều activity → mỗi card update theo match của nó; OS quyết định card nào visible/collapsed/expanded.<br>4. Thay đổi nhỏ/không đáng kể → Server có thể bỏ qua để tránh spam update. |
+| Exception Handling | 1. Event trùng → bỏ qua.<br>2. Event cũ hơn trạng thái hiện tại → bỏ qua.<br>3. Gửi update fail → retry trong giới hạn. Nếu vẫn fail, UI giữ trạng thái tốt gần nhất.<br>4. User vừa unfollow → không update tiếp cho trận đó.<br>5. Device không hỗ trợ → user không nhận Live Activity update trên máy đó. |
+| Business Rules Applied | 1. Nội dung Live Activity phải ngắn: đội, tỉ số, phút/trạng thái.<br>2. Dynamic Island chỉ hiện selected match.<br>3. Lock Screen có thể hiện/update nhiều trận nếu OS cho.<br>4. OS quyết định visible/collapsed/stacked/expanded.<br>5. Update fail thì giữ trạng thái tốt gần nhất. |
 
 ---
 
-### LA-US-003 — Switch hoặc End Live Activity khi Match End / Unfollow
+### LA-US-003 — Trận end hoặc unfollow thì switch/end Live Activity
 
-- Example: As a FPTPlay user, I want Live Activity to switch or end correctly when a followed match ends or is unfollowed, so that Dynamic Island / Lock Screen never show stale match state.
+- Trận đang hiển thị có thể kết thúc.
+- User có thể unfollow trận.
+- App không được để Live Activity hiện stale data.
 
-**Description:**  
-Khi match đang hiển thị kết thúc hoặc bị user unfollow, Live Activity cần dừng hiển thị match đó. Nếu user còn follow match khác đang Live/eligible, Dynamic Island chuyển sang match tiếp theo theo priority. Nếu không còn match phù hợp, Live Activity kết thúc.
+**Description:**
+Nếu trận đang hiển thị đã End hoặc user unfollow, App dừng activity của trận đó. Nếu còn trận followed khác đang live, Dynamic Island chuyển sang trận tiếp theo. Nếu không còn trận hợp lệ, Live Activity kết thúc.
 
 #### Usecase
 
@@ -135,47 +142,49 @@ sequenceDiagram
     participant App
     participant Server
 
-    alt Match đang hiển thị kết thúc
-        Server->>Server: Xác định match đã End
-    else User unfollow match đang hiển thị
-        User->>App: Tap "Unfollow Match"
-        App->>Server: Cập nhật trạng thái unfollow
-        Server-->>App: Unfollow thành công
+    alt Trận đang hiển thị kết thúc
+        Server->>Server: Match status = End
+    else User unfollow trận đang hiển thị
+        User->>App: Bấm "Unfollow Match"
+        App->>Server: Lưu unfollow
+        Server-->>App: Unfollow OK
     end
 
-    Server->>Server: Kiểm tra user còn followed live match khác hay không
+    Server->>Server: Check còn followed live match khác không
 
-    alt Còn match khác đang Live/eligible
-        Server->>App: Chuyển Live Activity sang match tiếp theo
-        App-->>User: Dynamic Island hiển thị selected match mới
-    else Không còn match phù hợp
-        Server->>App: Kết thúc Live Activity
-        App-->>User: Live Activity được remove/end
+    alt Còn trận khác Live/eligible
+        Server->>App: Switch sang trận tiếp theo
+        App-->>User: Dynamic Island hiện selected match mới
+    else Không còn trận phù hợp
+        Server->>App: End Live Activity
+        App-->>User: Live Activity bị remove/end
     end
 ```
 
 | Field | Details |
 |---|---|
-| Description | Khi match kết thúc hoặc user unfollow, hệ thống chuyển Dynamic Island sang match phù hợp tiếp theo hoặc kết thúc Live Activity. |
+| Description | Match End hoặc user unfollow. App switch sang trận khác hoặc end Live Activity. |
 | Actor | User, App, Server |
 | Priority | HIGH |
 | Status | FINAL |
-| Triggers | Match chuyển sang End status; hoặc user tap **Unfollow Match**. |
-| Pre-condition | User đang follow ít nhất 1 match. Dynamic Island hoặc Lock Screen đang có Live Activity liên quan đến followed match. |
-| Basic Path | 1. Match đang hiển thị kết thúc hoặc user unfollow match đó.<br>2. Hệ thống dừng hiển thị Live Activity của match đó.<br>3. Hệ thống kiểm tra user còn followed live match nào đủ điều kiện hay không.<br>4. Nếu còn match phù hợp, Dynamic Island chuyển sang selected match tiếp theo theo priority.<br>5. Nếu không còn match phù hợp, Live Activity kết thúc.<br>6. Lock Screen vẫn có thể tiếp tục hiển thị các followed live match khác nếu OS cho phép. |
-| Post-condition | Live Activity không còn hiển thị match đã End/Unfollow. Dynamic Island hiển thị match phù hợp tiếp theo hoặc kết thúc nếu không còn match. |
-| Alternative Path | 1. Match End nhưng còn followed match khác đang Live: Dynamic Island chuyển sang match được follow sớm nhất trong danh sách còn Live/eligible.<br>2. Match End và không còn followed match đang Live: Live Activity kết thúc.<br>3. Lock Screen còn nhiều Live Activities khác: activity của match đã End/Unfollow được remove/end; các activity hợp lệ khác vẫn tiếp tục theo OS.<br>4. User unfollow match không phải selected match của Dynamic Island: Dynamic Island hiện tại không đổi.<br>5. User unfollow một Lock Screen card không phải selected match: card đó được remove/end, Dynamic Island selected match không đổi. |
-| Exception Handling | 1. Match tiếp theo chưa Live/eligible: Không chuyển sang match đó cho đến khi match đủ điều kiện hiển thị.<br>2. Chuyển sang match tiếp theo thất bại: Server thử gửi lại trong giới hạn cho phép; nếu vẫn thất bại, Live Activity giữ trạng thái hiển thị thành công gần nhất.<br>3. End Live Activity thất bại: Server thử end lại trong giới hạn cho phép để tránh Live Activity bị treo.<br>4. User unfollow trong lúc đang switch: Hệ thống dùng trạng thái followed mới nhất để quyết định match tiếp theo.<br>5. Không xác định được match tiếp theo: Live Activity kết thúc để tránh hiển thị sai match. |
-| Business Rules (Optional) | 1. Dynamic Island chỉ hiển thị 1 selected followed match tại một thời điểm.<br>2. Priority của Dynamic Island: ưu tiên match user follow sớm nhất và đang Live/eligible.<br>3. Chỉ switch khi selected match End, bị Unfollow, hoặc không còn eligible.<br>4. Không tự động đổi selected match chỉ vì match khác có goal/key event.<br>5. Nếu không còn followed match nào đang Live/eligible, kết thúc Dynamic Island Live Activity. |
+| Triggers | Match chuyển End; hoặc user bấm **Unfollow Match**. |
+| Pre-condition | User đang follow ít nhất 1 trận. Dynamic Island hoặc Lock Screen đang có Live Activity. |
+| Basic Path | 1. Trận đang hiển thị End hoặc bị unfollow.<br>2. App/Server dừng activity của trận đó.<br>3. Hệ thống check còn followed live match hợp lệ không.<br>4. Còn trận hợp lệ → Dynamic Island switch sang trận tiếp theo theo priority.<br>5. Không còn trận hợp lệ → Live Activity kết thúc.<br>6. Lock Screen vẫn có thể giữ các activity hợp lệ khác nếu OS cho. |
+| Post-condition | Không còn hiện trận đã End/Unfollow. Dynamic Island hiện trận hợp lệ tiếp theo hoặc kết thúc. |
+| Alternative Path | 1. Match End nhưng còn trận live khác → switch sang trận user follow sớm nhất còn eligible.<br>2. Match End và không còn trận live → end Live Activity.<br>3. Lock Screen có nhiều card → card của trận End/Unfollow bị remove; card khác vẫn chạy.<br>4. User unfollow trận không phải selected match → Dynamic Island không đổi.<br>5. User unfollow Lock Screen card không phải selected match → chỉ remove card đó. |
+| Exception Handling | 1. Trận tiếp theo chưa Live/eligible → không switch sang trận đó.<br>2. Switch fail → retry trong giới hạn. Nếu vẫn fail, giữ trạng thái tốt gần nhất hoặc end để tránh sai.<br>3. End fail → retry end để tránh activity treo.<br>4. User unfollow trong lúc switch → dùng followed state mới nhất.<br>5. Không xác định được trận tiếp theo → end Live Activity để tránh hiện sai trận. |
+| Business Rules Applied | 1. Dynamic Island chỉ hiện 1 selected followed match.<br>2. Priority: trận user follow sớm nhất và đang Live/eligible.<br>3. Chỉ switch khi selected match End, bị Unfollow, hoặc không còn eligible.<br>4. Không tự nhảy sang trận khác chỉ vì goal/key event.<br>5. Không còn followed live match hợp lệ → end Dynamic Island Live Activity. |
 
 ---
 
-### LA-US-004 — Interact với Live Activity để expand hoặc deeplink
+### LA-US-004 — User tap/hold Live Activity để expand hoặc mở trận
 
-- Example: As a FPTPlay user, I want to interact with Live Activity from Dynamic Island or Lock Screen, so that I can expand the activity or open the correct Match Detail.
+- User thấy Live Activity.
+- User có thể tap để mở đúng Match Detail.
+- User có thể hold Dynamic Island để xem expanded view.
 
-**Description:**  
-User có thể tap hoặc long press/hold Live Activity. Long press/hold Dynamic Island compact mở expanded Live Activity. Tap Dynamic Island compact/expanded mở selected match. Tap Lock Screen card mở đúng Match Detail của card được tap.
+**Description:**
+Live Activity phải phản hồi đúng theo nơi user tương tác. Tap Dynamic Island mở selected match. Hold Dynamic Island mở expanded view. Tap Lock Screen card mở đúng match của card đó. Nếu không biết match nào, App mở fallback screen.
 
 #### Usecase
 
@@ -191,41 +200,41 @@ sequenceDiagram
     participant App
     participant Server
 
-    alt User long press/hold Dynamic Island compact
-        User->>App: Long press/hold Dynamic Island compact
-        App-->>User: OS mở expanded Live Activity của selected match
-    else User tap Dynamic Island compact/expanded
-        User->>App: Tap Dynamic Island Live Activity
-        App->>App: Xác định selected match
-    else User tap Lock Screen Live Activity card
-        User->>App: Tap một Lock Screen Live Activity card
-        App->>App: Xác định match của card được tap
+    alt User hold Dynamic Island compact
+        User->>App: Long press/hold Dynamic Island
+        App-->>User: OS mở expanded Live Activity
+    else User tap Dynamic Island
+        User->>App: Tap Dynamic Island
+        App->>App: Lấy selected match
+    else User tap Lock Screen card
+        User->>App: Tap Lock Screen card
+        App->>App: Lấy match của card được tap
     end
 
-    alt Interaction là long press/hold
-        App-->>User: Chỉ hiển thị expanded Live Activity, không mở App ngay
+    alt Interaction là hold
+        App-->>User: Chỉ expand, không mở app ngay
     else Match hợp lệ
-        App->>Server: Lấy thông tin match mới nhất
-        Server-->>App: Trả thông tin match
-        App-->>User: Mở Match Detail tương ứng
-    else Không xác định được match
+        App->>Server: Lấy match mới nhất
+        Server-->>App: Trả match detail
+        App-->>User: Mở đúng Match Detail
+    else Không biết match nào
         App-->>User: Mở Followed Matches / Live Matches
     end
 ```
 
 | Field | Details |
 |---|---|
-| Description | Xử lý đúng hành vi khi user tap hoặc long press/hold Live Activity từ Dynamic Island / Lock Screen. |
+| Description | User tap/hold Live Activity. App expand hoặc deeplink đúng màn. |
 | Actor | User, App, Server |
 | Priority | HIGH |
 | Status | FINAL |
-| Triggers | User tap Dynamic Island compact/expanded; user long press/hold Dynamic Island compact; user tap một Lock Screen Live Activity card. |
-| Pre-condition | Live Activity đang hiển thị trên Dynamic Island hoặc Lock Screen. Activity/card có thể xác định được match tương ứng, trừ trường hợp fallback. |
-| Basic Path | 1. User tương tác với Live Activity.<br>2. Nếu user long press/hold Dynamic Island compact, OS mở expanded Live Activity của selected match và App không deeplink ngay.<br>3. Nếu user tap Dynamic Island compact/expanded, App mở Match Detail của selected match.<br>4. Nếu user tap Lock Screen card, App mở Match Detail của match gắn với card đó.<br>5. App lấy thông tin match mới nhất trước khi hiển thị màn Match Detail.<br>6. Nếu không xác định được match, App mở **Followed Matches / Live Matches**. |
-| Post-condition | User thấy expanded Live Activity nếu long press/hold, hoặc được điều hướng đến đúng Match Detail nếu tap. |
-| Alternative Path | 1. User tap một card trên Lock Screen multi-match: App mở Match Detail của đúng match gắn với card được tap.<br>2. PiP đang hiển thị song song với Live Activity: Tap Live Activity mở màn đích theo match tương ứng; PiP tiếp tục phát nếu OS cho phép, chỉ đóng khi user chủ động đóng hoặc OS bắt buộc.<br>3. Match đã kết thúc trước khi user tap: App vẫn mở Match Detail và hiển thị trạng thái mới nhất của match.<br>4. User đã unfollow match trước khi tap: App vẫn có thể mở Match Detail, nhưng CTA hiển thị lại là **Follow Match**.<br>5. User tap Live Activity khi App đang cold start: App mở lên và điều hướng đến Match Detail / Followed Matches theo trạng thái hợp lệ.<br>6. App đã mở sẵn ở màn khác: App điều hướng sang màn đích, không mở lặp nhiều màn giống nhau. |
-| Exception Handling | 1. Deeplink thiếu hoặc sai match: App mở màn **Followed Matches / Live Matches**.<br>2. Match đã bị xóa/không còn khả dụng: App hiển thị thông báo không tìm thấy match và fallback về **Followed Matches / Live Matches**.<br>3. User chưa login hoặc session hết hạn: App yêu cầu login trước, sau đó điều hướng lại theo match nếu còn hợp lệ.<br>4. Không lấy được thông tin match mới nhất: App hiển thị lỗi/retry thay vì đứng ở màn trắng.<br>5. PiP bị OS đóng khi mở App: App vẫn mở đúng màn đích, không coi đây là lỗi Live Activity. |
-| Business Rules (Optional) | 1. Long press/hold Dynamic Island mở expanded Live Activity, không deeplink ngay.<br>2. Expanded Dynamic Island vẫn chỉ hiển thị selected match.<br>3. Tap Dynamic Island compact/expanded mở current selected match.<br>4. Tap Lock Screen card mở match gắn với card đó.<br>5. Nếu không xác định được match từ Live Activity, fallback là **Followed Matches / Live Matches**.<br>6. PiP không thay thế Live Activity; PiP phục vụ video playback, Live Activity phục vụ live score/status.<br>7. Khi PiP và Live Activity cùng hiển thị, OS quyết định vị trí/lớp hiển thị; App không tự kiểm soát toàn bộ layout song song. |
+| Triggers | User tap Dynamic Island; hold Dynamic Island; tap Lock Screen card. |
+| Pre-condition | Live Activity đang hiển thị. Activity/card có match id hợp lệ, trừ fallback case. |
+| Basic Path | 1. User tương tác Live Activity.<br>2. Hold Dynamic Island compact → OS mở expanded Live Activity, không deeplink ngay.<br>3. Tap Dynamic Island → App mở Match Detail của selected match.<br>4. Tap Lock Screen card → App mở Match Detail của match trên card đó.<br>5. App lấy data mới nhất trước khi hiện Match Detail.<br>6. Không xác định được match → mở **Followed Matches / Live Matches**. |
+| Post-condition | User thấy expanded view hoặc vào đúng Match Detail. |
+| Alternative Path | 1. Lock Screen có nhiều card → tap card nào mở đúng match card đó.<br>2. PiP đang chạy song song → tap Live Activity vẫn mở đúng match; PiP tiếp tục nếu OS cho.<br>3. Match đã End trước khi tap → vẫn mở Match Detail với trạng thái mới nhất.<br>4. User đã unfollow trước khi tap → vẫn có thể mở Match Detail; CTA trở lại **Follow Match**.<br>5. App cold start → mở app rồi đi đến Match Detail hoặc fallback screen.<br>6. App đang mở màn khác → điều hướng sang màn đích, không stack trùng vô ích. |
+| Exception Handling | 1. Deeplink thiếu/sai match → mở **Followed Matches / Live Matches**.<br>2. Match bị xóa/không khả dụng → báo không tìm thấy, rồi fallback.<br>3. User chưa login/session hết hạn → yêu cầu login, sau đó quay lại match nếu còn hợp lệ.<br>4. Không lấy được match mới nhất → hiện lỗi/retry, không để màn trắng.<br>5. PiP bị OS đóng khi mở app → vẫn mở đúng màn; không tính là lỗi Live Activity. |
+| Business Rules Applied | 1. Hold Dynamic Island = expand, không deeplink ngay.<br>2. Expanded Dynamic Island vẫn chỉ hiện selected match.<br>3. Tap Dynamic Island = mở current selected match.<br>4. Tap Lock Screen card = mở match của card đó.<br>5. Không biết match nào → fallback **Followed Matches / Live Matches**.<br>6. PiP không thay Live Activity: PiP cho video, Live Activity cho score/status.<br>7. PiP và Live Activity cùng hiện thì OS quyết định layout/layer. App không control hết. |
 
 ---
 
@@ -233,31 +242,32 @@ sequenceDiagram
 
 ### Live Activity display rules
 
-1. Live Activity được kích hoạt từ hành động chủ động **Follow Match** của user.
-2. User có thể follow một hoặc nhiều match.
-3. **Dynamic Island** chỉ hiển thị **1 selected followed match** theo priority.
-4. **Lock Screen** có thể hiển thị nhiều followed live matches / nhiều Live Activities nếu OS cho phép.
-5. Server vẫn update những followed live matches đủ điều kiện.
-6. App/Product định nghĩa nội dung hiển thị theo từng match.
-7. OS quyết định cách hiển thị thực tế trên Lock Screen: một hay nhiều activities, thứ tự, collapse/expand.
-8. Dynamic Island compact hỗ trợ 2 interaction chính: tap để mở Match Detail của selected match, long press/hold để OS mở expanded Live Activity.
-9. Expanded Dynamic Island vẫn hiển thị selected match hiện tại; MVP không dùng expanded Dynamic Island để hiển thị app-controlled multi-match list.
-10. PiP và Live Activity là 2 OS surfaces độc lập: PiP phục vụ video playback, Live Activity phục vụ live score/status của followed match.
-11. Nếu PiP đang hiển thị song song với Live Activity, tap Live Activity mở màn đích theo match tương ứng; PiP tiếp tục phát nếu OS cho phép, chỉ đóng khi user chủ động đóng hoặc OS bắt buộc.
-12. Nếu match không đủ điều kiện follow/Live Activity, App disable CTA **Follow Match**.
+1. User phải chủ động bấm **Follow Match** thì mới bật Live Activity.
+2. User có thể follow 1 hoặc nhiều trận.
+3. **Dynamic Island** chỉ hiện **1 selected followed match**.
+4. **Lock Screen** có thể hiện nhiều followed live matches nếu OS cho.
+5. Server update các followed live matches còn eligible.
+6. App/Product quyết định nội dung hiển thị cho từng match.
+7. OS quyết định cách hiện thật: số lượng activity, thứ tự, collapse, expand, stack.
+8. Dynamic Island compact có 2 interaction chính: tap mở Match Detail; hold mở expanded Live Activity.
+9. Expanded Dynamic Island vẫn chỉ hiện selected match. MVP không làm app-controlled multi-match list trong expanded view.
+10. PiP và Live Activity là 2 surface khác nhau: PiP = video playback; Live Activity = live score/status.
+11. Nếu PiP và Live Activity cùng hiện, tap Live Activity vẫn mở đúng màn đích. PiP tiếp tục nếu OS cho; chỉ đóng khi user đóng hoặc OS bắt buộc.
+12. Trận không đủ điều kiện follow/Live Activity thì App disable CTA **Follow Match**.
 
 ### Dynamic Island Priority Rule
 
-1. Dynamic Island chỉ hiển thị 1 selected followed match tại một thời điểm.
-2. Chọn match user follow sớm nhất và đang Live/eligible.
-3. Nếu selected match hiện tại End, bị Unfollow, hoặc không còn eligible, chuyển sang followed match tiếp theo đang Live/eligible.
-4. Nếu không còn followed match nào đang Live/eligible, kết thúc Dynamic Island Live Activity.
-5. Không tự động đổi selected match chỉ vì match khác có goal/key event, để tránh Dynamic Island nhảy qua lại gây rối user.
+1. Dynamic Island chỉ có 1 selected match tại 1 thời điểm.
+2. Chọn trận user follow sớm nhất và đang Live/eligible.
+3. Selected match End / Unfollow / không eligible → chuyển sang followed match tiếp theo đang Live/eligible.
+4. Không còn followed match Live/eligible → end Dynamic Island Live Activity.
+5. Không tự nhảy match vì trận khác có goal/key event. Tránh làm user rối.
 
 ---
 
 ## Notes
 
-- Mermaid sequence diagram đã được đặt trực tiếp trong từng **Activity Flows / User Flows** để QA/BA/Product đọc theo từng Functional Requirement.
-- Bản này dùng ngôn ngữ high-level cho Product/BA/QC, tập trung vào hành vi user nhìn thấy và kết quả mong đợi của từng flow.
-- Wireframe chi tiết nằm trong bản gốc `live-activity-user-flows.md`.
+- Bản này dùng **Caveman Vietnam**: câu ngắn, ít chữ, dễ đọc, không low-level.
+- Mermaid giữ trong từng Use Case để Product/BA/QA đọc flow nhanh.
+- Functional Requirements tập trung vào: user làm gì, app hiện gì, khi nào fallback.
+- Wireframe chi tiết vẫn nằm trong `live-activity-user-flows.md`.
