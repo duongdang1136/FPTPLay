@@ -41,6 +41,7 @@ User chỉ cần bấm **Follow Match**. App lưu trận đó. Nếu device/OS h
 | v1.8 | 2026-06-05 | Dylan | Shortened Out of scope list. | Pending |
 | v1.9 | 2026-06-05 | Dylan | Added permission cases: allow, deny, re-enable. | Pending |
 | v2.0 | 2026-06-05 | Dylan | Added UI organization rules for text, score, logo, state, and event priority. | Pending |
+| v2.1 | 2026-06-05 | Dylan | Changed Flow 1 diagram to Mermaid stateDiagram-v2. | Pending |
 
 ---
 
@@ -134,32 +135,29 @@ User bấm **Follow Match**. App lưu trận user muốn theo dõi. Nếu máy/O
 **Activity Flows:**
 
 ```mermaid
-sequenceDiagram
-    autonumber
+stateDiagram-v2
+    [*] --> NotFollowed
 
-    actor User as Logged-in User
-    participant App
-    participant Server
+    NotFollowed --> CheckingEligibility: User bấm Follow Match
 
-    User->>App: Bấm "Follow Match"
-    App->>App: Check login + trận có follow được không
+    CheckingEligibility --> LoginRequired: User chưa login
+    CheckingEligibility --> NotEligible: Trận không đủ điều kiện
+    CheckingEligibility --> SavingFollow: Trận đủ điều kiện
 
-    alt User chưa login
-        App-->>User: Yêu cầu login
-    else Trận không đủ điều kiện
-        App-->>User: Disable button Follow Match
-    else Trận đủ điều kiện
-        App->>Server: Lưu trận vào danh sách followed
-        Server-->>App: Follow OK
-        App-->>User: Button thành "Following"
-        App->>App: Check permission + device support
-        alt Permission OK
-            App->>App: Bật Live Activity / notification
-            Note over App: OS quyết định hiện Lock Screen / Dynamic Island / notification ra sao
-        else Permission bị từ chối
-            App-->>User: Follow vẫn OK, hướng dẫn bật permission
-        end
-    end
+    LoginRequired --> NotFollowed: Login chưa xong
+    NotEligible --> NotFollowed: Disable button Follow Match
+
+    SavingFollow --> Followed: Follow OK
+    SavingFollow --> NotFollowed: Follow fail
+
+    Followed --> CheckingPermission: Check permission + device support
+
+    CheckingPermission --> LiveActivityActive: Permission OK + OS support
+    CheckingPermission --> FollowedInAppOnly: Permission từ chối
+    CheckingPermission --> FollowedInAppOnly: Device/OS không support
+
+    FollowedInAppOnly --> CheckingPermission: User mở lại permission
+    LiveActivityActive --> [*]
 ```
 
 | Field | Details |
