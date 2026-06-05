@@ -31,7 +31,7 @@ User bấm **Follow Match**. App lưu trận user muốn theo dõi. Nếu máy/O
 sequenceDiagram
     autonumber
 
-    actor User
+    actor User as Logged-in User
     participant App
     participant Server
 
@@ -54,7 +54,7 @@ sequenceDiagram
 | Field | Details |
 |---|---|
 | Description | User follow 1 trận hợp lệ. App bật Live Activity nếu có thể. |
-| Actor | User, App, Server |
+| Actor | Logged-in User, App, Server |
 | Triggers | User bấm **Follow Match** ở Match Detail hoặc Sport Zone match card. |
 | Pre-condition | User đang xem trận có thể follow. Trận đang Live/eligible. button đang enabled. |
 | Basic Path | 1. User bấm **Follow Match**.<br>2. App check login.<br>3. App check trận có đủ điều kiện không.<br>4. Server lưu trận vào followed matches.<br>5. App đổi button thành **Following**.<br>6. App bật Live Activity nếu device/OS hỗ trợ.<br>7. User thấy Live Activity nếu OS cho hiện. |
@@ -84,7 +84,7 @@ Khi trận có tỉ số, phút, trạng thái hoặc event mới, Live Activity
 sequenceDiagram
     autonumber
 
-    actor User
+    actor User as Logged-in User
     participant App
     participant Server
 
@@ -104,7 +104,7 @@ sequenceDiagram
 | Field | Details |
 |---|---|
 | Description | Followed match có thông tin mới. Live Activity cập nhật theo. |
-| Actor | User, App, Server |
+| Actor | Logged-in User, App, Server |
 | Triggers | Trận đổi score, minute, status hoặc có event quan trọng. |
 | Pre-condition | Trận đang Live/eligible. User đã follow. Device/OS có thể hiển thị Live Activity. |
 | Basic Path | 1. Server nhận thông tin mới của trận.<br>2. Server check trận có user follow không.<br>3. Server gửi update cho activity cần đổi.<br>4. App/OS cập nhật Live Activity.<br>5. User thấy score/status mới nếu OS đang hiển thị.<br>6. Dynamic Island chỉ update selected match. Lock Screen có thể update nhiều trận. |
@@ -134,7 +134,7 @@ Nếu trận đang hiển thị đã End hoặc user unfollow, App dừng activi
 sequenceDiagram
     autonumber
 
-    actor User
+    actor User as Logged-in User
     participant App
     participant Server
 
@@ -160,7 +160,7 @@ sequenceDiagram
 | Field | Details |
 |---|---|
 | Description | Match End hoặc user unfollow. App switch sang trận khác hoặc end Live Activity. |
-| Actor | User, App, Server |
+| Actor | Logged-in User, App, Server |
 | Triggers | Match chuyển End; hoặc user bấm **Unfollow Match**. |
 | Pre-condition | User đang follow ít nhất 1 trận. Dynamic Island hoặc Lock Screen đang có Live Activity. |
 | Basic Path | 1. Trận đang hiển thị End hoặc bị unfollow.<br>2. App/Server dừng activity của trận đó.<br>3. Hệ thống check còn followed live match hợp lệ không.<br>4. Còn trận hợp lệ → Dynamic Island switch sang trận tiếp theo theo priority.<br>5. Không còn trận hợp lệ → Live Activity kết thúc.<br>6. Lock Screen vẫn có thể giữ các activity hợp lệ khác nếu OS cho. |
@@ -190,7 +190,7 @@ Live Activity phải phản hồi đúng theo nơi user tương tác. Tap Dynami
 sequenceDiagram
     autonumber
 
-    actor User
+    actor User as Logged-in User
     participant App
     participant Server
 
@@ -219,7 +219,7 @@ sequenceDiagram
 | Field | Details |
 |---|---|
 | Description | User tap/hold Live Activity. App expand hoặc deeplink đúng màn. |
-| Actor | User, App, Server |
+| Actor | Logged-in User, App, Server |
 | Triggers | User tap Dynamic Island; hold Dynamic Island; tap Lock Screen card. |
 | Pre-condition | Live Activity đang hiển thị. Activity/card có match id hợp lệ, trừ fallback case. |
 | Basic Path | 1. User tương tác Live Activity.<br>2. Hold Dynamic Island compact → OS mở expanded Live Activity, không deeplink ngay.<br>3. Tap Dynamic Island → App mở Match Detail của selected match.<br>4. Tap Lock Screen card → App mở Match Detail của match trên card đó.<br>5. App lấy data mới nhất trước khi hiện Match Detail.<br>6. Không xác định được match → mở **Followed Matches / Live Matches**. |
