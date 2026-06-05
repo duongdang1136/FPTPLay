@@ -36,6 +36,7 @@ User chỉ cần bấm **Follow Match**. App lưu trận đó. Nếu device/OS h
 | v1.3 | 2026-06-05 | Dylan | Clarified mobile iOS + mobile Android scope and minimum OS versions. | Pending |
 | v1.4 | 2026-06-05 | Dylan | Mapped Global Business Rules into each Use Case using Caveman Vietnam wording. | Pending |
 | v1.5 | 2026-06-05 | Dylan | Clarified Android Live Updates apply only to Samsung devices with Dynamic Island-like support. | Pending |
+| v1.6 | 2026-06-05 | Dylan | Shortened Platform scope and removed Website/TV rows. | Pending |
 
 ---
 
@@ -49,17 +50,13 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
 
 #### Platform
 
-- Mobile iOS: in scope.
-- Mobile Android: in scope.
-- iOS Live Activities: apply từ **iOS 16.1+**.
-- iOS Dynamic Island: apply cho iPhone có Dynamic Island, **iOS 16.1+**.
-- iOS Lock Screen Live Activity: apply từ **iOS 16.1+**.
-- Android ongoing/live notification: apply từ **Android 8.0+ / API 26+** vì cần notification channels.
-- Android notification permission: từ **Android 13+ / API 33+** cần user cho phép notification.
-- Android Live Updates: **only Samsung** có Dynamic Island-like support. Samsung phải có Dynamic Island / Now Bar-like surface và OS support. Nếu không có, dùng ongoing notification fallback.
-- Android non-Samsung hoặc Samsung không có Dynamic Island-like support: fallback bằng ongoing notification trên Lock Screen / Notification Shade.
-- Website: out of scope.
-- TV: out of scope.
+- **iOS:** apply từ **iOS 16.1+**.
+  - Dynamic Island: chỉ iPhone có Dynamic Island.
+  - Lock Screen Live Activity: iPhone hỗ trợ Live Activity.
+- **Android:** apply từ **Android 8.0+ / API 26+** bằng ongoing notification.
+  - Android 13+ / API 33+: cần user cho phép notification.
+  - Android Live Updates: **only Samsung** có Dynamic Island / Now Bar-like support.
+  - Non-Samsung hoặc Samsung không support: fallback ongoing notification.
 
 #### Platform behavior
 
