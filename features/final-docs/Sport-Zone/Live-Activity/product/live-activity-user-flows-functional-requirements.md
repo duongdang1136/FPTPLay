@@ -1,12 +1,96 @@
-# Live Activity User Flows — Functional Requirements
+# LA-FR — Live Activity User Flows / Functional Requirements
 
 > Project: FPTPlay
-> Feature: Sport Zone / Live Activity
+> Epic: Sport Zone
+> Feature: Live Activity
 > Audience: Product, BA, FE, BE, QA, iOS
 > Status: Final implementation handoff
-> Source: Rewritten from `live-activity-user-flows.md` following Functional Requirements / Usecase template
+> Source: Rewritten from `live-activity-user-flows.md` following Notion Functional Requirements / Usecase template
 > Writing style: Caveman Vietnam — ít chữ, dễ đọc, đúng ý, không low-level
 > Last updated: 2026-06-05
+
+---
+
+## 1. Description
+
+Live Activity giúp user theo dõi trận đang live ngay trên **Lock Screen** và **Dynamic Island**.
+
+User chỉ cần bấm **Follow Match**. App lưu trận đó. Nếu iOS/device hỗ trợ, Live Activity bật và cập nhật score/status theo trận.
+
+- Epic: Sport Zone
+- Feature: Live Activity
+- Main user: Logged-in User
+- Main platform: iOS
+- Main surfaces: Dynamic Island, Lock Screen
+- Main intent: follow trận để xem live score/status nhanh
+
+---
+
+## 2. Document History
+
+| Version | Date | Updated By | Notes | Approved By |
+|---|---|---|---|---|
+| v1.0 | 2026-06-04 | Dylan | Created from `live-activity-user-flows.md` using Functional Requirements / Usecase format. | Pending |
+| v1.1 | 2026-06-05 | Dylan | Reworded to Caveman Vietnam. Simplified wording. Removed `Priority` and `Status` fields. Actor changed to Logged-in User. | Pending |
+| v1.2 | 2026-06-05 | Dylan | Added template sections: Description, Document History, Overview, Non-functional Requirements, Design Specifications, References. | Pending |
+
+---
+
+## 3. Overview
+
+### Goal
+
+User follow trận. App hiển thị live score/status ngoài app. User xem nhanh. User không cần mở app liên tục.
+
+### Scope & Limitation
+
+#### Platform
+
+- Mobile iOS: in scope.
+- iPhone có Dynamic Island: in scope.
+- iPhone có Lock Screen Live Activity: in scope.
+- Android: out of scope cho MVP.
+- Website: out of scope.
+- TV: out of scope.
+
+#### User
+
+- Logged-in User: in scope.
+- Guest: phải login trước khi follow match.
+- User follow 1 trận: in scope.
+- User follow nhiều trận: in scope.
+- Admin/CMS user: out of scope.
+
+#### In scope
+
+- User bấm **Follow Match** để bật Live Activity eligibility.
+- App lưu followed match.
+- App bật Live Activity nếu device/OS hỗ trợ.
+- Server update score/status cho followed live match.
+- Dynamic Island chỉ hiện 1 selected match.
+- Lock Screen có thể hiện nhiều followed live matches nếu OS cho.
+- User tap Live Activity để mở đúng Match Detail.
+- User hold Dynamic Island để mở expanded view.
+- Match End/Unfollow thì switch hoặc end Live Activity.
+- PiP có thể chạy song song với Live Activity nếu OS cho phép.
+
+#### Out of scope
+
+- App tự override cách OS xếp Live Activities.
+- App-controlled multi-match list trong expanded Dynamic Island.
+- Android Dynamic Island-like behavior.
+- Normal push notification copy/rules.
+- Payment/entitlement logic.
+- Full Match Detail implementation.
+
+### Accessibility Requirements
+
+- Text trên Live Activity phải ngắn, rõ, dễ đọc.
+- Không chỉ dùng màu để truyền trạng thái trận.
+- Score/status phải đọc được khi màn hình nhỏ.
+- Tap target trong app phải đủ lớn theo mobile guideline.
+- Error/fallback message phải dễ hiểu.
+- Deeplink fail thì có fallback screen, không để user kẹt.
 
 ---
 
@@ -257,9 +341,151 @@ sequenceDiagram
 
 ---
 
-## Notes
+## 5. Non-functional Requirements
 
-- Bản này dùng **Caveman Vietnam**: câu ngắn, ít chữ, dễ đọc, không low-level.
+### LA-NFR-001 — Update speed
+
+Live Activity nên update nhanh sau khi score/status đổi.
+
+- Score/status mới tới Server → App/OS nhận update trong thời gian hợp lý.
+- Nếu update chậm/fail, UI giữ trạng thái tốt gần nhất.
+- Không rollback về score/status cũ.
+
+### LA-NFR-002 — Reliability
+
+Live Activity không được tạo duplicate hoặc bị treo lâu.
+
+- Follow lặp không tạo duplicate subscription.
+- Event trùng phải bị bỏ qua.
+- End fail thì retry trong giới hạn.
+- Không xác định được match thì end/fallback để tránh hiện sai.
+
+### LA-NFR-003 — OS constraint
+
+App phải tôn trọng rule của iOS/OS.
+
+- OS quyết định visible/collapsed/stacked/expanded.
+- App không assume Lock Screen luôn hiện nhiều activity.
+- Dynamic Island chỉ dùng selected match cho MVP.
+- PiP + Live Activity layout do OS quyết định.
+
+### LA-NFR-004 — Security & privacy
+
+Live Activity chỉ hiển thị thông tin trận, không lộ dữ liệu nhạy cảm.
+
+- Không hiện token, user id, device id.
+- Deeplink phải validate match id.
+- User chưa login/session expired thì yêu cầu login trước khi mở dữ liệu cần auth.
+
+### LA-NFR-005 — Observability
+
+Cần log đủ để debug lifecycle.
+
+- Follow/register result.
+- Start/update/end result.
+- Selected match id.
+- Update latency.
+- Deeplink success/failure.
+- Unsupported device/platform.
+
+---
+
+## 6. Design Specifications
+
+### Description
+
+Design cần phục vụ 2 việc: xem nhanh score/status và mở đúng trận khi user cần chi tiết.
+
+### Figma
+
+- Figma final: Pending.
+- Current source: `live-activity-user-flows.md` wireframes.
+
+### Information Architecture
+
+```text
+Sport Zone
+└── Match Card / Match Detail
+    ├── Follow Match button
+    ├── Following state
+    └── Live Activity
+        ├── Dynamic Island compact
+        ├── Dynamic Island expanded
+        └── Lock Screen card
+```
+
+### Wireframes
+
+Wireframe source nằm trong:
+
+```text
+features/final-docs/Sport-Zone/Live-Activity/product/live-activity-user-flows.md
+```
+
+Key screens/states:
+
+- Match eligible chưa follow → button **Follow Match**.
+- Match không eligible → button **Follow Match** disabled.
+- Match đã follow → button **Following**.
+- Dynamic Island compact → score/status ngắn.
+- Dynamic Island expanded → selected match detail ngắn.
+- Lock Screen card → match card theo OS layout.
+- Fallback screen → **Followed Matches / Live Matches**.
+
+### Design
+
+#### Dynamic Island compact
+
+- Hiển thị team short name, score, minute/status.
+- Không nhồi nhiều thông tin.
+- Tap mở Match Detail selected match.
+- Hold mở expanded view.
+
+#### Dynamic Island expanded
+
+- Vẫn chỉ hiện selected match.
+- Hiển thị đội, score, status/minute, latest event nếu có.
+- Tap mở Match Detail.
+
+#### Lock Screen
+
+- Có thể hiện 1 hoặc nhiều Live Activities nếu OS cho.
+- Mỗi card map với 1 match.
+- Tap card nào mở đúng match đó.
+
+#### PiP song song
+
+- PiP phục vụ video.
+- Live Activity phục vụ score/status.
+- Nếu cùng hiện, OS quyết định layout.
+- Tap Live Activity vẫn mở đúng match.
+- PiP tiếp tục nếu OS cho, không coi PiP close là lỗi Live Activity.
+
+---
+
+## 7. References
+
+### Required Documents
+
+- `features/final-docs/Sport-Zone/Live-Activity/product/live-activity-user-flows.md`
+- `features/final-docs/Sport-Zone/Live-Activity/api/technical-contract.md`
+- `features/final-docs/Sport-Zone/Live-Activity/design/design-contract.md`
+- `features/final-docs/Sport-Zone/Live-Activity/README.md`
+
+### Source lightweight docs
+
+- `features/lightweight/Sport-Zone/Live-Activity/product/SRS-live-activity.md`
+- `features/lightweight/Sport-Zone/Live-Activity/product/ba-report-live-activity.md`
+- `features/lightweight/Sport-Zone/Live-Activity/design/wireframe-suggestion-live-activity.md`
+- `features/lightweight/Sport-Zone/Live-Activity/api/API-live-activity.md`
+
+### Template source
+
+- Notion template: `https://well-dingo-eb4.notion.site/Template-375147f97d2380d7bda9dd9f6a75637e?pvs=74`
+
+### Notes
+
+- Functional Requirements dùng Caveman Vietnam: câu ngắn, ít chữ, dễ đọc.
 - Mermaid giữ trong từng Use Case để Product/BA/QA đọc flow nhanh.
-- Functional Requirements tập trung vào: user làm gì, app hiện gì, khi nào fallback.
-- Wireframe chi tiết vẫn nằm trong `live-activity-user-flows.md`.
+- Requirement tập trung vào: user làm gì, app hiện gì, fallback gì.
+- Technical API details nằm trong `api/technical-contract.md`.
