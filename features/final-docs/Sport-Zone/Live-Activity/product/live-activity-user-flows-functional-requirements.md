@@ -35,6 +35,7 @@ User chỉ cần bấm **Follow Match**. App lưu trận đó. Nếu device/OS h
 | v1.2 | 2026-06-05 | Dylan | Added template sections: Description, Document History, Overview, Non-functional Requirements, Design Specifications, References. | Pending |
 | v1.3 | 2026-06-05 | Dylan | Clarified mobile iOS + mobile Android scope and minimum OS versions. | Pending |
 | v1.4 | 2026-06-05 | Dylan | Mapped Global Business Rules into each Use Case using Caveman Vietnam wording. | Pending |
+| v1.5 | 2026-06-05 | Dylan | Clarified Android Live Updates apply only to Samsung devices with Dynamic Island-like support. | Pending |
 
 ---
 
@@ -55,17 +56,18 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
 - iOS Lock Screen Live Activity: apply từ **iOS 16.1+**.
 - Android ongoing/live notification: apply từ **Android 8.0+ / API 26+** vì cần notification channels.
 - Android notification permission: từ **Android 13+ / API 33+** cần user cho phép notification.
-- Android Live Updates / promoted ongoing notification: dùng nếu device hỗ trợ **Android 16+ / API 36+**.
-- Android dưới 16: fallback bằng ongoing notification trên Lock Screen / Notification Shade.
+- Android Live Updates: **only Samsung** có Dynamic Island-like support. Samsung phải có Dynamic Island / Now Bar-like surface và OS support. Nếu không có, dùng ongoing notification fallback.
+- Android non-Samsung hoặc Samsung không có Dynamic Island-like support: fallback bằng ongoing notification trên Lock Screen / Notification Shade.
 - Website: out of scope.
 - TV: out of scope.
 
 #### Platform behavior
 
 - iOS dùng tên **Live Activity**.
-- Android dùng tên **Live Update / ongoing notification**.
+- Android dùng tên **Live Update / ongoing notification**. Live Updates chỉ apply cho Samsung có Dynamic Island-like support.
 - Product intent giống nhau: user xem score/status ngoài app.
 - UI surface khác nhau theo OS. App không ép OS hiển thị giống nhau.
+- Android Live Updates không apply đại trà toàn Android. Chỉ apply Samsung có Dynamic Island / Now Bar-like support.
 
 #### User
 
@@ -92,7 +94,7 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
 
 - App tự override cách OS xếp Live Activities.
 - App-controlled multi-match list trong expanded Dynamic Island.
-- Android Dynamic Island-like behavior / fake Dynamic Island UI.
+- Fake Dynamic Island UI trên Android không được OS/Samsung hỗ trợ.
 - Normal push notification copy/rules.
 - Payment/entitlement logic.
 - Full Match Detail implementation.
@@ -470,13 +472,15 @@ Key screens/states:
 - Mỗi card/notification map với 1 match.
 - Tap card/notification nào mở đúng match đó.
 
-#### Android ongoing/live notification
+#### Android Live Updates / ongoing notification
 
+- Samsung có Dynamic Island / Now Bar-like support → dùng Android Live Updates nếu OS support.
+- Android khác → dùng ongoing notification fallback.
 - Hiển thị team short name, score, minute/status.
 - Android 8.0+ cần notification channel.
 - Android 13+ cần notification permission.
-- Android 16+ dùng Live Updates nếu device hỗ trợ.
-- Android dưới 16 dùng ongoing notification fallback.
+- Android Live Updates chỉ dùng cho Samsung có Dynamic Island / Now Bar-like surface và OS support.
+- Android non-Samsung hoặc Samsung không có Dynamic Island-like support dùng ongoing notification fallback.
 - Tap notification mở đúng Match Detail.
 
 #### PiP song song
