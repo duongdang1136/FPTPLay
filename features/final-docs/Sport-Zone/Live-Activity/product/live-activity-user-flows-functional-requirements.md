@@ -38,6 +38,7 @@ User chỉ cần bấm **Follow Match**. App lưu trận đó. Nếu device/OS h
 | v1.5 | 2026-06-05 | Dylan | Clarified Android Live Updates apply only to Samsung devices with Dynamic Island-like support. | Pending |
 | v1.6 | 2026-06-05 | Dylan | Shortened Platform scope and removed Website/TV rows. | Pending |
 | v1.7 | 2026-06-05 | Dylan | Shortened In scope list. | Pending |
+| v1.8 | 2026-06-05 | Dylan | Shortened Out of scope list. | Pending |
 
 ---
 
@@ -87,9 +88,9 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
 
 #### Out of scope
 
-- App tự override cách OS xếp Live Activities.
-- App-controlled multi-match list trong expanded Dynamic Island.
-- Fake Dynamic Island UI trên Android không được OS/Samsung hỗ trợ.
+- App ép OS hiện Live Activity theo layout riêng.
+- Multi-match list trong iOS Dynamic Island expanded.
+- Fake Dynamic Island trên Android.
 - Normal push notification copy/rules.
 - Payment/entitlement logic.
 - Full Match Detail implementation.
