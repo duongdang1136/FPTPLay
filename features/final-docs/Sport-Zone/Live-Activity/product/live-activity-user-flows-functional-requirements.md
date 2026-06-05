@@ -40,6 +40,7 @@ User chỉ cần bấm **Follow Match**. App lưu trận đó. Nếu device/OS h
 | v1.7 | 2026-06-05 | Dylan | Shortened In scope list. | Pending |
 | v1.8 | 2026-06-05 | Dylan | Shortened Out of scope list. | Pending |
 | v1.9 | 2026-06-05 | Dylan | Added permission cases: allow, deny, re-enable. | Pending |
+| v2.0 | 2026-06-05 | Dylan | Added UI organization rules for text, score, logo, state, and event priority. | Pending |
 
 ---
 
@@ -493,6 +494,100 @@ Key screens/states:
 - Android Live Updates chỉ dùng cho Samsung có Dynamic Island / Now Bar-like surface và OS support.
 - Android non-Samsung hoặc Samsung không có Dynamic Island-like support dùng ongoing notification fallback.
 - Tap notification mở đúng Match Detail.
+
+
+### UI Organization Rules
+
+#### Text
+
+- Text thường dùng font system/app. Không monospace toàn dòng.
+- Text luôn single line.
+- Dài quá thì truncate bằng `…`.
+- Compact/minimal không wrap text.
+- Score/time dùng tabular numbers / monospace digits nếu platform support.
+
+#### Dynamic Island Compact
+
+Format:
+
+```text
+[Home Logo] home_score - away_score [Away Logo]
+```
+
+Rules:
+
+- Chỉ show logo + score.
+- Không show team name.
+- Không show event.
+- Logo missing → show placeholder.
+- Score có latest verified score → show latest score.
+- Score chưa có data → `0 - 0`.
+- Score dùng tabular numbers / monospace digits.
+
+#### Minimal
+
+Format:
+
+```text
+home_score - away_score
+```
+
+Rules:
+
+- Chỉ show score.
+- Score có latest verified score → show latest score.
+- Score chưa có data → `0 - 0`.
+- Score dùng tabular numbers / monospace digits.
+
+#### Expanded Dynamic Island & Lock Screen
+
+Format:
+
+```text
+Competition
+[Home Logo] HOME_SHORT home_score - away_score AWAY_SHORT [Away Logo]
+State
+Latest Event
+```
+
+Rules:
+
+- Competition single line.
+- Team short name single line.
+- Text dài → truncate bằng `…`.
+- Logo missing → show placeholder.
+- Show tối đa 1 event.
+- Event text single line.
+- Event dài → truncate.
+
+#### State
+
+- Live → `{minute}’`, ví dụ `78’`.
+- Extra time → `45+2’`, `90+3’`.
+- Half-time → `HT`.
+- Full-time → `FT`.
+- Penalty → `PEN`.
+- Postponed → `Hoãn`.
+- Cancelled → `Hủy`.
+- Fallback / unknown state → ẩn state. Không tự đoán state.
+
+#### Event priority
+
+1. Goal alert.
+2. Red card alert.
+3. Match result / final score.
+4. Penalty alert.
+5. Match start alert.
+6. Second-half start alert.
+7. Half-time alert.
+8. Match reminder.
+
+Rules:
+
+- Show event priority cao nhất.
+- Nếu cùng priority, show event mới nhất.
+- Compact/minimal không show event.
+- Expanded/Lock Screen mới show event.
 
 #### PiP song song
 
