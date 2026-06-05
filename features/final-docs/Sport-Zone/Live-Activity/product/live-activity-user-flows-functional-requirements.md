@@ -37,6 +37,7 @@ User chỉ cần bấm **Follow Match**. App lưu trận đó. Nếu device/OS h
 | v1.4 | 2026-06-05 | Dylan | Mapped Global Business Rules into each Use Case using Caveman Vietnam wording. | Pending |
 | v1.5 | 2026-06-05 | Dylan | Clarified Android Live Updates apply only to Samsung devices with Dynamic Island-like support. | Pending |
 | v1.6 | 2026-06-05 | Dylan | Shortened Platform scope and removed Website/TV rows. | Pending |
+| v1.7 | 2026-06-05 | Dylan | Shortened In scope list. | Pending |
 
 ---
 
@@ -76,16 +77,13 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
 
 #### In scope
 
-- User bấm **Follow Match** để bật Live Activity eligibility.
-- App lưu followed match.
-- App bật Live Activity nếu device/OS hỗ trợ.
-- Server update score/status cho followed live match.
-- iOS Dynamic Island chỉ hiện 1 selected match.
-- iOS/Android Lock Screen có thể hiện nhiều followed live matches nếu OS cho.
-- User tap Live Activity để mở đúng Match Detail.
-- User hold iOS Dynamic Island để mở expanded view.
-- Match End/Unfollow thì switch hoặc end Live Activity.
-- PiP có thể chạy song song với Live Activity nếu OS cho phép.
+- Follow / Unfollow match.
+- Hiển thị score/status ngoài app trên iOS Live Activity hoặc Android notification.
+- Update score/status cho followed live match.
+- Tap để mở đúng Match Detail.
+- Hold iOS Dynamic Island để xem expanded view.
+- Match End/Unfollow thì switch hoặc end.
+- PiP có thể chạy song song nếu OS cho phép.
 
 #### Out of scope
 
