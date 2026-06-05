@@ -3,7 +3,7 @@
 > Project: FPTPlay
 > Epic: Sport Zone
 > Feature: Live Activity
-> Audience: Product, BA, FE, BE, QA, iOS
+> Audience: Product, BA, FE, BE, QA, iOS, Android
 > Status: Final implementation handoff
 > Source: Rewritten from `live-activity-user-flows.md` following Notion Functional Requirements / Usecase template
 > Writing style: Caveman Vietnam — ít chữ, dễ đọc, đúng ý, không low-level
@@ -13,15 +13,15 @@
 
 ## 1. Description
 
-Live Activity giúp user theo dõi trận đang live ngay trên **Lock Screen** và **Dynamic Island**.
+Live Activity giúp user theo dõi trận đang live ngay trên **Lock Screen**, **Dynamic Island** và **Android ongoing/live notification**.
 
-User chỉ cần bấm **Follow Match**. App lưu trận đó. Nếu iOS/device hỗ trợ, Live Activity bật và cập nhật score/status theo trận.
+User chỉ cần bấm **Follow Match**. App lưu trận đó. Nếu device/OS hỗ trợ, Live Activity / Live Update bật và cập nhật score/status theo trận.
 
 - Epic: Sport Zone
 - Feature: Live Activity
 - Main user: Logged-in User
-- Main platform: iOS
-- Main surfaces: Dynamic Island, Lock Screen
+- Main platform: Mobile iOS, Mobile Android
+- Main surfaces: iOS Dynamic Island, iOS Lock Screen, Android Lock Screen / Notification Shade / ongoing notification
 - Main intent: follow trận để xem live score/status nhanh
 
 ---
@@ -33,6 +33,7 @@ User chỉ cần bấm **Follow Match**. App lưu trận đó. Nếu iOS/device 
 | v1.0 | 2026-06-04 | Dylan | Created from `live-activity-user-flows.md` using Functional Requirements / Usecase format. | Pending |
 | v1.1 | 2026-06-05 | Dylan | Reworded to Caveman Vietnam. Simplified wording. Removed `Priority` and `Status` fields. Actor changed to Logged-in User. | Pending |
 | v1.2 | 2026-06-05 | Dylan | Added template sections: Description, Document History, Overview, Non-functional Requirements, Design Specifications, References. | Pending |
+| v1.3 | 2026-06-05 | Dylan | Clarified mobile iOS + mobile Android scope and minimum OS versions. | Pending |
 
 ---
 
@@ -47,11 +48,23 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
 #### Platform
 
 - Mobile iOS: in scope.
-- iPhone có Dynamic Island: in scope.
-- iPhone có Lock Screen Live Activity: in scope.
-- Android: out of scope cho MVP.
+- Mobile Android: in scope.
+- iOS Live Activities: apply từ **iOS 16.1+**.
+- iOS Dynamic Island: apply cho iPhone có Dynamic Island, **iOS 16.1+**.
+- iOS Lock Screen Live Activity: apply từ **iOS 16.1+**.
+- Android ongoing/live notification: apply từ **Android 8.0+ / API 26+** vì cần notification channels.
+- Android notification permission: từ **Android 13+ / API 33+** cần user cho phép notification.
+- Android Live Updates / promoted ongoing notification: dùng nếu device hỗ trợ **Android 16+ / API 36+**.
+- Android dưới 16: fallback bằng ongoing notification trên Lock Screen / Notification Shade.
 - Website: out of scope.
 - TV: out of scope.
+
+#### Platform behavior
+
+- iOS dùng tên **Live Activity**.
+- Android dùng tên **Live Update / ongoing notification**.
+- Product intent giống nhau: user xem score/status ngoài app.
+- UI surface khác nhau theo OS. App không ép OS hiển thị giống nhau.
 
 #### User
 
@@ -67,10 +80,10 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
 - App lưu followed match.
 - App bật Live Activity nếu device/OS hỗ trợ.
 - Server update score/status cho followed live match.
-- Dynamic Island chỉ hiện 1 selected match.
-- Lock Screen có thể hiện nhiều followed live matches nếu OS cho.
+- iOS Dynamic Island chỉ hiện 1 selected match.
+- iOS/Android Lock Screen có thể hiện nhiều followed live matches nếu OS cho.
 - User tap Live Activity để mở đúng Match Detail.
-- User hold Dynamic Island để mở expanded view.
+- User hold iOS Dynamic Island để mở expanded view.
 - Match End/Unfollow thì switch hoặc end Live Activity.
 - PiP có thể chạy song song với Live Activity nếu OS cho phép.
 
@@ -78,7 +91,7 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
 
 - App tự override cách OS xếp Live Activities.
 - App-controlled multi-match list trong expanded Dynamic Island.
-- Android Dynamic Island-like behavior.
+- Android Dynamic Island-like behavior / fake Dynamic Island UI.
 - Normal push notification copy/rules.
 - Payment/entitlement logic.
 - Full Match Detail implementation.
@@ -362,12 +375,12 @@ Live Activity không được tạo duplicate hoặc bị treo lâu.
 
 ### LA-NFR-003 — OS constraint
 
-App phải tôn trọng rule của iOS/OS.
+App phải tôn trọng rule của iOS/Android OS.
 
 - OS quyết định visible/collapsed/stacked/expanded.
 - App không assume Lock Screen luôn hiện nhiều activity.
-- Dynamic Island chỉ dùng selected match cho MVP.
-- PiP + Live Activity layout do OS quyết định.
+- iOS Dynamic Island chỉ dùng selected match cho MVP.
+- PiP + Live Activity / ongoing notification layout do OS quyết định.
 
 ### LA-NFR-004 — Security & privacy
 
@@ -408,10 +421,11 @@ Sport Zone
 └── Match Card / Match Detail
     ├── Follow Match button
     ├── Following state
-    └── Live Activity
-        ├── Dynamic Island compact
-        ├── Dynamic Island expanded
-        └── Lock Screen card
+    └── Live Activity / Live Update
+        ├── iOS Dynamic Island compact
+        ├── iOS Dynamic Island expanded
+        ├── iOS Lock Screen card
+        └── Android Lock Screen / Notification Shade / ongoing notification
 ```
 
 ### Wireframes
@@ -427,39 +441,50 @@ Key screens/states:
 - Match eligible chưa follow → button **Follow Match**.
 - Match không eligible → button **Follow Match** disabled.
 - Match đã follow → button **Following**.
-- Dynamic Island compact → score/status ngắn.
-- Dynamic Island expanded → selected match detail ngắn.
-- Lock Screen card → match card theo OS layout.
+- iOS Dynamic Island compact → score/status ngắn.
+- iOS Dynamic Island expanded → selected match detail ngắn.
+- iOS Lock Screen card → match card theo OS layout.
+- Android ongoing/live notification → score/status ngắn trên Lock Screen / Notification Shade.
 - Fallback screen → **Followed Matches / Live Matches**.
 
 ### Design
 
-#### Dynamic Island compact
+#### iOS Dynamic Island compact
 
 - Hiển thị team short name, score, minute/status.
 - Không nhồi nhiều thông tin.
 - Tap mở Match Detail selected match.
 - Hold mở expanded view.
 
-#### Dynamic Island expanded
+#### iOS Dynamic Island expanded
 
 - Vẫn chỉ hiện selected match.
 - Hiển thị đội, score, status/minute, latest event nếu có.
 - Tap mở Match Detail.
 
-#### Lock Screen
+#### Lock Screen / Notification Shade
 
-- Có thể hiện 1 hoặc nhiều Live Activities nếu OS cho.
-- Mỗi card map với 1 match.
-- Tap card nào mở đúng match đó.
+- iOS có thể hiện 1 hoặc nhiều Live Activities nếu OS cho.
+- Android có thể hiện ongoing/live notification nếu notification permission và OS cho.
+- Mỗi card/notification map với 1 match.
+- Tap card/notification nào mở đúng match đó.
+
+#### Android ongoing/live notification
+
+- Hiển thị team short name, score, minute/status.
+- Android 8.0+ cần notification channel.
+- Android 13+ cần notification permission.
+- Android 16+ dùng Live Updates nếu device hỗ trợ.
+- Android dưới 16 dùng ongoing notification fallback.
+- Tap notification mở đúng Match Detail.
 
 #### PiP song song
 
 - PiP phục vụ video.
-- Live Activity phục vụ score/status.
+- Live Activity / ongoing notification phục vụ score/status.
 - Nếu cùng hiện, OS quyết định layout.
-- Tap Live Activity vẫn mở đúng match.
-- PiP tiếp tục nếu OS cho, không coi PiP close là lỗi Live Activity.
+- Tap Live Activity / notification vẫn mở đúng match.
+- PiP tiếp tục nếu OS cho, không coi PiP close là lỗi Live Activity / notification.
 
 ---
 
