@@ -25,7 +25,7 @@ User bấm **Follow Match**. App lưu trận user muốn theo dõi. Nếu máy/O
 
 #### LA-UC-001 — Follow Match → Start Live Activity
 
-**Activity Flows / User Flows:**
+**Activity Flows:**
 
 ```mermaid
 sequenceDiagram
@@ -80,7 +80,7 @@ Khi trận có tỉ số, phút, trạng thái hoặc event mới, Live Activity
 
 #### LA-UC-002 — Live Score Event → Update Live Activity
 
-**Activity Flows / User Flows:**
+**Activity Flows:**
 
 ```mermaid
 sequenceDiagram
@@ -132,7 +132,7 @@ Nếu trận đang hiển thị đã End hoặc user unfollow, App dừng activi
 
 #### LA-UC-003 — Match End / Unfollow → Switch or End Live Activity
 
-**Activity Flows / User Flows:**
+**Activity Flows:**
 
 ```mermaid
 sequenceDiagram
@@ -190,7 +190,7 @@ Live Activity phải phản hồi đúng theo nơi user tương tác. Tap Dynami
 
 #### LA-UC-004 — Interact with Live Activity → Expand or Deeplink
 
-**Activity Flows / User Flows:**
+**Activity Flows:**
 
 ```mermaid
 sequenceDiagram
