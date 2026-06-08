@@ -488,12 +488,11 @@ Sport Zone
 
 ### 8.4 PiP behavior
 
-| Rule | Expected behavior |
-|---|---|
-| PiP purpose | PiP = video. Live Activity / notification = score/status. |
-| Layout control | Nếu cùng hiện, OS quyết định layout. |
-| Tap behavior | Tap Live Activity / notification vẫn mở đúng match. |
-| PiP continuity | PiP tiếp tục nếu OS cho. Không coi PiP close là lỗi Live Activity / notification. |
+- PiP = video.
+- Live Activity / notification = score/status.
+- Nếu cùng hiện, OS quyết định layout.
+- Tap Live Activity / notification vẫn mở đúng match.
+- PiP tiếp tục nếu OS cho. PiP đóng không phải lỗi của Live Activity / notification.
 
 ## 9. Error Handling & User-Facing Messages
 
