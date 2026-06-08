@@ -55,6 +55,7 @@ User chỉ cần bấm **Follow Match**. App lưu trận đó. Nếu device/OS h
 | v3.2 | 2026-06-08 | Dylan | Simplified flow diagrams to use only User and App for non-technical readability. | Pending |
 | v3.3 | 2026-06-08 | Dylan | Clarified Platform scope with OS/device/app version applicability. | Pending |
 | v3.4 | 2026-06-08 | Dylan | Changed Platform scope from table to short bullet format. | Pending |
+| v3.5 | 2026-06-08 | Dylan | Added logo field to Dynamic Island surfaces and hide icon when logo is missing. | Pending |
 
 ---
 
@@ -440,15 +441,16 @@ Sport Zone
 
 | # | Element | States | Format | Rules / Notes |
 |---:|---|---|---|---|
-| 1 | Score | default, updating, switched | `home_score - away_score` | Nội dung chính. Chỉ của selected match. Quá chật thì chỉ show score. |
-| 2 | Status token | live, half-time, ended | `LIVE`, `HT`, `FT` hoặc icon ngắn | Chỉ show nếu còn đủ chỗ. Không chỉ dùng màu; màu chỉ là phụ. |
-| 3 | Tap area | default | Tap target | Tap mở selected match. Hold mở expanded view nếu OS hỗ trợ. |
+| 1 | Logo | default, missing | Small icon | Logo missing thì ẩn icon. |
+| 2 | Score | default, updating, switched | `home_score - away_score` | Nội dung chính. Chỉ của selected match. Quá chật thì chỉ show score. |
+| 3 | Status token | live, half-time, ended | `LIVE`, `HT`, `FT` hoặc icon ngắn | Chỉ show nếu còn đủ chỗ. Không chỉ dùng màu; màu chỉ là phụ. |
+| 4 | Tap area | default | Tap target | Tap mở selected match. Hold mở expanded view nếu OS hỗ trợ. |
 
 #### Dynamic Island Compact
 
 | # | Element | States | Format | Rules / Notes |
 |---:|---|---|---|---|
-| 1 | Sport/FPT icon | default | Icon nhỏ | Chỉ là nhận diện. Ẩn nếu quá chật. |
+| 1 | Logo | default, missing | Small icon | Logo missing thì ẩn icon. |
 | 2 | Score | default, updating, switched | `home_score - away_score` | Nội dung chính. Chỉ của selected match. Ưu tiên tabular numbers nếu support. |
 | 3 | Status indicator | live, half-time, ended | `LIVE`, `HT`, `FT` hoặc icon+text | Không chỉ dùng màu; màu chỉ là phụ. |
 | 4 | Tap area | default | Tap target | Tap mở selected match. Hold mở expanded view. |
@@ -457,13 +459,14 @@ Sport Zone
 
 | # | Element | States | Format | Rules / Notes |
 |---:|---|---|---|---|
-| 1 | Header/brand | default | `FPT Play · Sport Zone` | Nhỏ, gọn, 1 dòng. Không tranh với team/score/status. |
-| 2 | Team names/logos | default, truncated, switched | `[Home] HOME_SHORT vs AWAY_SHORT [Away]` | Selected match only. Tên dài thì truncate. Logo missing thì placeholder nhỏ hoặc ẩn. |
-| 3 | Score | default, updating, switched | `home_score - away_score` | Main visual. Dùng tabular digits nếu support. |
-| 4 | Match clock/period | live, half-time, ended | `12' · 1H`, `HT`, `FT` | Ngắn. Không ghi dài. Unknown thì ẩn, không tự đoán. |
-| 5 | Status | live, ended, unavailable | `Đang diễn ra`, `Hiệp 1`, `Kết thúc` | User đọc được. Không chỉ dùng màu. |
-| 6 | Latest key event | optional | 1 dòng ngắn | Show tối đa 1 event. Dài thì truncate. |
-| 7 | Deeplink hint | default | `Tap để xem trận đấu` | Hint phụ. Không lấn score. |
+| 1 | Logo | default, missing | Small icon | Logo missing thì ẩn icon. |
+| 2 | Header/brand | default | `FPT Play · Sport Zone` | Nhỏ, gọn, 1 dòng. Không tranh với team/score/status. |
+| 3 | Team names/logos | default, truncated, switched | `[Home] HOME_SHORT vs AWAY_SHORT [Away]` | Selected match only. Tên dài thì truncate. |
+| 4 | Score | default, updating, switched | `home_score - away_score` | Main visual. Dùng tabular digits nếu support. |
+| 5 | Match clock/period | live, half-time, ended | `12' · 1H`, `HT`, `FT` | Ngắn. Không ghi dài. Unknown thì ẩn, không tự đoán. |
+| 6 | Status | live, ended, unavailable | `Đang diễn ra`, `Hiệp 1`, `Kết thúc` | User đọc được. Không chỉ dùng màu. |
+| 7 | Latest key event | optional | 1 dòng ngắn | Show tối đa 1 event. Dài thì truncate. |
+| 8 | Deeplink hint | default | `Tap để xem trận đấu` | Hint phụ. Không lấn score. |
 
 #### Lock Screen Expanded
 
