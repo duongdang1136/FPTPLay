@@ -50,6 +50,7 @@ User chỉ cần bấm **Follow Match**. App lưu trận đó. Nếu device/OS h
 | v2.7 | 2026-06-08 | Dylan | Restructured Screen Element Specification into Figma link, Information Architecture, and separate surface tables with rules/format columns. | Pending |
 | v2.8 | 2026-06-08 | Dylan | Tightened Screen Element Specification wording in Caveman Vietnam style and clarified subtle brand/icon usage on Lock Screen. | Pending |
 | v2.9 | 2026-06-08 | Dylan | Simplified Information Architecture into tree format. | Pending |
+| v3.0 | 2026-06-08 | Dylan | Added Dynamic Island minimal surface. | Pending |
 
 ---
 
@@ -444,6 +445,7 @@ Sport Zone
     ├── Follow Match button
     ├── Following state
     └── Live Activity
+        ├── Dynamic Island minimal
         ├── Dynamic Island compact
         ├── Dynamic Island expanded
         ├── Lock Screen card
@@ -451,6 +453,14 @@ Sport Zone
 ```
 
 ### 8.3 Surface elements
+
+#### Dynamic Island Minimal
+
+| # | Element | States | Format | Rules / Notes |
+|---:|---|---|---|---|
+| 1 | Score | default, updating, switched | `home_score - away_score` | Nội dung chính. Chỉ của selected match. |
+| 2 | Status token | live, half-time, ended | `LIVE`, `HT`, `FT` hoặc icon ngắn | Chỉ show nếu còn đủ chỗ. Không chỉ dùng màu. |
+| 3 | Tap area | default | Tap target | Tap mở selected match. Hold mở expanded view nếu OS hỗ trợ. |
 
 #### Dynamic Island Compact
 
