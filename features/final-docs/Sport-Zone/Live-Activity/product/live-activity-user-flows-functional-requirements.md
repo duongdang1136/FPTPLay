@@ -51,6 +51,7 @@ User chỉ cần bấm **Follow Match**. App lưu trận đó. Nếu device/OS h
 | v2.8 | 2026-06-08 | Dylan | Tightened Screen Element Specification wording in Caveman Vietnam style and clarified subtle brand/icon usage on Lock Screen. | Pending |
 | v2.9 | 2026-06-08 | Dylan | Simplified Information Architecture into tree format. | Pending |
 | v3.0 | 2026-06-08 | Dylan | Added Dynamic Island minimal surface. | Pending |
+| v3.1 | 2026-06-08 | Dylan | Merged UI organization and surface format rules into Surface elements. | Pending |
 
 ---
 
@@ -422,21 +423,6 @@ sequenceDiagram
 
 ### 8.2 Information Architecture
 
-#### UI Organization Rules
-
-| Rule | Expected behavior |
-|---|---|
-| Text | 1 dòng. Dài thì truncate `…`. Không wrap trên compact/minimal. |
-| Score / time | Ưu tiên tabular numbers nếu platform support. |
-| Status | Có text token/icon. Không chỉ dùng màu. |
-| Color | Chỉ để nhấn phụ. Không dùng làm tín hiệu duy nhất. |
-| Event | Tối đa 1 event. Compact/minimal không show event. |
-| Unknown state | Ẩn state. Không tự đoán. |
-| Logo missing | Dùng placeholder nhỏ hoặc ẩn nếu surface quá hẹp. Không làm vỡ layout. |
-| Brand | Nhẹ, gọn. Không tranh với team/score/status. |
-| Selection | Dynamic Island chỉ 1 selected match. Lock Screen theo OS behavior. |
-| Multi-match | Không làm multi-match list / `+N` trong MVP. |
-
 #### Screen IA
 
 ```text
@@ -458,8 +444,8 @@ Sport Zone
 
 | # | Element | States | Format | Rules / Notes |
 |---:|---|---|---|---|
-| 1 | Score | default, updating, switched | `home_score - away_score` | Nội dung chính. Chỉ của selected match. |
-| 2 | Status token | live, half-time, ended | `LIVE`, `HT`, `FT` hoặc icon ngắn | Chỉ show nếu còn đủ chỗ. Không chỉ dùng màu. |
+| 1 | Score | default, updating, switched | `home_score - away_score` | Nội dung chính. Chỉ của selected match. Quá chật thì chỉ show score. |
+| 2 | Status token | live, half-time, ended | `LIVE`, `HT`, `FT` hoặc icon ngắn | Chỉ show nếu còn đủ chỗ. Không chỉ dùng màu; màu chỉ là phụ. |
 | 3 | Tap area | default | Tap target | Tap mở selected match. Hold mở expanded view nếu OS hỗ trợ. |
 
 #### Dynamic Island Compact
@@ -467,18 +453,18 @@ Sport Zone
 | # | Element | States | Format | Rules / Notes |
 |---:|---|---|---|---|
 | 1 | Sport/FPT icon | default | Icon nhỏ | Chỉ là nhận diện. Ẩn nếu quá chật. |
-| 2 | Score | default, updating, switched | `home_score - away_score` | Nội dung chính. Chỉ của selected match. |
-| 3 | Status indicator | live, half-time, ended | `LIVE`, `HT`, `FT` hoặc icon+text | Không chỉ dùng màu. Color chỉ là phụ. |
+| 2 | Score | default, updating, switched | `home_score - away_score` | Nội dung chính. Chỉ của selected match. Ưu tiên tabular numbers nếu support. |
+| 3 | Status indicator | live, half-time, ended | `LIVE`, `HT`, `FT` hoặc icon+text | Không chỉ dùng màu; màu chỉ là phụ. |
 | 4 | Tap area | default | Tap target | Tap mở selected match. Hold mở expanded view. |
 
 #### Dynamic Island Expanded
 
 | # | Element | States | Format | Rules / Notes |
 |---:|---|---|---|---|
-| 1 | Header/brand | default | `FPT Play · Sport Zone` | Nhỏ, gọn, 1 dòng. |
-| 2 | Team names/logos | default, truncated, switched | `[Home] HOME_SHORT vs AWAY_SHORT [Away]` | Selected match only. Tên dài thì truncate. |
+| 1 | Header/brand | default | `FPT Play · Sport Zone` | Nhỏ, gọn, 1 dòng. Không tranh với team/score/status. |
+| 2 | Team names/logos | default, truncated, switched | `[Home] HOME_SHORT vs AWAY_SHORT [Away]` | Selected match only. Tên dài thì truncate. Logo missing thì placeholder nhỏ hoặc ẩn. |
 | 3 | Score | default, updating, switched | `home_score - away_score` | Main visual. Dùng tabular digits nếu support. |
-| 4 | Match clock/period | live, half-time, ended | `12' · 1H`, `HT`, `FT` | Ngắn. Không ghi dài. |
+| 4 | Match clock/period | live, half-time, ended | `12' · 1H`, `HT`, `FT` | Ngắn. Không ghi dài. Unknown thì ẩn, không tự đoán. |
 | 5 | Status | live, ended, unavailable | `Đang diễn ra`, `Hiệp 1`, `Kết thúc` | User đọc được. Không chỉ dùng màu. |
 | 6 | Latest key event | optional | 1 dòng ngắn | Show tối đa 1 event. Dài thì truncate. |
 | 7 | Deeplink hint | default | `Tap để xem trận đấu` | Hint phụ. Không lấn score. |
@@ -488,10 +474,10 @@ Sport Zone
 | # | Element | States | Format | Rules / Notes |
 |---:|---|---|---|---|
 | 1 | Brand/header | default | `FPT Play · Sport Zone` | Dùng text brand nhỏ. Không dùng icon/logo lớn trong card body. |
-| 2 | Match title | default, truncated, switched | `{home_team} vs {away_team}` | Context chính. Tên dài thì truncate. |
+| 2 | Match title | default, truncated, switched | `{home_team} vs {away_team}` | Context chính. Tên dài thì truncate. Logo missing thì placeholder nhỏ hoặc ẩn. |
 | 3 | Score | default, updating | `home_score - away_score` | Main visual. To/rõ hơn brand. |
-| 4 | Match status | live, half-time, ended, unavailable | `Đang diễn ra`, `Hiệp 1`, `Kết thúc` | Có text/token. Không chỉ dùng màu. |
-| 5 | Latest key event | optional | 1 dòng ngắn | Chỉ show nếu hữu ích. Max 1 event. |
+| 4 | Match status | live, half-time, ended, unavailable | `Đang diễn ra`, `Hiệp 1`, `Kết thúc` | Có text/token. Không chỉ dùng màu. Unknown thì ẩn, không tự đoán. |
+| 5 | Latest key event | optional | 1 dòng ngắn | Chỉ show nếu hữu ích. Max 1 event. Dài thì truncate. |
 | 6 | Tap target | default | Tap target | Tap mở đúng match của card. |
 
 #### Android ongoing/live notification
@@ -499,38 +485,12 @@ Sport Zone
 | # | Element | States | Format | Rules / Notes |
 |---:|---|---|---|---|
 | 1 | Brand/header | default | `FPT Play · Sport Zone` | Nhỏ, gọn. Không dùng logo to. |
-| 2 | Match title | default, truncated | `{home_team} vs {away_team}` | Match của notification đó. |
+| 2 | Match title | default, truncated | `{home_team} vs {away_team}` | Match của notification đó. Text dài thì truncate. |
 | 3 | Score | default, updating | `home_score - away_score` | Main visual. |
-| 4 | Match status | live, half-time, ended, unavailable | `LIVE`, `HT`, `FT` hoặc local text | Có text/token. Không chỉ dùng notification color. |
-| 5 | Tap target | default | Tap target | Tap mở Match Detail của match đó. |
+| 4 | Match status | live, half-time, ended, unavailable | `LIVE`, `HT`, `FT` hoặc local text | Có text/token. Không chỉ dùng notification color. Unknown thì ẩn, không tự đoán. |
+| 5 | Tap target | default | Tap target | Tap mở Match Detail của match đó. Không fake Dynamic Island. |
 
-### 8.4 Surface format rules
-
-#### Compact / minimal
-
-- Ưu tiên: score → status token → icon.
-- Quá chật thì chỉ show score.
-- Không show team name.
-- Không show event.
-- Status dùng `LIVE`, `HT`, `FT` hoặc icon+text tương đương.
-- Màu chỉ là phụ.
-
-#### Expanded / Lock Screen
-
-- Ưu tiên: team → score → status → event.
-- Brand nhỏ. Không dùng logo/icon lớn ở card body.
-- Text 1 dòng. Dài thì truncate `…`.
-- Logo missing thì dùng placeholder nhỏ hoặc ẩn.
-- Event tối đa 1 dòng.
-
-#### Android notification
-
-- Không fake Dynamic Island.
-- Dùng ongoing/live notification chuẩn Android.
-- Title = match. Body = score/status.
-- Tap mở đúng Match Detail.
-
-#### PiP behavior
+### 8.4 PiP behavior
 
 | Rule | Expected behavior |
 |---|---|
