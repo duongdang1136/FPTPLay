@@ -57,6 +57,7 @@ User chỉ cần bấm **Follow Match**. App lưu trận đó. Nếu device/OS h
 | v3.4 | 2026-06-08 | Dylan | Changed Platform scope from table to short bullet format. | Pending |
 | v3.5 | 2026-06-08 | Dylan | Added logo field to Dynamic Island surfaces and hide icon when logo is missing. | Pending |
 | v3.6 | 2026-06-08 | Dylan | Removed Dynamic Island status field and set score styling to tabular/monospace. | Pending |
+| v3.7 | 2026-06-08 | Clarified Dynamic Island Minimal as left-side score only; right side may belong to another app. | Pending |
 
 ---
 
@@ -442,9 +443,9 @@ Sport Zone
 
 | # | Element | States | Format | Rules / Notes |
 |---:|---|---|---|---|
-| 1 | Logo | default, missing | Small icon | Logo missing thì ẩn icon. |
-| 2 | Score | default, updating, switched | `home_score - away_score` | Nội dung chính. Chỉ của selected match. Dùng tabular/monospace digits nếu support. Quá chật thì chỉ show score. |
-| 3 | Tap area | default | Tap target | Tap mở selected match. Hold mở expanded view nếu OS hỗ trợ. |
+| 1 | Score | default, updating, switched | `home_score - away_score` | Hiện ở vùng bên trái của Dynamic Island minimal. Dùng tabular/monospace digits nếu support. |
+| 2 | Other app area | occupied, empty | OS-controlled | Vùng bên phải có thể thuộc app khác, ví dụ Music. App không control vùng này. |
+| 3 | Tap area | default | Tap target | Tap vùng score mở selected match. Hold mở expanded view nếu OS hỗ trợ. |
 
 #### Dynamic Island Compact
 
