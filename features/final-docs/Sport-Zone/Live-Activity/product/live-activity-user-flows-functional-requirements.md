@@ -49,6 +49,7 @@ User chỉ cần bấm **Follow Match**. App lưu trận đó. Nếu device/OS h
 | v2.6 | 2026-06-08 | Dylan | Rewrote Business Rules into numbered list style with subheadings. | Pending |
 | v2.7 | 2026-06-08 | Dylan | Restructured Screen Element Specification into Figma link, Information Architecture, and separate surface tables with rules/format columns. | Pending |
 | v2.8 | 2026-06-08 | Dylan | Tightened Screen Element Specification wording in Caveman Vietnam style and clarified subtle brand/icon usage on Lock Screen. | Pending |
+| v2.9 | 2026-06-08 | Dylan | Simplified Information Architecture into tree format. | Pending |
 
 ---
 
@@ -435,15 +436,19 @@ sequenceDiagram
 | Selection | Dynamic Island chỉ 1 selected match. Lock Screen theo OS behavior. |
 | Multi-match | Không làm multi-match list / `+N` trong MVP. |
 
-#### Surface hierarchy
+#### Screen IA
 
-| Level | Surface | Purpose | Interaction | Rule |
-|---|---|---|---|---|
-| 1 | Live Activity | Theo dõi trận ngoài app | System render | 1 selected followed match tại 1 thời điểm. |
-| 2 | Dynamic Island Compact | Xem cực nhanh | Tap mở trận; hold expand | Chỉ score/status chính. |
-| 2 | Dynamic Island Expanded | Xem rõ hơn | Tap mở trận | Vẫn chỉ 1 selected match. |
-| 2 | Lock Screen Expanded | Xem score/status trên lock screen | Tap mở trận | OS quyết định cách hiện. Brand phải subtle. |
-| 2 | Android ongoing/live notification | Android fallback | Tap mở trận | Không fake Dynamic Island. |
+```text
+Sport Zone
+└── Match Card / Match Detail
+    ├── Follow Match button
+    ├── Following state
+    └── Live Activity
+        ├── Dynamic Island compact
+        ├── Dynamic Island expanded
+        ├── Lock Screen card
+        └── Android ongoing/live notification
+```
 
 ### 8.3 Surface elements
 
