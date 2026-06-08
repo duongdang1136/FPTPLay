@@ -53,6 +53,7 @@ User chỉ cần bấm **Follow Match**. App lưu trận đó. Nếu device/OS h
 | v3.0 | 2026-06-08 | Dylan | Added Dynamic Island minimal surface. | Pending |
 | v3.1 | 2026-06-08 | Dylan | Merged UI organization and surface format rules into Surface elements. | Pending |
 | v3.2 | 2026-06-08 | Dylan | Simplified flow diagrams to use only User and App for non-technical readability. | Pending |
+| v3.3 | 2026-06-08 | Dylan | Clarified Platform scope with OS/device/app version applicability. | Pending |
 
 ---
 
@@ -64,16 +65,17 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
 
 ### 3.2 Platform scope
 
-| Platform | Scope | Requirement / Limitation |
-|---|---|---|
-| iOS | In scope | Apply từ **iOS 16.1+**. |
-| iOS Dynamic Island | In scope | Chỉ iPhone có Dynamic Island. |
-| iOS Lock Screen Live Activity | In scope | Chỉ iPhone hỗ trợ Live Activity. |
-| Android ongoing notification | In scope | Apply từ **Android 8.0+ / API 26+**. |
-| Android notification permission | In scope | Android 13+ / API 33+ cần user cho phép notification. |
-| Android Live Updates | Limited scope | Chỉ Samsung có Dynamic Island / Now Bar-like support. |
-| Non-Samsung Android | Fallback | Dùng ongoing notification, không dùng fake Dynamic Island. |
-| Website / TV | Out of scope | Không apply Live Activity trong scope này. |
+| Platform / Surface | Apply version | Scope | Requirement / Limitation |
+|---|---|---|---|
+| iOS Live Activity | **iOS 16.1+** | In scope | Chỉ apply trên iPhone hỗ trợ Live Activities. |
+| iOS Dynamic Island minimal/compact/expanded | **iOS 16.1+** + iPhone có Dynamic Island | In scope | Dynamic Island chỉ hiện trên device có Dynamic Island. |
+| iOS Lock Screen card | **iOS 16.1+** | In scope | OS quyết định cách hiện trên Lock Screen. |
+| Android ongoing/live notification | **Android 8.0+ / API 26+** | In scope | Dùng notification channel + ongoing/live style nếu support. |
+| Android notification permission | **Android 13+ / API 33+** | In scope | Cần user cho phép notification trước khi hiện ngoài app. |
+| Android Live Updates / Now Bar-like surface | **Android 15+ / One UI 7+** nếu device support | Limited scope | Chỉ apply trên Samsung/device có surface tương đương. Không apply đại trà toàn Android. |
+| Non-Samsung / unsupported Android | **Android 8.0+ / API 26+** | Fallback | Dùng ongoing notification. Không fake Dynamic Island. |
+| FPT Play app version | TBD theo release plan | In scope | Product/Engineering chốt minimum app version trước release. |
+| Website / TV | N/A | Out of scope | Không apply Live Activity trong scope này. |
 
 ### 3.3 Platform behavior
 
