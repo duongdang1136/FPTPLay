@@ -46,6 +46,7 @@ User chỉ cần bấm **Follow Match**. App lưu trận đó. Nếu device/OS h
 | v2.3 | 2026-06-08 | Dylan | Restructured document into 9-section functional requirements outline. Moved UI Organization Rules into Screen Element Specification. Added error/message table. | Pending |
 | v2.4 | 2026-06-08 | Dylan | Changed Business Rules back from table format to list format. | Pending |
 | v2.5 | 2026-06-08 | Dylan | Restored Business Rules to table format. | Pending |
+| v2.6 | 2026-06-08 | Dylan | Rewrote Business Rules into numbered list style with subheadings. | Pending |
 
 ---
 
@@ -157,39 +158,37 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
 
 ## 6. Business Rules
 
-### 6.1 Global Business Rules
+### Global Business Rules
 
-| Rule ID | Business Rule | Notes |
-|---|---|---|
-| LA-BR-001 | User phải chủ động bấm **Follow Match** thì mới bật Live Activity. | Không tự bật chỉ vì user đang xem Match Detail/Player. |
-| LA-BR-002 | User có thể follow 1 hoặc nhiều trận. | Server lưu followed matches theo user. |
-| LA-BR-003 | **Dynamic Island** chỉ hiện **1 selected followed match**. | Không hiển thị multi-match list trong compact/expanded MVP. |
-| LA-BR-004 | **Lock Screen** có thể hiện nhiều followed live matches nếu OS cho. | OS quyết định số lượng/thứ tự/stack/collapse. |
-| LA-BR-005 | Server update các followed live matches còn eligible. | Không update match đã End/Unfollow/ineligible. |
-| LA-BR-006 | App/Product quyết định nội dung hiển thị cho từng match. | Nhưng phải nằm trong constraint của OS. |
-| LA-BR-007 | OS quyết định cách hiện thật. | Visible/collapsed/expanded/stacked không do app kiểm soát hoàn toàn. |
-| LA-BR-008 | Dynamic Island compact có 2 interaction chính: tap mở Match Detail; hold mở expanded Live Activity. | Hold không deeplink ngay. |
-| LA-BR-009 | Expanded Dynamic Island vẫn chỉ hiện selected match. | MVP không làm app-controlled multi-match list. |
-| LA-BR-010 | PiP và Live Activity là 2 surface khác nhau. | PiP = video playback; Live Activity = live score/status. |
-| LA-BR-011 | Nếu PiP và Live Activity cùng hiện, tap Live Activity vẫn mở đúng màn đích. | PiP tiếp tục nếu OS cho; đóng PiP bởi OS không tính là lỗi Live Activity. |
-| LA-BR-012 | Trận không đủ điều kiện follow/Live Activity thì App disable button **Follow Match**. | Không để user bấm rồi fail vô nghĩa. |
-| LA-BR-013 | Follow thành công khác với hiển thị ngoài app. | Follow vẫn OK dù device/OS không hỗ trợ Live Activity. |
-| LA-BR-014 | Permission từ chối không được làm mất followed match. | User vẫn có state Following trong app. |
-| LA-BR-015 | Mở lại permission thì App sync lại và bật lại nếu match còn Live/eligible. | Không yêu cầu user follow lại. |
-| LA-BR-016 | App không ép iOS/Android hiển thị giống nhau. | Surface khác nhau theo OS. |
-| LA-BR-017 | Android Live Updates chỉ apply Samsung có Dynamic Island / Now Bar-like support. | Device khác fallback ongoing notification. |
-| LA-BR-018 | Update fail thì giữ trạng thái tốt gần nhất. | Không rollback về score/status cũ. |
-| LA-BR-019 | Event trùng/cũ thì bỏ qua. | Tránh spam update và stale state. |
+#### Live Activity display rules
 
-### 6.2 Dynamic Island Priority Rules
+1. User phải chủ động bấm Follow Match thì mới bật Live Activity.
+2. User có thể follow 1 hoặc nhiều trận.
+3. Dynamic Island chỉ hiện 1 selected followed match.
+4. Lock Screen có thể hiện nhiều followed live matches nếu OS cho.
+5. Server update các followed live matches còn eligible.
+6. App/Product quyết định nội dung hiển thị cho từng match.
+7. OS quyết định cách hiện thật: số lượng activity, thứ tự, collapse, expand, stack.
+8. Dynamic Island compact có 2 interaction chính: tap mở Match Detail; hold mở expanded Live Activity.
+9. Expanded Dynamic Island vẫn chỉ hiện selected match. MVP không làm app-controlled multi-match list trong expanded view.
+10. PiP và Live Activity là 2 surface khác nhau: PiP = video playback; Live Activity = live score/status.
+11. Nếu PiP và Live Activity cùng hiện, tap Live Activity vẫn mở đúng màn đích. PiP tiếp tục nếu OS cho; chỉ đóng khi user đóng hoặc OS bắt buộc.
+12. Trận không đủ điều kiện follow/Live Activity thì App disable button Follow Match.
+13. Follow thành công khác với hiển thị ngoài app.
+14. Permission từ chối không được làm mất followed match.
+15. Mở lại permission thì App sync lại và bật lại nếu match còn Live/eligible.
+16. App không ép iOS/Android hiển thị giống nhau.
+17. Android Live Updates chỉ apply Samsung có Dynamic Island / Now Bar-like support.
+18. Update fail thì giữ trạng thái tốt gần nhất.
+19. Event trùng/cũ thì bỏ qua.
 
-| Rule ID | Business Rule | Notes |
-|---|---|---|
-| LA-DI-BR-001 | Dynamic Island chỉ có 1 selected match tại 1 thời điểm. | Applies to compact and expanded. |
-| LA-DI-BR-002 | Chọn trận user follow sớm nhất và đang Live/eligible. | Default priority. |
-| LA-DI-BR-003 | Selected match End / Unfollow / không eligible thì chuyển sang followed match tiếp theo đang Live/eligible. | Đây là selected match change. |
-| LA-DI-BR-004 | Không còn followed match Live/eligible thì end Dynamic Island Live Activity. | Tránh stale data. |
-| LA-DI-BR-005 | Không tự nhảy match vì trận khác có goal/key event. | Tránh làm user rối. |
+#### Dynamic Island Priority Rule
+
+1. Dynamic Island chỉ có 1 selected match tại 1 thời điểm.
+2. Chọn trận user follow sớm nhất và đang Live/eligible.
+3. Selected match End / Unfollow / không eligible → chuyển sang followed match tiếp theo đang Live/eligible.
+4. Không còn followed match Live/eligible → end Dynamic Island Live Activity.
+5. Không tự nhảy match vì trận khác có goal/key event. Tránh làm user rối.
 
 ---
 
