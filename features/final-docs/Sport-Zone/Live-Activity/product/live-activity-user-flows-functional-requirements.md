@@ -57,7 +57,8 @@ User chỉ cần bấm **Follow Match**. App lưu trận đó. Nếu device/OS h
 | v3.4 | 2026-06-08 | Dylan | Changed Platform scope from table to short bullet format. | Pending |
 | v3.5 | 2026-06-08 | Dylan | Added logo field to Dynamic Island surfaces and hide icon when logo is missing. | Pending |
 | v3.6 | 2026-06-08 | Dylan | Removed Dynamic Island status field and set score styling to tabular/monospace. | Pending |
-| v3.7 | 2026-06-08 | Clarified Dynamic Island Minimal as left-side score only; right side may belong to another app. | Pending |
+| v3.7 | 2026-06-08 | Dylan | Clarified Dynamic Island Minimal as left-side score only; right side may belong to another app. | Pending |
+| v3.8 | 2026-06-08 | Dylan | Aligned Dynamic Island Expanded fields with expanded match UI layout. | Pending |
 
 ---
 
@@ -459,13 +460,13 @@ Sport Zone
 
 | # | Element | States | Format | Rules / Notes |
 |---:|---|---|---|---|
-| 1 | Logo | default, missing | Small icon | Logo missing thì ẩn icon. |
-| 2 | Header/brand | default | `FPT Play · Sport Zone` | Nhỏ, gọn, 1 dòng. Không tranh với team/score/status. |
-| 3 | Team names/logos | default, truncated, switched | `[Home] HOME_SHORT vs AWAY_SHORT [Away]` | Selected match only. Tên dài thì truncate. |
-| 4 | Score | default, updating, switched | `home_score - away_score` | Main visual. Dùng tabular/monospace digits nếu support. |
-| 5 | Match clock/period | live, half-time, ended | `12' · 1H`, `HT`, `FT` | Ngắn. Không ghi dài. Unknown thì ẩn, không tự đoán. |
-| 6 | Latest key event | optional | 1 dòng ngắn | Show tối đa 1 event. Dài thì truncate. |
-| 7 | Deeplink hint | default | `Tap để xem trận đấu` | Hint phụ. Không lấn score. |
+| 1 | Home team logo | default, missing | Small icon | Logo missing thì ẩn icon. Không dùng placeholder to. |
+| 2 | Home team short name | default, truncated | `HOME_SHORT` | 1 dòng. Tên dài thì truncate. |
+| 3 | Score | default, updating, switched | `home_score - away_score` | Main visual ở giữa. Dùng tabular/monospace digits nếu support. |
+| 4 | Away team short name | default, truncated | `AWAY_SHORT` | 1 dòng. Tên dài thì truncate. |
+| 5 | Away team logo | default, missing | Small icon | Logo missing thì ẩn icon. Không dùng placeholder to. |
+| 6 | Match clock/period | live, half-time, ended | `12'`, `HT`, `FT` | Ngắn. Không ghi dài. Unknown thì ẩn, không tự đoán. |
+| 7 | Tap area | default | Tap target | Tap expanded UI mở selected match. |
 
 #### Lock Screen Expanded
 
