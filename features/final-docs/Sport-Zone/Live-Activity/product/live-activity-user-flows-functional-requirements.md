@@ -68,6 +68,7 @@ User chỉ cần bấm **Đặt Lịch**. App lưu trận đó. Nếu device/OS 
 | v4.5 | 2026-06-09 | Dylan | Tightened routing wording: visible cards route by match_id; fallback only when match_id is missing/corrupted or match cannot be opened. | Pending |
 | v4.6 | 2026-06-09 | Dylan | Drift audit cleanup: aligned Đặt Lịch wording and clarified Upcoming only saves follow, Live starts outside-app surface. | Pending |
 | v4.7 | 2026-06-09 | Dylan | Replaced route/match context wording with direct match_id routing to reduce ambiguity. | Pending |
+| v4.8 | 2026-06-09 | Dylan | Changed route fallback destination from Followed Matches / Live Matches to Sport Zone match card. | Pending |
 
 ---
 
@@ -221,7 +222,7 @@ User Đặt Lịch trận. Nếu trận đang Live, App hiển thị live score/
 4. Hold iOS Dynamic Island → OS mở expanded view. Không deeplink ngay.
 5. Nếu app cold start từ tap → app mở lên rồi route đến Match Detail.
 6. Nếu user chưa login/session expired → yêu cầu login, sau đó route lại Match Detail nếu `match_id` còn hợp lệ.
-7. Nếu `match_id` thiếu/corrupted, match bị xóa, hoặc App không mở được Match Detail theo `match_id` sau khi user tap → mở fallback **Followed Matches / Live Matches**.
+7. Nếu `match_id` thiếu/corrupted, match bị xóa, hoặc App không mở được Match Detail theo `match_id` sau khi user tap → mở fallback **Sport Zone match card**.
 8. Fallback route chỉ dùng khi App không mở được Match Detail theo `match_id` sau khi user tap, hoặc match không còn khả dụng.
 9. Card/notification đang hiển thị bình thường thì phải có `match_id` đúng.
 10. App không stack trùng nhiều Match Detail khi user tap lặp.
@@ -430,7 +431,7 @@ sequenceDiagram
         App->>App: Lấy match mới nhất
         App-->>User: Mở đúng Match Detail
     else Không mở được match theo match_id hoặc match không khả dụng
-        App-->>User: Mở Followed Matches / Live Matches
+        App-->>User: Mở Sport Zone match card
     end
 ```
 
@@ -440,11 +441,11 @@ sequenceDiagram
 | Actor | Logged-in User, App |
 | Triggers | User tap iOS Dynamic Island; hold iOS Dynamic Island; tap Lock Screen card / Android ongoing notification. |
 | Pre-condition | Live Activity đang hiển thị. Activity/card/notification có `match_id` hợp lệ để route. |
-| Basic Path | 1. User tương tác Live Activity.<br>2. Hold iOS Dynamic Island compact → OS mở expanded Live Activity, không deeplink ngay.<br>3. Tap iOS Dynamic Island → App mở Match Detail của selected match.<br>4. Tap Lock Screen card / Android ongoing notification → App mở Match Detail theo `match_id` của card/notification đó.<br>5. App lấy data mới nhất trước khi hiện Match Detail.<br>6. App không mở được Match Detail theo `match_id` hoặc match không còn khả dụng → mở **Followed Matches / Live Matches**. |
+| Basic Path | 1. User tương tác Live Activity.<br>2. Hold iOS Dynamic Island compact → OS mở expanded Live Activity, không deeplink ngay.<br>3. Tap iOS Dynamic Island → App mở Match Detail của selected match.<br>4. Tap Lock Screen card / Android ongoing notification → App mở Match Detail theo `match_id` của card/notification đó.<br>5. App lấy data mới nhất trước khi hiện Match Detail.<br>6. App không mở được Match Detail theo `match_id` hoặc match không còn khả dụng → mở **Sport Zone match card**. |
 | Post-condition | User thấy expanded view hoặc vào đúng Match Detail. |
 | Alternative Path | 1. Lock Screen có nhiều card → tap card nào mở đúng match card đó.<br>2. PiP đang chạy song song → tap Live Activity vẫn mở đúng match; PiP tiếp tục nếu OS cho.<br>3. Match đã End trước khi tap → vẫn mở Match Detail với trạng thái mới nhất.<br>4. User đã unfollow trước khi tap → vẫn có thể mở Match Detail; button trở lại **Đặt Lịch**.<br>5. App cold start → mở app rồi route đến Match Detail hoặc fallback screen.<br>6. App đang mở màn khác → điều hướng sang màn đích, không stack trùng vô ích. |
-| Exception Handling | 1. Deeplink thiếu `match_id` hoặc `match_id` corrupted → mở **Followed Matches / Live Matches**.<br>2. Match bị xóa/không khả dụng → báo không tìm thấy, rồi fallback.<br>3. User chưa login/session hết hạn → yêu cầu login, sau đó route lại Match Detail nếu `match_id` còn hợp lệ.<br>4. Không lấy được match mới nhất → hiện lỗi/retry, không để màn trắng.<br>5. PiP bị OS đóng khi mở app → vẫn mở đúng màn; không tính là lỗi Live Activity. |
-| Business Rules Applied | 1. Hold iOS Dynamic Island = expand, không deeplink ngay.<br>2. Tap iOS Dynamic Island = mở Match Detail của current selected match.<br>3. Tap Lock Screen card / Android ongoing notification = mở match theo `match_id` của card/notification đó.<br>4. Không mở được Match Detail theo `match_id` hoặc match không còn khả dụng → fallback **Followed Matches / Live Matches**.<br>5. App cold start thì vẫn phải route về đúng Match Detail hoặc fallback screen. |
+| Exception Handling | 1. Deeplink thiếu `match_id` hoặc `match_id` corrupted → mở **Sport Zone match card**.<br>2. Match bị xóa/không khả dụng → báo không tìm thấy, rồi fallback.<br>3. User chưa login/session hết hạn → yêu cầu login, sau đó route lại Match Detail nếu `match_id` còn hợp lệ.<br>4. Không lấy được match mới nhất → hiện lỗi/retry, không để màn trắng.<br>5. PiP bị OS đóng khi mở app → vẫn mở đúng màn; không tính là lỗi Live Activity. |
+| Business Rules Applied | 1. Hold iOS Dynamic Island = expand, không deeplink ngay.<br>2. Tap iOS Dynamic Island = mở Match Detail của current selected match.<br>3. Tap Lock Screen card / Android ongoing notification = mở match theo `match_id` của card/notification đó.<br>4. Không mở được Match Detail theo `match_id` hoặc match không còn khả dụng → fallback **Sport Zone match card**.<br>5. App cold start thì vẫn phải route về đúng Match Detail hoặc fallback screen. |
 
 ---
 
@@ -551,7 +552,7 @@ Sport Zone
 | LA-ERR-011 | Switch selected match fail | Retry trong giới hạn. Nếu vẫn fail, giữ trạng thái tốt gần nhất hoặc end để tránh sai. | Không cần message ngoài app. |
 | LA-ERR-012 | End Live Activity fail | Retry end để tránh activity treo. | Không cần message ngoài app. |
 | LA-ERR-013 | Không xác định được trận tiếp theo | End Live Activity để tránh hiện sai. | Không cần message ngoài app. |
-| LA-ERR-014 | Deeplink thiếu `match_id` hoặc `match_id` corrupted | Mở **Followed Matches / Live Matches** fallback. | `Không mở được trận đấu. Đã chuyển đến danh sách trận đang theo dõi.` |
+| LA-ERR-014 | Deeplink thiếu `match_id` hoặc `match_id` corrupted | Mở **Sport Zone match card** fallback. | `Không mở được trận đấu. Đã chuyển đến Sport Zone.` |
 | LA-ERR-015 | Match bị xóa/không khả dụng | Báo không tìm thấy, rồi fallback. | `Không tìm thấy trận đấu này.` |
 | LA-ERR-016 | Session expired khi tap deeplink | Yêu cầu login, sau đó route lại nếu còn hợp lệ. | `Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.` |
 | LA-ERR-017 | Không lấy được match mới nhất | Hiện lỗi/retry, không để màn trắng. | `Chưa tải được thông tin trận đấu. Vui lòng thử lại.` |
