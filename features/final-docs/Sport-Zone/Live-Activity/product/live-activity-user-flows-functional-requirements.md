@@ -13,7 +13,7 @@
 
 ## 1. Description
 
-Live Activity giúp user theo dõi trận đang live ngay trên **iOS Lock Screen**, **iOS Dynamic Island** và **Android lock screen ongoing notification**.
+Live Activity giúp user theo dõi trận đang live ngay trên **iOS Lock Screen**, **iOS Dynamic Island** và **Android ongoing notification**.
 
 User chỉ cần bấm **Đặt Lịch**. App lưu trận đó. Nếu device/OS hỗ trợ, iOS Live Activity hoặc Android lock screen notification bật và cập nhật score/status theo trận.
 
@@ -21,7 +21,7 @@ User chỉ cần bấm **Đặt Lịch**. App lưu trận đó. Nếu device/OS 
 - Feature: Live Activity
 - Main user: Logged-in User
 - Main platform: Mobile iOS, Mobile Android
-- Main surfaces: iOS Dynamic Island, iOS Lock Screen Live Activity, Android lock screen ongoing notification
+- Main surfaces: iOS Dynamic Island, iOS Lock Screen Live Activity, Android ongoing notification
 - Main intent: follow trận để xem live score/status nhanh
 
 ---
@@ -59,7 +59,8 @@ User chỉ cần bấm **Đặt Lịch**. App lưu trận đó. Nếu device/OS 
 | v3.6 | 2026-06-08 | Dylan | Removed Dynamic Island status field and set score styling to tabular/monospace. | Pending |
 | v3.7 | 2026-06-08 | Dylan | Clarified Dynamic Island Minimal as left-side score only; right side may belong to another app. | Pending |
 | v3.8 | 2026-06-08 | Dylan | Aligned Dynamic Island Expanded fields with expanded match UI layout. | Pending |
-| v3.9 | 2026-06-09 | Dylan | Adjusted Android scope to ongoing notification on Android lock screen only. Removed Android Dynamic Island / Live Updates / Samsung Now Bar-like scope. | Pending |
+| v3.9 | 2026-06-09 | Dylan | Clarified Android uses ongoing notification; Lock Screen visibility depends on OS/user settings. Removed Android Dynamic Island / Live Updates / Samsung Now Bar-like scope. | Pending |
+| v4.0 | 2026-06-09 | Dylan | Reworded Android surface to ongoing notification and clarified Lock Screen visibility depends on OS/user settings. | Pending |
 
 ---
 
@@ -76,7 +77,7 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
   - **Lock Screen Live Activity:** chỉ iPhone hỗ trợ Live Activity.
 - **Android:** apply từ **Android 8.0+ / API 26+**.
   - **Android 13+ / API 33+:** cần user cho phép notification.
-  - **Android lock screen ongoing notification:** dùng ongoing notification hiển thị trên Lock Screen nếu OS cho.
+  - **Android ongoing notification:** dùng ongoing notification. Notification có thể hiện trên Lock Screen nếu OS/user settings cho.
   - **Android Dynamic Island / Live Updates / Samsung Now Bar-like:** out of scope cho phase này. Không fake Dynamic Island.
 - **FPT Play app version:** TBD theo release plan.
 - **Website / TV:** out of scope.
@@ -84,10 +85,10 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
 ### 3.3 Platform behavior
 
 - iOS dùng tên **Live Activity**.
-- Android dùng tên **Lock Screen Live Activity / ongoing notification** trong product scope.
+- Android dùng tên **ongoing notification** trong product scope.
 - Product intent giống nhau: user xem score/status ngoài app.
 - UI surface khác nhau theo OS. App không ép OS hiển thị giống nhau.
-- Android phase này chỉ làm ongoing notification hiển thị trên lock screen nếu OS cho. Không làm Dynamic Island / Live Updates / Samsung Now Bar-like surface.
+- Android phase này chỉ làm ongoing notification. Notification có thể hiện trên Lock Screen nếu OS/user settings cho. Không làm Dynamic Island / Live Updates / Samsung Now Bar-like surface.
 
 ### 3.4 Permission behavior
 
@@ -105,14 +106,14 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
 |---|---|---|
 | Logged-in User | In scope | Main actor. |
 | Guest | Limited | Phải login trước khi follow match. |
-| User follow 1 trận | In scope | iOS Dynamic Island hiển thị selected match đó nếu device hỗ trợ. Android hiển thị qua lock screen ongoing notification. |
-| User follow nhiều trận | In scope | iOS Dynamic Island chọn 1 selected match; Lock Screen có thể hiện nhiều nếu OS cho. Android dùng lock screen ongoing notification. |
+| User follow 1 trận | In scope | iOS Dynamic Island hiển thị selected match đó nếu device hỗ trợ. Android hiển thị qua ongoing notification. Notification có thể hiện trên Lock Screen nếu OS/user settings cho. |
+| User follow nhiều trận | In scope | iOS Dynamic Island chọn 1 selected match; Lock Screen có thể hiện nhiều nếu OS cho. Android dùng ongoing notification. Notification có thể hiện trên Lock Screen nếu OS/user settings cho. |
 | Admin/CMS user | Out of scope | Không thuộc feature này. |
 
 ### 3.6 In scope
 
 - Follow / Unfollow match.
-- Hiển thị score/status ngoài app trên iOS Live Activity hoặc Android lock screen ongoing notification.
+- Hiển thị score/status ngoài app trên iOS Live Activity hoặc Android ongoing notification.
 - Update score/status cho followed live match.
 - Tap để mở đúng Match Detail.
 - Hold iOS Dynamic Island để xem expanded view.
@@ -153,7 +154,7 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
 | 6 | iOS Dynamic Island compact | User hold/long press | Dynamic Island | OS mở expanded Live Activity. Không deeplink ngay. |
 | 7 | iOS Dynamic Island expanded | User tap | Dynamic Island expanded | Mở Match Detail của selected match nếu platform cho tap target. |
 | 8 | iOS Lock Screen card | User tap card | Lock Screen | Mở Match Detail của match trên card đó. |
-| 9 | Android lock screen ongoing notification | User tap notification | Android lock screen | Mở Match Detail của match trên notification đó. |
+| 9 | Android ongoing notification | User tap notification | Android Lock Screen / Notification Shade | Mở Match Detail của match trên notification đó. |
 | 10 | OS Settings permission | User bật lại permission | OS Settings / App resume | App sync permission. Nếu còn followed live match eligible thì bật lại Live Activity / notification. |
 
 ---
@@ -191,7 +192,7 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
 14. Permission từ chối không được làm mất followed match.
 15. Mở lại permission thì App sync lại và bật lại nếu match còn Live/eligible.
 16. App không ép iOS/Android hiển thị giống nhau.
-17. Android chỉ làm ongoing notification hiển thị trên lock screen trong phase này. Không làm Dynamic Island / Live Updates / Samsung Now Bar-like support.
+17. Android chỉ làm ongoing notification trong phase này. Notification có thể hiện trên Lock Screen nếu OS/user settings cho. Không làm Dynamic Island / Live Updates / Samsung Now Bar-like support.
 18. Update fail thì giữ trạng thái tốt gần nhất.
 19. Event trùng/cũ thì bỏ qua.
 
@@ -437,7 +438,7 @@ Sport Zone
         ├── Dynamic Island compact
         ├── Dynamic Island expanded
         ├── Lock Screen card
-        └── Android lock screen ongoing notification
+        └── Android ongoing notification
 ```
 
 ### 8.3 Surface elements
@@ -481,7 +482,7 @@ Sport Zone
 | 5 | Latest key event | optional | 1 dòng ngắn | Chỉ show nếu hữu ích. Max 1 event. Dài thì truncate. |
 | 6 | Tap target | default | Tap target | Tap mở đúng match của card. |
 
-#### Android lock screen ongoing notification
+#### Android ongoing notification
 
 | # | Element | States | Format | Rules / Notes |
 |---:|---|---|---|---|
