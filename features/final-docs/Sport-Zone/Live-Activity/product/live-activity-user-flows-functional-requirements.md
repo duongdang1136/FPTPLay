@@ -15,7 +15,7 @@
 
 Live Activity giúp user theo dõi trận đang live ngay trên **iOS Lock Screen**, **iOS Dynamic Island** và **Android ongoing notification**.
 
-User chỉ cần bấm **Đặt Lịch**. App lưu trận đó. Nếu device/OS hỗ trợ, iOS Live Activity hoặc Android lock screen notification bật và cập nhật score/status theo trận.
+User chỉ cần bấm **Đặt Lịch**. App lưu trận đó. Nếu device/OS hỗ trợ, iOS Live Activity hoặc Android ongoing notification bật và cập nhật score/status theo trận.
 
 - Epic: Sport Zone
 - Feature: Live Activity
@@ -61,6 +61,7 @@ User chỉ cần bấm **Đặt Lịch**. App lưu trận đó. Nếu device/OS 
 | v3.8 | 2026-06-08 | Dylan | Aligned Dynamic Island Expanded fields with expanded match UI layout. | Pending |
 | v3.9 | 2026-06-09 | Dylan | Clarified Android uses ongoing notification; Lock Screen visibility depends on OS/user settings. Removed Android Dynamic Island / Live Updates / Samsung Now Bar-like scope. | Pending |
 | v4.0 | 2026-06-09 | Dylan | Reworded Android surface to ongoing notification and clarified Lock Screen visibility depends on OS/user settings. | Pending |
+| v4.1 | 2026-06-09 | Dylan | Clarified match eligibility: Upcoming and Live can Đặt Lịch; only Live shows outside app; End disables button but keeps user history. | Pending |
 
 ---
 
@@ -187,14 +188,25 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
 9. iOS Expanded Dynamic Island vẫn chỉ hiện selected match. MVP không làm app-controlled multi-match list trong expanded view.
 10. PiP và Live Activity là 2 surface khác nhau: PiP = video playback; Live Activity = live score/status.
 11. Nếu PiP và Live Activity cùng hiện, tap Live Activity vẫn mở đúng màn đích. PiP tiếp tục nếu OS cho; chỉ đóng khi user đóng hoặc OS bắt buộc.
-12. Trận không đủ điều kiện follow/Live Activity thì App disable button Đặt Lịch.
-13. Follow thành công khác với hiển thị ngoài app.
-14. Permission từ chối không được làm mất followed match.
-15. Mở lại permission thì App sync lại và bật lại nếu match còn Live/eligible.
-16. App không ép iOS/Android hiển thị giống nhau.
-17. Android chỉ làm ongoing notification trong phase này. Notification có thể hiện trên Lock Screen nếu OS/user settings cho. Không làm Dynamic Island / Live Updates / Samsung Now Bar-like support.
-18. Update fail thì giữ trạng thái tốt gần nhất.
-19. Event trùng/cũ thì bỏ qua.
+12. Trận eligible để **Đặt Lịch** khi status là **Upcoming / chưa đến giờ Live** hoặc **Live / đang Live**.
+13. Trận **End** thì disable button **Đặt Lịch**, nhưng giữ history Đặt Lịch của user.
+14. Trận chưa đến giờ Live chỉ lưu Đặt Lịch trong app. Không hiển thị data ngoài Lock Screen / Dynamic Island / notification.
+15. Trận đang Live mới được hiển thị data ngoài Lock Screen / Dynamic Island / notification nếu permission/device/OS cho.
+16. Follow thành công khác với hiển thị ngoài app.
+17. Permission từ chối không được làm mất followed match.
+18. Mở lại permission thì App sync lại và bật lại nếu match còn Live/eligible.
+19. App không ép iOS/Android hiển thị giống nhau.
+20. Android chỉ làm ongoing notification trong phase này. Notification có thể hiện trên Lock Screen nếu OS/user settings cho. Không làm Dynamic Island / Live Updates / Samsung Now Bar-like support.
+21. Update fail thì giữ trạng thái tốt gần nhất.
+22. Event trùng/cũ thì bỏ qua.
+
+#### Match eligibility rules
+
+1. **Upcoming / chưa đến giờ Live** → enable **Đặt Lịch**. App lưu followed match. Không start Live Activity / notification bên ngoài app.
+2. **Live / đang Live** → enable **Đặt Lịch**. App lưu followed match. Nếu permission/device/OS support thì start Live Activity / notification.
+3. **End / kết thúc** → disable **Đặt Lịch**. Không tạo follow mới. Nếu user từng Đặt Lịch trước đó, App giữ history.
+4. **Cancelled / Postponed / Unavailable** → disable **Đặt Lịch**, trừ khi Product có rule riêng cho đặt trước.
+5. Permission/device/OS support không phải điều kiện để enable **Đặt Lịch**. Đây chỉ là điều kiện để hiện ngoài app.
 
 #### iOS Dynamic Island Priority Rule
 
@@ -210,12 +222,12 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
 
 ### LA-US-001 — User follow trận để bật Live Activity
 
-- User muốn follow trận đang live.
-- User muốn xem tỉ số/trạng thái ngoài iOS Lock Screen / iOS Dynamic Island / Android lock screen.
+- User muốn đặt lịch theo dõi trận sắp Live hoặc đang Live.
+- User muốn xem tỉ số/trạng thái ngoài iOS Lock Screen / iOS Dynamic Island / Android ongoing notification.
 - User không muốn mở app liên tục.
 
 **Description:**
-User bấm **Đặt Lịch**. App lưu trận user muốn theo dõi. Nếu máy/OS hỗ trợ, Live Activity bật. Nếu không hỗ trợ, user vẫn follow được trận trong app.
+User bấm **Đặt Lịch**. App lưu trận user muốn theo dõi. Nếu trận đang Live và máy/OS hỗ trợ, Live Activity bật. Nếu trận chưa đến giờ Live, App chỉ lưu Đặt Lịch trong app và chờ trận Live.
 
 #### LA-UC-001 — Đặt Lịch → Start Live Activity
 
@@ -229,13 +241,17 @@ sequenceDiagram
     participant App
 
     User->>App: Bấm Đặt Lịch
-    App->>App: Check login + match eligible
+    App->>App: Check login + match status
 
     alt User chưa login
         App-->>User: Yêu cầu login
-    else Match không eligible
+    else Match End / Cancelled / Unavailable
         App-->>User: Disable Đặt Lịch
-    else Match eligible
+    else Match chưa đến giờ Live
+        App->>App: Lưu followed match
+        App-->>User: Button chuyển thành Following
+        App-->>User: Chưa hiện ngoài app
+    else Match đang Live
         App->>App: Lưu followed match
         App-->>User: Button chuyển thành Following
         App->>App: Check permission + device support
@@ -250,15 +266,15 @@ sequenceDiagram
 
 | Field | Details |
 |---|---|
-| Description | User follow 1 trận hợp lệ. App bật Live Activity nếu có thể. |
+| Description | User Đặt Lịch 1 trận hợp lệ. Upcoming thì chỉ lưu trong app. Live thì bật Live Activity nếu có thể. |
 | Actor | Logged-in User, App |
 | Triggers | User bấm **Đặt Lịch** ở Match Detail hoặc Sport Zone match card. |
-| Pre-condition | User đang xem trận có thể follow. Trận đang Live/eligible. Button đang enabled. |
-| Basic Path | 1. User bấm **Đặt Lịch**.<br>2. App check login.<br>3. App check trận có đủ điều kiện không.<br>4. Server lưu trận vào followed matches.<br>5. App đổi button thành **Following**.<br>6. App check permission + device/OS support.<br>7. Permission OK → bật Live Activity / notification.<br>8. Permission bị từ chối → vẫn follow, nhưng không hiện ngoài app. |
-| Post-condition | Trận nằm trong followed matches. Button là **Following**. Live Activity / notification hiện nếu permission OK và OS cho phép. |
-| Alternative Path | 1. Chưa login → App bắt login trước.<br>2. Permission đồng ý → bật Live Activity / notification nếu OS support.<br>3. Permission từ chối → vẫn follow được, nhưng không hiện ngoài app. App hướng dẫn bật lại.<br>4. User mở lại permission trong Settings → App sync lại. Nếu match còn Live/eligible thì bật lại.<br>5. Device không hỗ trợ → vẫn follow được, nhưng không có Live Activity / notification surface đó.<br>6. User follow nhiều trận → Server vẫn lưu đủ. iOS Dynamic Island chỉ chọn 1 trận. Lock Screen có thể hiện nhiều nếu OS cho. |
-| Exception Handling | 1. Trận không hợp lệ → disable button, user không bấm được.<br>2. Follow fail → giữ button **Đặt Lịch**, cho thử lại.<br>3. Permission check fail → giữ **Following**, hiện hướng dẫn retry/settings nếu cần.<br>4. Live Activity bật fail → vẫn giữ **Following** nếu follow đã OK.<br>5. User bấm lặp → không tạo follow trùng. App giữ trạng thái đúng cuối cùng. |
-| Business Rules Applied | 1. Follow thành công thì phải lưu followed match trước, rồi mới check permission/device để bật ngoài app.<br>2. Permission từ chối không được làm mất followed match.<br>3. Mở lại permission thì App bật lại Live Activity / notification nếu match còn Live/eligible.<br>4. Follow fail thì không đổi sang **Following**.<br>5. User bấm lặp thì không tạo follow trùng. |
+| Pre-condition | User đang xem trận có thể Đặt Lịch. Trận chưa đến giờ Live hoặc đang Live. Button đang enabled. |
+| Basic Path | 1. User bấm **Đặt Lịch**.<br>2. App check login.<br>3. App check match status.<br>4. Match chưa đến giờ Live hoặc đang Live → Server lưu trận vào followed matches.<br>5. App đổi button thành **Following**.<br>6. Nếu match chưa đến giờ Live → chưa hiện Live Activity / notification ngoài app.<br>7. Nếu match đang Live → App check permission + device/OS support.<br>8. Permission OK → bật Live Activity / notification.<br>9. Permission bị từ chối → vẫn follow, nhưng không hiện ngoài app. |
+| Post-condition | Trận nằm trong followed matches. Button là **Following**. Nếu match đang Live, Live Activity / notification hiện khi permission OK và OS cho phép. Nếu match chưa đến giờ Live, chưa hiện ngoài app. |
+| Alternative Path | 1. Chưa login → App bắt login trước.<br>2. Match chưa đến giờ Live → vẫn Đặt Lịch được, nhưng chưa hiện ngoài app.<br>3. Match chuyển sang Live → App bật Live Activity / notification nếu permission/device/OS support.<br>4. Permission đồng ý → bật Live Activity / notification nếu match đang Live và OS support.<br>5. Permission từ chối → vẫn follow được, nhưng không hiện ngoài app. App hướng dẫn bật lại.<br>6. User mở lại permission trong Settings → App sync lại. Nếu match còn Live/eligible thì bật lại.<br>7. Device không hỗ trợ → vẫn follow được, nhưng không có Live Activity / notification surface đó.<br>8. User follow nhiều trận → Server vẫn lưu đủ. iOS Dynamic Island chỉ chọn 1 trận đang Live. Lock Screen có thể hiện nhiều trận đang Live nếu OS cho. |
+| Exception Handling | 1. Trận End / Cancelled / Unavailable → disable button, user không bấm được.<br>2. Follow fail → giữ button **Đặt Lịch**, cho thử lại.<br>3. Permission check fail → giữ **Following**, hiện hướng dẫn retry/settings nếu cần.<br>4. Live Activity bật fail → vẫn giữ **Following** nếu follow đã OK.<br>5. User bấm lặp → không tạo follow trùng. App giữ trạng thái đúng cuối cùng. |
+| Business Rules Applied | 1. Upcoming và Live đều được **Đặt Lịch**.<br>2. End thì disable **Đặt Lịch**, nhưng giữ history nếu user từng Đặt Lịch.<br>3. Follow thành công thì phải lưu followed match trước, rồi mới check permission/device để bật ngoài app.<br>4. Match chưa đến giờ Live thì không hiện ngoài app.<br>5. Match đang Live mới bật Live Activity / notification nếu permission/device/OS support.<br>6. Permission từ chối không được làm mất followed match.<br>7. Mở lại permission thì App bật lại Live Activity / notification nếu match còn Live/eligible.<br>8. Follow fail thì không đổi sang **Following**.<br>9. User bấm lặp thì không tạo follow trùng. |
 
 ---
 
@@ -298,7 +314,7 @@ sequenceDiagram
 | Description | Followed match có thông tin mới. Live Activity cập nhật theo. |
 | Actor | Logged-in User, App |
 | Triggers | Trận đổi score, minute, status hoặc có event quan trọng. |
-| Pre-condition | Trận đang Live/eligible. User đã follow. Device/OS có thể hiển thị Live Activity. |
+| Pre-condition | Trận đang Live/eligible. User đã Đặt Lịch. Device/OS có thể hiển thị Live Activity / notification. |
 | Basic Path | 1. Server nhận thông tin mới của trận.<br>2. Server check trận có user follow không.<br>3. Server gửi update cho activity cần đổi.<br>4. App/OS cập nhật Live Activity.<br>5. User thấy score/status mới nếu OS đang hiển thị.<br>6. iOS Dynamic Island chỉ update selected match. Lock Screen có thể update nhiều trận nếu OS cho. |
 | Post-condition | Live Activity hiển thị thông tin mới nhất nếu update OK và OS cho hiện. |
 | Alternative Path | 1. Không ai follow → không update Live Activity.<br>2. Trận được follow nhưng không phải selected match → iOS Dynamic Island không đổi; Lock Screen vẫn có thể update.<br>3. Lock Screen có nhiều activity → mỗi card update theo match của nó; OS quyết định card nào visible/collapsed/expanded.<br>4. Thay đổi nhỏ/không đáng kể → Server có thể bỏ qua để tránh spam update. |
@@ -366,7 +382,7 @@ sequenceDiagram
 - User có thể hold iOS Dynamic Island để xem expanded view.
 
 **Description:**
-Live Activity phải phản hồi đúng theo nơi user tương tác. Tap iOS Dynamic Island mở selected match. Hold iOS Dynamic Island mở expanded view. Tap Lock Screen card / Android lock screen notification mở đúng match của card đó. Nếu không biết match nào, App mở fallback screen.
+Live Activity phải phản hồi đúng theo nơi user tương tác. Tap iOS Dynamic Island mở selected match. Hold iOS Dynamic Island mở expanded view. Tap Lock Screen card / Android ongoing notification mở đúng match của card đó. Nếu không biết match nào, App mở fallback screen.
 
 #### LA-UC-004 — Interact with Live Activity → Expand or Deeplink
 
@@ -404,13 +420,13 @@ sequenceDiagram
 |---|---|
 | Description | User tap/hold Live Activity. App expand hoặc deeplink đúng màn. |
 | Actor | Logged-in User, App |
-| Triggers | User tap iOS Dynamic Island; hold iOS Dynamic Island; tap Lock Screen card / Android lock screen notification. |
+| Triggers | User tap iOS Dynamic Island; hold iOS Dynamic Island; tap Lock Screen card / Android ongoing notification. |
 | Pre-condition | Live Activity đang hiển thị. Activity/card có match id hợp lệ, trừ fallback case. |
 | Basic Path | 1. User tương tác Live Activity.<br>2. Hold iOS Dynamic Island compact → OS mở expanded Live Activity, không deeplink ngay.<br>3. Tap iOS Dynamic Island → App mở Match Detail của selected match.<br>4. Tap Lock Screen card → App mở Match Detail của match trên card đó.<br>5. App lấy data mới nhất trước khi hiện Match Detail.<br>6. Không xác định được match → mở **Followed Matches / Live Matches**. |
 | Post-condition | User thấy expanded view hoặc vào đúng Match Detail. |
 | Alternative Path | 1. Lock Screen có nhiều card → tap card nào mở đúng match card đó.<br>2. PiP đang chạy song song → tap Live Activity vẫn mở đúng match; PiP tiếp tục nếu OS cho.<br>3. Match đã End trước khi tap → vẫn mở Match Detail với trạng thái mới nhất.<br>4. User đã unfollow trước khi tap → vẫn có thể mở Match Detail; button trở lại **Đặt Lịch**.<br>5. App cold start → mở app rồi đi đến Match Detail hoặc fallback screen.<br>6. App đang mở màn khác → điều hướng sang màn đích, không stack trùng vô ích. |
 | Exception Handling | 1. Deeplink thiếu/sai match → mở **Followed Matches / Live Matches**.<br>2. Match bị xóa/không khả dụng → báo không tìm thấy, rồi fallback.<br>3. User chưa login/session hết hạn → yêu cầu login, sau đó quay lại match nếu còn hợp lệ.<br>4. Không lấy được match mới nhất → hiện lỗi/retry, không để màn trắng.<br>5. PiP bị OS đóng khi mở app → vẫn mở đúng màn; không tính là lỗi Live Activity. |
-| Business Rules Applied | 1. Hold iOS Dynamic Island = expand, không deeplink ngay.<br>2. Tap iOS Dynamic Island = mở Match Detail của current selected match.<br>3. Tap Lock Screen card / Android lock screen notification = mở match của card/notification đó.<br>4. Không biết match nào → fallback **Followed Matches / Live Matches**.<br>5. App cold start thì vẫn phải route về đúng Match Detail hoặc fallback screen. |
+| Business Rules Applied | 1. Hold iOS Dynamic Island = expand, không deeplink ngay.<br>2. Tap iOS Dynamic Island = mở Match Detail của current selected match.<br>3. Tap Lock Screen card / Android ongoing notification = mở match của card/notification đó.<br>4. Không biết match nào → fallback **Followed Matches / Live Matches**.<br>5. App cold start thì vẫn phải route về đúng Match Detail hoặc fallback screen. |
 
 ---
 
@@ -495,9 +511,9 @@ Sport Zone
 ### 8.4 PiP behavior
 
 - PiP = video.
-- Live Activity / Android lock screen notification = score/status.
+- Live Activity / Android ongoing notification = score/status.
 - Nếu cùng hiện, OS quyết định layout.
-- Tap Live Activity / Android lock screen notification vẫn mở đúng match.
+- Tap Live Activity / Android ongoing notification vẫn mở đúng match.
 - PiP tiếp tục nếu OS cho. PiP đóng không phải lỗi của Live Activity / notification.
 
 ## 9. Error Handling & User-Facing Messages
@@ -505,9 +521,9 @@ Sport Zone
 | Case ID | Scenario | System behavior | User-facing message |
 |---|---|---|---|
 | LA-ERR-001 | User chưa login khi bấm Đặt Lịch | App yêu cầu login trước. Sau login quay lại match nếu còn hợp lệ. | `Vui lòng đăng nhập để theo dõi trận đấu.` |
-| LA-ERR-002 | Trận không eligible để follow | Disable button **Đặt Lịch**. Không tạo follow request. | `Trận đấu hiện chưa hỗ trợ theo dõi.` |
+| LA-ERR-002 | Trận End / Cancelled / Unavailable khi bấm Đặt Lịch | Disable button **Đặt Lịch**. Không tạo follow request mới. Nếu user từng Đặt Lịch trước đó, giữ history. | `Trận đấu hiện chưa hỗ trợ theo dõi.` |
 | LA-ERR-003 | Follow request fail | Giữ button **Đặt Lịch**. Cho user thử lại. | `Chưa thể theo dõi trận này. Vui lòng thử lại.` |
-| LA-ERR-004 | User bấm Follow lặp | Không tạo duplicate. Giữ trạng thái cuối cùng đúng. | Không cần message nếu state đã đúng. |
+| LA-ERR-004 | User bấm Đặt Lịch lặp | Không tạo duplicate. Giữ trạng thái cuối cùng đúng. | Không cần message nếu state đã đúng. |
 | LA-ERR-005 | Permission bị từ chối | Vẫn lưu followed match. Không hiện Live Activity / notification ngoài app. | `Đã theo dõi trận. Bật thông báo trong Cài đặt để xem ngoài màn hình khóa.` |
 | LA-ERR-006 | Device/OS không support Live Activity / notification | Vẫn lưu followed match. Fallback trong app nếu OS không cho hiển thị ngoài Lock Screen. | `Thiết bị này chưa hỗ trợ hiển thị ngoài màn hình khóa. Bạn vẫn có thể theo dõi trận trong ứng dụng.` |
 | LA-ERR-007 | Live Activity start fail | Giữ **Following** nếu follow đã OK. Retry nếu phù hợp. | `Đã theo dõi trận. Live Activity hiện chưa bật được.` |
