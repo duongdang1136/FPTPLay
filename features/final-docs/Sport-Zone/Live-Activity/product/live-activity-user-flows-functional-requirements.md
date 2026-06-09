@@ -62,6 +62,7 @@ User chỉ cần bấm **Đặt Lịch**. App lưu trận đó. Nếu device/OS 
 | v3.9 | 2026-06-09 | Dylan | Clarified Android uses ongoing notification; Lock Screen visibility depends on OS/user settings. Removed Android Dynamic Island / Live Updates / Samsung Now Bar-like scope. | Pending |
 | v4.0 | 2026-06-09 | Dylan | Reworded Android surface to ongoing notification and clarified Lock Screen visibility depends on OS/user settings. | Pending |
 | v4.1 | 2026-06-09 | Dylan | Clarified match eligibility: Upcoming and Live can Đặt Lịch; only Live shows outside app; End disables button but keeps user history. | Pending |
+| v4.2 | 2026-06-09 | Dylan | Moved permission behavior from Overview into Business Rules as Permission rules. | Pending |
 
 ---
 
@@ -91,17 +92,7 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
 - UI surface khác nhau theo OS. App không ép OS hiển thị giống nhau.
 - Android phase này chỉ làm ongoing notification. Notification có thể hiện trên Lock Screen nếu OS/user settings cho. Không làm Dynamic Island / Live Updates / Samsung Now Bar-like surface.
 
-### 3.4 Permission behavior
-
-| Case | Expected behavior |
-|---|---|
-| Permission đồng ý | App bật Live Activity / notification nếu match eligible và OS support. |
-| Permission từ chối | User vẫn follow match trong app. Ngoài app không hiện Live Activity / notification. App hiện hướng dẫn bật lại. |
-| Mở lại permission | User vào OS Settings bật lại. App sync lại permission. Nếu còn followed live match eligible, App bật lại Live Activity / notification. |
-| iOS Live Activities bị tắt | Fallback trong app. Không làm mất followed match. |
-| Android 13+ notification bị deny | Fallback trong app. Không spam permission prompt. |
-
-### 3.5 User scope
+### 3.4 User scope
 
 | User type | Scope | Notes |
 |---|---|---|
@@ -111,7 +102,7 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
 | User follow nhiều trận | In scope | iOS Dynamic Island chọn 1 selected match; Lock Screen có thể hiện nhiều nếu OS cho. Android dùng ongoing notification. Notification có thể hiện trên Lock Screen nếu OS/user settings cho. |
 | Admin/CMS user | Out of scope | Không thuộc feature này. |
 
-### 3.6 In scope
+### 3.5 In scope
 
 - Follow / Unfollow match.
 - Hiển thị score/status ngoài app trên iOS Live Activity hoặc Android ongoing notification.
@@ -121,7 +112,7 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
 - Match End/Unfollow thì switch hoặc end.
 - PiP có thể chạy song song nếu OS cho phép.
 
-### 3.7 Out of scope
+### 3.6 Out of scope
 
 - App ép OS hiện Live Activity theo layout riêng.
 - Multi-match list trong iOS Dynamic Island expanded.
@@ -131,7 +122,7 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
 - Payment/entitlement logic.
 - Full Match Detail implementation.
 
-### 3.8 Non-functional requirements
+### 3.7 Non-functional requirements
 
 | ID | Requirement | Notes |
 |---|---|---|
@@ -207,6 +198,15 @@ User follow trận. App hiển thị live score/status ngoài app. User xem nhan
 3. **End / kết thúc** → disable **Đặt Lịch**. Không tạo follow mới. Nếu user từng Đặt Lịch trước đó, App giữ history.
 4. **Cancelled / Postponed / Unavailable** → disable **Đặt Lịch**, trừ khi Product có rule riêng cho đặt trước.
 5. Permission/device/OS support không phải điều kiện để enable **Đặt Lịch**. Đây chỉ là điều kiện để hiện ngoài app.
+
+#### Permission rules
+
+1. **Permission đồng ý** → App bật Live Activity / notification nếu match đang Live, eligible, và OS/device support.
+2. **Permission từ chối** → User vẫn Đặt Lịch trong app. Ngoài app không hiện Live Activity / notification. App hiện hướng dẫn bật lại.
+3. **Mở lại permission** → User vào OS Settings bật lại. App sync lại permission. Nếu còn followed match đang Live/eligible, App bật lại Live Activity / notification.
+4. **iOS Live Activities bị tắt** → fallback trong app. Không làm mất followed match.
+5. **Android 13+ notification bị deny** → fallback trong app. Không spam permission prompt.
+6. Permission/device/OS support chỉ quyết định hiển thị ngoài app. Không quyết định việc user có được **Đặt Lịch** hay không.
 
 #### iOS Dynamic Island Priority Rule
 
