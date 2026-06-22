@@ -16,7 +16,7 @@ Timeshift Seek cho phép user đang xem **sự kiện live FPTLive** tua lại n
 
 Feature này **không áp dụng cho EPL**. DVR link chỉ được trả khi user có gói hợp lệ và sự kiện được bật cờ DVR qua CMS.
 
-Sau khi sự kiện kết thúc, player **không switch qua VOD**. Nếu user đang ở trong player tại thời điểm event end, user được giữ trong DVR replay session hiện tại. Nếu user thoát player hoặc vào lại event đã kết thúc, app chỉ báo **Sự kiện đã kết thúc**.
+Sau khi sự kiện kết thúc, player giữ trải nghiệm DVR theo điều kiện hợp lệ. Nếu user đang ở trong player tại thời điểm event end, user được giữ trong DVR replay session hiện tại. Nếu user thoát player hoặc vào lại event đã kết thúc, app báo **Sự kiện đã kết thúc** nhưng vẫn có thể cho DVR replay nếu DVR còn hợp lệ; không tự động nhảy sang next event.
 
 ---
 
@@ -24,8 +24,8 @@ Sau khi sự kiện kết thúc, player **không switch qua VOD**. Nếu user đ
 
 | Version | Date | Updated By | Notes | Approved By |
 |---|---|---|---|---|
-| v1.0 | 2026-06-16 | Dylan | Initial split docs: full-event DVR, auto VOD transition. | Pending |
-| v2.0 | 2026-06-22 | Dylan | Rewritten from new requirements: 8-hour DVR, FPTLive only, EPL excluded, entitlement gate, CMS flag, no VOD switch, no seek thumbnail, session-bound post-end DVR behavior. | Pending |
+| v1.0 | 2026-06-16 | Dylan | Initial split docs: full-event DVR and legacy post-event behavior. | Pending |
+| v2.0 | 2026-06-22 | Dylan | Rewritten from new requirements: 8-hour DVR, FPTLive only, EPL excluded, entitlement gate, CMS flag, no seek thumbnail, post-end DVR and no-auto-next behavior. | Pending |
 
 ---
 
@@ -51,7 +51,7 @@ User đang xem live event có thể tua lại nội dung đã phát trong giới
 | FPTLive event | In scope | DVR can be enabled by CMS flag if stream supports DVR and user has entitlement. |
 | EPL event | Out of scope | Must not enable DVR/start-over even if generic DVR config exists. |
 | Non-FPTLive event | Out of scope by default | Only enable if future requirement explicitly allows it. |
-| Ended event re-entry | Out of scope for DVR replay | Show Event Ended state; do not reopen DVR. |
+| Ended event re-entry | In scope when DVR is still valid | Show Event Ended state; DVR replay may still be available; do not auto next. |
 
 ### 3.4 User scope
 
@@ -70,14 +70,12 @@ User đang xem live event có thể tua lại nội dung đã phát trong giới
 - CMS flag to enable/disable DVR per event.
 - Entitlement gate before returning DVR link.
 - No seek thumbnail preview.
-- Event end handling without VOD switch.
 - Session-bound DVR replay after event end.
 
 ### 3.6 Out of scope
 
 - EPL DVR/start-over.
-- Auto-switch to VOD after event end.
-- Opening DVR replay after user exits and re-enters ended event.
+- Auto-jumping to next event after user exits/re-enters ended event.
 - Seek thumbnail sprite/VTT.
 - Offline download.
 - Editing CMS UI details beyond required flag/fields.
@@ -102,8 +100,8 @@ User đang xem live event có thể tua lại nội dung đã phát trong giới
 | 2 | Player seekbar | User drags/clicks/D-pad seeks backward | Player controls | Playback starts from selected DVR position. |
 | 3 | Pause / Resume | User pauses live playback, then resumes | Player controls | Playback resumes from paused position if still inside DVR window; user becomes behind live. |
 | 4 | GO LIVE | User taps GO LIVE while behind live | Player controls | Player jumps to live edge. |
-| 5 | Event end while inside player | Stream/status indicates event ended | Player | No VOD switch. Show ended/backdrop/next-event prompt as optional; keep current DVR session if applicable. |
-| 6 | Re-enter ended event | User opens event after leaving/after event already ended | Event/player entry | Show Event Ended state; no DVR replay; no auto next event; no VOD. |
+| 5 | Event end while inside player | Stream/status indicates event ended | Player | Show ended/backdrop/next-event prompt as optional; keep current DVR session if applicable. |
+| 6 | Re-enter ended event | User opens event after leaving/after event already ended | Event/player entry | Show Event Ended state; keep DVR available if still valid; no auto next event. |
 | 7 | CMS flag changed | Admin enables/disables DVR on event | CMS/API | Future stream response reflects new DVR availability. |
 
 ---
@@ -119,8 +117,8 @@ Use cases are derived from actual goals/branches. Do not force a fixed count.
 | TS-UC-003 | Pause and resume live event | User | Pauses live playback, then resumes | Playback resumes from paused position if still valid; user becomes behind live. |
 | TS-UC-004 | Return to live edge | User | Taps GO LIVE | Playback jumps to live edge; behind-live UI clears. |
 | TS-UC-005 | DVR unavailable due to gates | User/System | Event/user fails one or more gates | System does not expose DVR playback; app hides/disables DVR seek. |
-| TS-UC-006 | Event ends while user is inside player | System/User | Event ends during playback | No VOD switch; session-bound DVR replay can continue; next event is optional CTA only. |
-| TS-UC-007 | User enters ended event after exit/re-entry | User | Opens ended event | App shows Event Ended state; no DVR replay, no VOD, no auto next event. |
+| TS-UC-006 | Event ends while user is inside player | System/User | Event ends during playback | session-bound DVR replay can continue; next event is optional CTA only. |
+| TS-UC-007 | User enters ended event after exit/re-entry | User | Opens ended event | App shows Event Ended state; DVR replay may remain available if valid; no auto next event. |
 | TS-UC-008 | CMS toggles DVR flag | Admin/CMS | Flag changes | DVR availability changes for future playback responses. |
 
 User flows may merge UCs when they are one coherent journey. Merged flows must list Covered UCs.
@@ -153,25 +151,24 @@ User flows may merge UCs when they are one coherent journey. Merged flows must l
 | TS-BR-013 | If user pauses live playback while DVR is enabled, resume should continue from the paused position while it remains inside the DVR window. | FE/Player |
 | TS-BR-014 | If paused position falls outside the DVR window, app should recover to nearest valid DVR position, live edge, or an unavailable state based on player capability. | FE/Player |
 
-### 6.3 Event end rules
+### 6.3 Event end and re-entry rules
 
 | Rule ID | Rule | Applies to |
 |---|---|---|
-| TS-BR-015 | Event end must not switch player to VOD. | FE/Player/API |
-| TS-BR-016 | First event-end moment may show existing backdrop and next-event prompt. | FE/Player |
-| TS-BR-017 | If user is currently watching/seeking/paused in the player when event ends, do not force auto-transition to next event. | FE/Player |
-| TS-BR-018 | Next event after event end is optional CTA only when DVR session is active. | FE/Player |
-| TS-BR-019 | DVR replay after event end is session-bound. If user exits player, that DVR replay session ends. | FE/Player |
-| TS-BR-020 | If user enters/re-enters the ended event after exit or after event already ended, show Event Ended state only. | FE/Player |
-| TS-BR-021 | Ended event re-entry must not reopen DVR replay, switch to VOD, or auto-jump to next event. | FE/Player |
+| TS-BR-015 | First event-end moment may show existing backdrop and next-event prompt. | FE/Player |
+| TS-BR-016 | If user is currently watching/seeking/paused in the player when event ends, do not force auto-transition to next event. | FE/Player |
+| TS-BR-017 | Next event after event end is optional CTA only when DVR session is active. | FE/Player |
+| TS-BR-018 | DVR replay after event end depends on normal DVR validity: entitlement, CMS flag, stream availability, and DVR window. | FE/Player/API |
+| TS-BR-019 | If user enters/re-enters the ended event after exit or after event already ended, show Event Ended state first, then allow DVR replay if DVR is still valid. | FE/Player |
+| TS-BR-020 | Ended event re-entry must not auto-jump to next event. DVR replay remains allowed when entitlement, CMS flag, and DVR window are still valid. | FE/Player |
 
 ### 6.4 Protocol rules
 
 | Rule ID | Rule | Applies to |
 |---|---|---|
-| TS-BR-022 | System may provide HLS and/or DASH DVR playback depending on platform capability. | BE/API |
-| TS-BR-023 | App/player follows existing platform playback policy for protocol selection. | FE/Player |
-| TS-BR-024 | If a protocol has no valid DVR playback, system should either disable DVR for that context or use a supported protocol. | BE/API/Player |
+| TS-BR-021 | System may provide HLS and/or DASH DVR playback depending on platform capability. | BE/API |
+| TS-BR-022 | App/player follows existing platform playback policy for protocol selection. | FE/Player |
+| TS-BR-023 | If a protocol has no valid DVR playback, system should either disable DVR for that context or use a supported protocol. | BE/API/Player |
 
 ---
 
@@ -219,7 +216,7 @@ sequenceDiagram
 | Post-condition | Player is live with DVR enabled or live with DVR disabled/read-only. |
 | Alternative Path | CMS flag OFF / event is EPL / user has no package / no DVR manifest → `dvr_enabled=false`; no DVR URL. |
 | Exception Handling | System error → player shows normal playback error or live-only fallback if live playback is still available. |
-| Business Rules Applied | TS-BR-001 to TS-BR-007, TS-BR-022 to TS-BR-024. |
+| Business Rules Applied | TS-BR-001 to TS-BR-007, TS-BR-021 to TS-BR-023. |
 
 ### TS-US-002 — Seek within max 8-hour DVR window
 
@@ -299,7 +296,7 @@ sequenceDiagram
 
 ### TS-US-004 — Event end with session-bound DVR replay
 
-When event ends, player must not switch to VOD. If user is already in the player, they may continue current DVR replay session.
+When event ends, user can keep DVR replay when the DVR session remains valid. Next event is optional CTA only; do not force auto-transition.
 
 #### TS-FLOW-004 — Event ends while user is inside player
 
@@ -331,15 +328,15 @@ sequenceDiagram
 | Actor | User, Player, API/System |
 | Triggers | Stream end, `event_status=ended`, event schedule end, or polling update. |
 | Pre-condition | User is inside player before event ends. |
-| Basic Path | 1. Player detects event end.<br>2. Player does not switch to VOD.<br>3. Player may show existing backdrop/end overlay.<br>4. If DVR is valid, current session can continue seeking within final DVR window.<br>5. Next event appears only as optional CTA.<br>6. User exits player → DVR replay session ends. |
+| Basic Path | 1. Player detects event end.<br>3. Player may show existing backdrop/end overlay.<br>4. If DVR is valid, current session can continue seeking within final DVR window.<br>5. Next event appears only as optional CTA.<br>6. User exits player → DVR replay session ends. |
 | Post-condition | User either continues session-bound DVR replay or exits. |
 | Alternative Path | If DVR is not valid/expired, show ended state and optional next event CTA. |
 | Exception Handling | Stream hard-stops while user is behind live → show ended state and preserve latest valid seek position if player can continue from buffered/DVR manifest; otherwise show unavailable message. |
-| Business Rules Applied | TS-BR-015 to TS-BR-019. |
+| Business Rules Applied | TS-BR-015 to TS-BR-018. |
 
 ### TS-US-005 — Re-enter ended event
 
-User entering an already ended event must not get DVR replay, VOD switch, or forced next-event jump.
+User entering an already ended event sees the ended state first. If DVR is still valid, user can continue/open DVR replay from the ended event context. App must not auto-jump to next event.
 
 #### TS-FLOW-005 — User enters/re-enters ended event
 
@@ -360,15 +357,15 @@ sequenceDiagram
 | Field | Details |
 |---|---|
 | Covered UCs | TS-UC-007 |
-| Description | Ended event entry is informational, not replay playback. |
+| Description | Ended event entry shows ended state first, with DVR replay available if still valid. |
 | Actor | User, App, API |
 | Triggers | User opens event after it ended or after exiting ended player session. |
 | Pre-condition | Event status is ended before player entry. |
-| Basic Path | 1. User opens ended event.<br>2. App/API confirms event ended.<br>3. App shows “Sự kiện đã kết thúc”.<br>4. If next event exists, show CTA only.<br>5. User chooses CTA or exits. |
-| Post-condition | No DVR replay session starts. |
+| Basic Path | 1. User opens ended event.<br>2. App/API confirms event ended.<br>3. App shows “Sự kiện đã kết thúc”.<br>4. If DVR is still valid, user can start/continue DVR replay.<br>5. If next event exists, show CTA only; do not auto-jump.<br>6. User chooses DVR, next CTA, or exits. |
+| Post-condition | User stays on ended event context; DVR may play if valid; next event only starts by manual CTA. |
 | Alternative Path | If next event unavailable, show Back/Close only. |
 | Exception Handling | API unavailable → show safe ended/unavailable state; do not guess DVR URL. |
-| Business Rules Applied | TS-BR-020, TS-BR-021. |
+| Business Rules Applied | TS-BR-019, TS-BR-020. |
 
 ---
 
@@ -501,7 +498,7 @@ Event Ended — Current DVR Session
 
 | Status / State | User-facing copy | Visual treatment | Allowed actions | Notes |
 |---|---|---|---|---|
-| ended_session_replay | Sự kiện đã kết thúc | Overlay + active final DVR seekbar | Seek current session, next CTA, exit | No VOD switch. |
+| ended_session_replay | Sự kiện đã kết thúc | Overlay + active final DVR seekbar | Seek current session, next CTA, exit | DVR remains available while valid. |
 | ended_session_no_dvr | Sự kiện đã kết thúc | Overlay/backdrop | Next CTA, exit | If DVR invalid/expired. |
 | next_event_available | Xem sự kiện tiếp theo | CTA/button | User taps manually | No auto jump after user is in DVR session. |
 
@@ -520,7 +517,7 @@ Event Ended — Current DVR Session
 | Platform | iOS / Android / Web / TV |
 | When shown | Event is already ended before user enters, or user exited and re-enters. |
 | Related UC / Flow | TS-UC-007, TS-FLOW-005 |
-| Placement notes | This is an ended state, not player replay mode. |
+| Placement notes | This is an ended state first; DVR replay entry can be shown when still valid. |
 
 **Sketching wireframe / Text-Based Wireframing:**
 
@@ -531,7 +528,8 @@ Ended Event Entry
 │                                          │
 │          Sự kiện đã kết thúc             │
 │                                          │
-│  [Xem sự kiện tiếp theo]       [Quay lại]│
+│ [Xem lại DVR] [Xem sự kiện tiếp theo]   │
+│ [Quay lại]                              │
 └──────────────────────────────────────────┘
 ```
 
@@ -541,23 +539,22 @@ Ended Event Entry
 |---:|---|---|---|---|
 | 1 | Backdrop/poster | visible | Event image | Use current ended event backdrop. |
 | 2 | Ended message | visible | `Sự kiện đã kết thúc` | Required. |
-| 3 | Next event CTA | visible/hidden | `Xem sự kiện tiếp theo` | Optional manual CTA only. |
-| 4 | Back/Close CTA | visible | `Quay lại` / Back | Returns user to previous screen. |
-| 5 | DVR seekbar | not rendered | — | Must not reopen DVR replay. |
-| 6 | VOD player | not rendered | — | Must not switch to VOD. |
+| 3 | DVR replay CTA/control | visible if valid | `Xem lại DVR` | Allows replay when DVR is still valid. |
+| 4 | Next event CTA | visible/hidden | `Xem sự kiện tiếp theo` | Optional manual CTA only. |
+| 5 | Back/Close CTA | visible | `Quay lại` / Back | Returns user to previous screen. |
 
 **Status / state behavior for this surface:**
 
 | Status / State | User-facing copy | Visual treatment | Allowed actions | Notes |
 |---|---|---|---|---|
-| ended_with_next | Sự kiện đã kết thúc | Backdrop + next CTA | Next event, back | No auto next event. |
-| ended_no_next | Sự kiện đã kết thúc | Backdrop + back | Back only | No replay. |
+| ended_with_dvr_next | Sự kiện đã kết thúc | Backdrop + DVR CTA + next CTA | DVR replay, next event, back | No auto next event. |
+| ended_with_dvr | Sự kiện đã kết thúc | Backdrop + DVR CTA + back | DVR replay, back | DVR only if still valid. |
 | api_error | Không thể tải thông tin sự kiện. | Error overlay | Retry/back | Do not guess DVR URL. |
 
 **Surface-specific notes:**
 
 - Re-entry after exit is not eligible for session-bound DVR replay.
-- This avoids DVR behaving like VOD.
+- DVR replay remains controlled by entitlement, CMS flag, and DVR window validity.
 
 ---
 
@@ -587,8 +584,7 @@ System should be able to tell the app:
 - available playback protocol: HLS and/or DASH;
 - why DVR is unavailable, if unavailable;
 - whether a next event exists for optional CTA;
-- no thumbnail preview requirement;
-- no VOD transition requirement for this feature.
+- no thumbnail preview requirement.
 
 ### 9.3 Unavailable reasons
 
@@ -599,7 +595,7 @@ System should be able to tell the app:
 | EPL excluded | Event belongs to EPL. | Hide/disable DVR seek. |
 | No package | User lacks valid package. | Hide DVR seek; show package CTA only if product wants. |
 | DVR playback unavailable | HLS/DASH DVR stream is not available. | Watch live only if live stream exists. |
-| Ended re-entry | User enters event after it ended or after exiting ended session. | Show Event Ended state. |
+| Ended re-entry | User enters event after it ended or after exiting ended session. | Show Event Ended state; expose DVR replay if still valid; no auto next. |
 | DVR expired | DVR session/window no longer valid. | Show ended/unavailable state. |
 
 ---
@@ -616,7 +612,7 @@ System should be able to tell the app:
 | `LIVE_DVR_BEHIND` | User seeks behind live or resumes after pause | Behind-live indicator; GO LIVE visible | Seek, play/pause, GO LIVE. |
 | `ENDED_SESSION_DVR` | Event ends while user inside player and DVR session valid | Ended overlay; final DVR seek range; no LIVE/GO LIVE | Seek current session, exit, optional next CTA. |
 | `ENDED_SESSION_NO_DVR` | Event ends but DVR invalid | Ended overlay/backdrop | Exit, optional next CTA. |
-| `ENDED_REENTRY` | User enters ended event after exit/end | Event Ended state | Back, optional next CTA only. |
+| `ENDED_REENTRY` | User enters ended event after exit/end | Event Ended state | DVR replay if valid, back, optional next CTA only. |
 | `ERROR` | API/player failure | Error overlay | Retry/back. |
 
 ### 10.2 DVR eligibility states
@@ -628,7 +624,8 @@ System should be able to tell the app:
 | `excluded_event` | EPL or unsupported source | No DVR link. |
 | `no_package` | User lacks package | No DVR link. |
 | `manifest_missing` | Stream does not support DVR URL | No DVR link. |
-| `ended_reentry` | Ended event opened after session ended | No DVR link. |
+| `ended_reentry_dvr_valid` | Ended event opened while DVR is still valid | DVR replay available; no auto next. |
+| `dvr_expired` | DVR window/session no longer valid | Hide DVR replay action; keep ended state. |
 
 ---
 
@@ -641,7 +638,7 @@ System should be able to tell the app:
 | Seek outside window | `Không thể tua đến thời điểm này.` | Clamp to valid range or restore previous position. |
 | Segment unavailable | `Nội dung tua lại đang tạm thời không khả dụng.` | Retry/buffer; keep previous valid position. |
 | Event ended in session | `Sự kiện đã kết thúc.` | Keep session DVR if valid; next event CTA optional. |
-| Ended event re-entry | `Sự kiện đã kết thúc.` | No DVR, no VOD, no auto next. |
+| Ended event re-entry | `Sự kiện đã kết thúc.` | DVR available if still valid; no auto next. |
 | API error | `Không thể tải thông tin sự kiện. Vui lòng thử lại.` | Retry/back. |
 
 ---
@@ -659,7 +656,7 @@ System should be able to tell the app:
 | `timeshift_resume` | User resumes after pause | `event_id`, `paused_duration_sec`, `resume_position_sec`, `platform` | Yes |
 | `timeshift_go_live` | User taps GO LIVE | `event_id`, `offset_sec`, `platform` | Yes |
 | `timeshift_event_end_session_dvr` | Event ends while user stays in DVR session | `event_id`, `position_sec`, `next_event_available` | Yes |
-| `timeshift_ended_reentry` | User opens ended event | `event_id`, `next_event_available` | Yes |
+| `timeshift_ended_reentry` | User opens ended event | `event_id`, `dvr_available`, `next_event_available` | Yes |
 | `timeshift_next_event_click` | User manually opens next event CTA | `event_id`, `next_event_id`, `source_state` | Yes |
 
 ---
@@ -682,14 +679,13 @@ System should be able to tell the app:
 | QA-012 | Pause live with DVR | DVR enabled and event is live | User pauses then resumes within DVR window | Player resumes from paused position; user is behind live. |
 | QA-013 | Pause exceeds DVR window | DVR enabled and event is live | User resumes after paused position is outside DVR window | App recovers to nearest valid DVR point, live edge, or unavailable state. |
 | QA-014 | GO LIVE while live | User is behind live | User taps GO LIVE | Player jumps to live edge. |
-| QA-015 | Event ends at live edge | User in player when event ends | System detects ended | No VOD switch; ended/backdrop shown; next event CTA optional. |
+| QA-015 | Event ends at live edge | User in player when event ends | System detects ended | ended/backdrop shown; next event CTA optional. |
 | QA-016 | Event ends while behind live | User is watching DVR behind live | Event ends | User is not forced to next event; session DVR can continue if valid. |
 | QA-017 | Exit ends DVR session | User in ended-session DVR | User exits player | Session ends. |
-| QA-018 | Re-enter ended event | Event ended and user opens again | App loads event | Show “Sự kiện đã kết thúc”; no DVR replay; no VOD; no auto next. |
-| QA-019 | Next event CTA only | Ended event has next event | User enters ended state | CTA visible; no auto jump. |
-| QA-020 | VOD not used | Event ended and backend may have VOD data | Player handles end | Feature must not switch to VOD for Timeshift Seek. |
-| QA-021 | DVR playback unavailable when disabled | Any gate fails | App receives playback state | User cannot start DVR playback. |
-| QA-022 | CMS flag toggled | Admin turns flag OFF | User reloads player | DVR becomes unavailable in new response. |
+| QA-018 | Re-enter ended event with valid DVR | Event ended and DVR still valid | App loads event | Show “Sự kiện đã kết thúc”; DVR replay available; no auto next. |
+| QA-019 | Next event CTA only | Ended event has next event | User enters ended state | CTA visible; no auto jump; DVR remains available if valid. |
+| QA-020 | DVR playback unavailable when disabled | Any gate fails | App receives playback state | User cannot start DVR playback. |
+| QA-021 | CMS flag toggled | Admin turns flag OFF | User reloads player | DVR becomes unavailable in new response. |
 
 ---
 
