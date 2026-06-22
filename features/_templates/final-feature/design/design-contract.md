@@ -83,7 +83,7 @@ Keep all surface-level details inside this section. Do not split surface invento
 
 Each surface block should include:
 
-1. **Surface summary** — where it appears, platform, when shown, related UC / Flow.
+1. **Surface details** — where it appears, platform, when shown, related UC / Flow.
 2. **Sketching wireframe / Text-Based Wireframing** — layout by text.
 3. **Surface elements table** — element states, format/copy, rules.
 4. **Status / state rows** inside the same surface block when the surface changes by status.
@@ -91,7 +91,7 @@ Each surface block should include:
 
 #### SURF-001 — <Surface name>
 
-**Surface summary:**
+**Surface details:**
 
 | Field | Details |
 |---|---|
@@ -123,7 +123,7 @@ Each surface block should include:
 | 1 | <Element> | default, loading, error | <Format/copy> | <Rule> |
 | 2 | <Element> | visible, hidden, disabled | <Format/copy> | <Rule> |
 
-**Status / state behavior for this surface:**
+**Surface behavior notes:**
 
 | Status / State | User-facing copy | Visual treatment | Allowed actions | Notes |
 |---|---|---|---|---|
@@ -138,7 +138,7 @@ Each surface block should include:
 
 #### SURF-002 — <Surface name>
 
-**Surface summary:**
+**Surface details:**
 
 | Field | Details |
 |---|---|
@@ -164,7 +164,7 @@ Each surface block should include:
 |---:|---|---|---|---|
 | 1 | <Element> | default, selected, unavailable | <Format/copy> | <Rule> |
 
-**Status / state behavior for this surface:**
+**Surface behavior notes:**
 
 | Status / State | User-facing copy | Visual treatment | Allowed actions | Notes |
 |---|---|---|---|---|

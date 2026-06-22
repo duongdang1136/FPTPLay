@@ -16,14 +16,14 @@
 
 ## Functional requirements coverage
 
-`<feature-name>-functional-requirements.md` is the main FE/BE/QA handoff contract. It should include Product, UX, API/integration, state, error, analytics if relevant, and QA acceptance coverage.
+`<feature-name>-functional-requirements.md` is the main FE/BE/QA handoff contract. It should include Product, UX, integration expectations, state/behavior rules, and error handling.
 
 For Screen Element Specification, keep all surface-level UI details in **8.4 Surface Details by Surface**. Use one surface block per meaningful surface/location. Each surface block should include:
 
-- Surface summary: platform, when shown, related UC/Flow, placement notes
+- Surface details: platform, when shown, related UC/Flow, placement notes
 - Sketching wireframe / Text-Based Wireframing
 - Surface elements table
-- Status/state behavior for that surface, if needed
+- Surface behavior notes, if needed
 - Surface-specific notes, if needed
 
 Do not create separate 8.3 Surface Inventory, 8.5 Status Matrix, or 8.6 Placement Rules sections. Put those details inside the relevant 8.4 surface block.

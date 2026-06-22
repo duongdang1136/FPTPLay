@@ -86,7 +86,7 @@ features/final-docs/<Large-Feature>/<Sub-Feature>/
 
 For FPTPlay final docs, `<feature-name>-functional-requirements.md` is the main handoff contract. It combines Product, UX, API/integration, state, error, and QA requirements. Do not auto-create `<feature-name>-mockup.html`; create a mockup/prototype only when the user explicitly asks.
 
-For Screen Element Specification, keep all surface-level UI details in **8.4 Surface Details by Surface**. Use one surface block per meaningful surface/location. Each surface block should include **Sketching wireframe / Text-Based Wireframing** plus a surface elements table. Put status/state behavior and placement notes inside the relevant surface block; do not create separate 8.3, 8.5, or 8.6 sections for those details.
+For Screen Element Specification, keep all surface-level UI details in **8.4 Surface Details by Surface**. Use one surface block per meaningful surface/location. Each surface block should include surface details, **Sketching wireframe / Text-Based Wireframing**, and a surface elements table. Put placement notes and any status/state behavior as brief surface behavior notes inside the relevant surface block; do not create separate `Surface summary`, `Status/state behavior`, 8.3, 8.5, or 8.6 sections.
 
 For small features, omit `<Sub-Feature>` only when the repo convention supports it. For large features, split into sub-features when the contract would become hard to review.
 
@@ -117,16 +117,14 @@ Entry Points
 User Journeys
 Business Rules
 Functional Requirements
-Page/entity State Model
 Error Handling & Product Copy
 UX/UI Requirements
-API Contract Dependency
-Data / Content Requirements
+Integration/API expectations as Business Rules or flow preconditions
+Data / Content Requirements when needed
 Security / Privacy Requirements
-Analytics / Observability when relevant
-Dependencies
-Assumptions
-Acceptance Criteria / QA Matrix
+Measurement notes only when product explicitly needs them
+Dependencies / Assumptions
+Main and edge cases covered through UCs, flows, rules, and error messages
 Release Checklist
 ```
 ---
@@ -136,7 +134,7 @@ Release Checklist
 Use `skills/sdlc/03-document-writer/templates/api-template.md` as canonical shape.
 
 For lightweight mode, write `api/API-<feature>.md`.
-For final mode in FPTPlay, fold API/integration details into `<feature-name>-functional-requirements.md` under `API / Integration Contract`.
+For final mode in FPTPlay, do not create a standalone `API / Integration Contract` section by default. Fold API/integration expectations into Business Rules, flow preconditions, Error Handling, and Handoff Checklist. Only create a separate API contract when user explicitly asks for low-level/dev contract or when maintaining legacy split docs.
 For formal task-state mode, write/maintain `state/tasks/{TASK-ID}/technical_contract.md`.
 
 Default Pulse envelope unless code-backed API docs prove otherwise:
@@ -284,11 +282,10 @@ Design Goal / Surface intent
 Reference Materials
 Information Architecture
 Surface Details by Surface
-- Surface summary
+- Surface details: location, platform, when shown, related UC/Flow, placement notes
 - Text-Based Wireframing / Sketching wireframe
 - Surface Elements table
-- Status/state behavior inside each surface block when needed
-- Placement notes inside each surface block when needed
+- Surface behavior notes only when needed; keep status/state behavior as bullets/notes inside the surface block, not as a standalone heading/table
 Interaction Contract
 Loading / Empty / Error UX
 Copy & Microcopy

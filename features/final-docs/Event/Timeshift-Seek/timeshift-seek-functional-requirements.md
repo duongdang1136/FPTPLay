@@ -170,6 +170,34 @@ User flows may merge UCs when they are one coherent journey. Merged flows must l
 | TS-BR-022 | App/player follows existing platform playback policy for protocol selection. | FE/Player |
 | TS-BR-023 | If a protocol has no valid DVR playback, system should either disable DVR for that context or use a supported protocol. | BE/API/Player |
 
+### 6.5 Integration / system expectation rules
+
+| Rule ID | Rule | Applies to |
+|---|---|---|
+| TS-BR-024 | App needs playback/event status to know whether event is scheduled, live, ended, and DVR-capable. | App/API |
+| TS-BR-025 | App needs entitlement result before DVR replay is exposed. | App/API |
+| TS-BR-026 | App needs CMS DVR flag and stream availability before enabling DVR controls. | App/API/CMS |
+| TS-BR-027 | System should provide DVR availability, DVR window start/end, protocol availability, and unavailable reason at product level. | App/API |
+| TS-BR-028 | If DVR is unavailable, app maps reason to the user-facing behavior in Section 9. | App/API |
+
+### 6.6 Product behavior state rules
+
+| Rule ID | Rule | Applies to |
+|---|---|---|
+| TS-BR-029 | When DVR gates fail, player behaves as normal live playback without interactive DVR seek. | Player |
+| TS-BR-030 | When DVR is enabled and user is at live edge, seekbar is active and GO LIVE is hidden. | Player |
+| TS-BR-031 | When user is behind live, show behind-live treatment and GO LIVE action. | Player |
+| TS-BR-032 | When event ended and DVR remains valid, ended overlay may keep final DVR seek controls. | Player |
+| TS-BR-033 | When user re-enters an ended event, show ended state first; DVR replay action is visible only if DVR is still valid. | App/Player |
+| TS-BR-034 | If DVR expires or becomes unavailable, hide DVR replay action and keep safe ended/unavailable state. | App/Player |
+
+### 6.7 Measurement notes — if product requires
+
+| Rule ID | Rule | Applies to |
+|---|---|---|
+| TS-BR-035 | If analytics is required, measure DVR availability, unavailable reason, seek start/success/failure, pause/resume, GO LIVE, event-end DVR session, ended re-entry, and next-event click. | Analytics |
+| TS-BR-036 | Analytics must not expose private package/user data beyond approved tracking properties. | Analytics/Privacy |
+
 ---
 
 ## 7. Functional Requirements
@@ -216,7 +244,7 @@ sequenceDiagram
 | Post-condition | Player is live with DVR enabled or live with DVR disabled/read-only. |
 | Alternative Path | CMS flag OFF / event is EPL / user has no package / no DVR manifest → `dvr_enabled=false`; no DVR URL. |
 | Exception Handling | System error → player shows normal playback error or live-only fallback if live playback is still available. |
-| Business Rules Applied | TS-BR-001 to TS-BR-007, TS-BR-021 to TS-BR-023. |
+| Business Rules Applied | TS-BR-001 to TS-BR-007, TS-BR-021 to TS-BR-028. |
 
 ### TS-US-002 — Seek within max 8-hour DVR window
 
@@ -401,7 +429,7 @@ Use this as the single place for all surface-level UI details. Do not split surf
 
 #### SURF-001 — Live Player with DVR enabled
 
-**Surface summary:**
+**Surface details:**
 
 | Field | Details |
 |---|---|
@@ -438,16 +466,13 @@ Live Event Player — DVR enabled
 | 6 | GO LIVE button | visible, hidden, disabled | `GO LIVE` / `Trực tiếp` | Visible only while event live and user behind live. |
 | 7 | Error/toast | hidden, visible | Localized copy | For unavailable segment, entitlement, expired window. |
 
-**Status / state behavior for this surface:**
+**Surface behavior notes:**
 
-| Status / State | User-facing copy | Visual treatment | Allowed actions | Notes |
-|---|---|---|---|---|
-| live_at_edge | LIVE | Red/live badge | Seek backward, pause | GO LIVE hidden. |
-| paused_live | Tạm dừng | Paused control state | Resume/play | Live keeps progressing; resume becomes behind-live if still valid. |
-| behind_live | Đang xem lại | Dim LIVE/behind indicator | Seek, play/pause, GO LIVE | User remains behind until manual GO LIVE or seek to edge. |
-| buffering | Đang tải... | Spinner/skeleton on controls | Cancel/back optional | Keep target position. |
-| dvr_unavailable | Tua lại không khả dụng cho sự kiện này. | Disabled/hidden seekbar | Watch live only | Any gate failed. |
-| no_entitlement | Nội dung tua lại yêu cầu gói phù hợp. | CTA/package message if product wants | Buy/login if supported | API must not return DVR URL. |
+- At live edge: show `LIVE`; GO LIVE hidden; user may seek backward or pause.
+- Paused live: show paused control; resume from paused position if still valid.
+- Behind live: dim/behind treatment; allow seek, play/pause, and GO LIVE.
+- Buffering: show loading treatment and keep target position.
+- DVR unavailable/no entitlement: hide or disable DVR controls; show approved message/CTA only when product supports it.
 
 **Surface-specific notes:**
 
@@ -456,7 +481,7 @@ Live Event Player — DVR enabled
 
 #### SURF-002 — Event ended while user is inside player
 
-**Surface summary:**
+**Surface details:**
 
 | Field | Details |
 |---|---|
@@ -494,13 +519,11 @@ Event Ended — Current DVR Session
 | 6 | Next event CTA | visible/hidden | `Xem sự kiện tiếp theo` | Optional; never forced auto-jump when DVR session active. |
 | 7 | Exit button | visible | `Thoát` / Back | Exiting ends current DVR session. |
 
-**Status / state behavior for this surface:**
+**Surface behavior notes:**
 
-| Status / State | User-facing copy | Visual treatment | Allowed actions | Notes |
-|---|---|---|---|---|
-| ended_session_replay | Sự kiện đã kết thúc | Overlay + active final DVR seekbar | Seek current session, next CTA, exit | DVR remains available while valid. |
-| ended_session_no_dvr | Sự kiện đã kết thúc | Overlay/backdrop | Next CTA, exit | If DVR invalid/expired. |
-| next_event_available | Xem sự kiện tiếp theo | CTA/button | User taps manually | No auto jump after user is in DVR session. |
+- Ended session with valid DVR: show ended overlay and keep final DVR seekbar active.
+- Ended session without valid DVR: show ended overlay/backdrop and hide DVR controls.
+- Next event: show as manual action only; never auto-jump while user is in DVR session.
 
 **Surface-specific notes:**
 
@@ -509,7 +532,7 @@ Event Ended — Current DVR Session
 
 #### SURF-003 — Re-enter ended event
 
-**Surface summary:**
+**Surface details:**
 
 | Field | Details |
 |---|---|
@@ -543,93 +566,19 @@ Ended Event Entry
 | 4 | Next event CTA | visible/hidden | `Xem sự kiện tiếp theo` | Optional manual CTA only. |
 | 5 | Back/Close CTA | visible | `Quay lại` / Back | Returns user to previous screen. |
 
-**Status / state behavior for this surface:**
+**Surface behavior notes:**
 
-| Status / State | User-facing copy | Visual treatment | Allowed actions | Notes |
-|---|---|---|---|---|
-| ended_with_dvr_next | Sự kiện đã kết thúc | Backdrop + DVR CTA + next CTA | DVR replay, next event, back | No auto next event. |
-| ended_with_dvr | Sự kiện đã kết thúc | Backdrop + DVR CTA + back | DVR replay, back | DVR only if still valid. |
-| api_error | Không thể tải thông tin sự kiện. | Error overlay | Retry/back | Do not guess DVR URL. |
+- Ended with valid DVR + next event: show DVR replay and next-event actions; next event is manual only.
+- Ended with valid DVR only: show DVR replay and back action.
+- API/error state: show safe error/retry; do not guess DVR availability.
 
 **Surface-specific notes:**
 
-- Re-entry after exit is not eligible for session-bound DVR replay.
-- DVR replay remains controlled by entitlement, CMS flag, and DVR window validity.
+- Re-entry is not an auto-next flow. DVR replay remains controlled by entitlement, CMS flag, and DVR window validity.
 
 ---
 
-## 9. API / Integration Expectations
-
-This section is product-level guidance, not a locked API schema. Exact endpoint names, field names, CMS config names, and response format must be confirmed with BE/API.
-
-### 9.1 System dependencies
-
-| Dependency | Purpose | Required? | Notes |
-|---|---|---:|---|
-| Playback / stream info API | Tell app whether live/DVR playback is available. | Yes | Should include event status and DVR availability. |
-| Entitlement / package service | Check whether user can access DVR. | Yes | User without valid package must not get DVR playback. |
-| CMS event config | Read DVR on/off flag for event. | Yes | Required for feature rollout/control. |
-| Stream/packager metadata | Confirm HLS/DASH DVR playback exists. | Yes | Required before enabling DVR UI. |
-
-### 9.2 Product-level response expectations
-
-System should be able to tell the app:
-
-- current event status: scheduled / live / ended;
-- whether the event is eligible for DVR;
-- whether CMS flag is ON/OFF;
-- whether user has package entitlement;
-- whether DVR playback is available;
-- DVR window start/end, capped at 8 hours;
-- available playback protocol: HLS and/or DASH;
-- why DVR is unavailable, if unavailable;
-- whether a next event exists for optional CTA;
-- no thumbnail preview requirement.
-
-### 9.3 Unavailable reasons
-
-| Reason | Meaning | App behavior |
-|---|---|---|
-| CMS disabled | Event DVR flag is OFF. | Hide/disable DVR seek. |
-| Event not supported | Event is not eligible FPTLive. | Hide/disable DVR seek. |
-| EPL excluded | Event belongs to EPL. | Hide/disable DVR seek. |
-| No package | User lacks valid package. | Hide DVR seek; show package CTA only if product wants. |
-| DVR playback unavailable | HLS/DASH DVR stream is not available. | Watch live only if live stream exists. |
-| Ended re-entry | User enters event after it ended or after exiting ended session. | Show Event Ended state; expose DVR replay if still valid; no auto next. |
-| DVR expired | DVR session/window no longer valid. | Show ended/unavailable state. |
-
----
-
-## 10. Product State Model
-
-### 10.1 Player states
-
-| State | Trigger | UI behavior | Allowed actions |
-|---|---|---|---|
-| `LIVE_NO_DVR` | DVR gates fail | Normal live player; no interactive DVR seek | Play/pause live. |
-| `LIVE_DVR_AT_EDGE` | DVR enabled; user at live edge | Seekbar active; LIVE badge | Seek backward. |
-| `LIVE_DVR_PAUSED` | User pauses live while DVR is enabled | Paused control state | Resume/play, exit. |
-| `LIVE_DVR_BEHIND` | User seeks behind live or resumes after pause | Behind-live indicator; GO LIVE visible | Seek, play/pause, GO LIVE. |
-| `ENDED_SESSION_DVR` | Event ends while user inside player and DVR session valid | Ended overlay; final DVR seek range; no LIVE/GO LIVE | Seek current session, exit, optional next CTA. |
-| `ENDED_SESSION_NO_DVR` | Event ends but DVR invalid | Ended overlay/backdrop | Exit, optional next CTA. |
-| `ENDED_REENTRY` | User enters ended event after exit/end | Event Ended state | DVR replay if valid, back, optional next CTA only. |
-| `ERROR` | API/player failure | Error overlay | Retry/back. |
-
-### 10.2 DVR eligibility states
-
-| Eligibility state | Meaning | Product behavior |
-|---|---|---|
-| `eligible` | FPTLive + not EPL + CMS ON + entitled + DVR manifest exists | Return DVR link; show seek. |
-| `cms_disabled` | CMS flag OFF | No DVR link. |
-| `excluded_event` | EPL or unsupported source | No DVR link. |
-| `no_package` | User lacks package | No DVR link. |
-| `manifest_missing` | Stream does not support DVR URL | No DVR link. |
-| `ended_reentry_dvr_valid` | Ended event opened while DVR is still valid | DVR replay available; no auto next. |
-| `dvr_expired` | DVR window/session no longer valid | Hide DVR replay action; keep ended state. |
-
----
-
-## 11. Error Handling & User-Facing Messages
+## 9. Error Handling & User-Facing Messages
 
 | Case | User-facing message | Behavior |
 |---|---|---|
@@ -643,53 +592,7 @@ System should be able to tell the app:
 
 ---
 
-## 12. Analytics / Observability — If applicable
-
-| Event / Metric | Trigger | Properties | Required? |
-|---|---|---|---:|
-| `timeshift_dvr_available` | API/player determines DVR availability | `event_id`, `platform`, `protocol`, `window_sec` | Yes |
-| `timeshift_dvr_unavailable` | DVR gate fails | `event_id`, `reason`, `platform` | Yes |
-| `timeshift_seek_start` | User starts seeking | `event_id`, `from_position_sec`, `target_position_sec`, `platform` | Yes |
-| `timeshift_seek_success` | Playback starts after seek | `event_id`, `target_position_sec`, `latency_ms` | Yes |
-| `timeshift_seek_failed` | Seek fails | `event_id`, `reason`, `platform` | Yes |
-| `timeshift_pause` | User pauses live playback | `event_id`, `position_sec`, `platform` | Yes |
-| `timeshift_resume` | User resumes after pause | `event_id`, `paused_duration_sec`, `resume_position_sec`, `platform` | Yes |
-| `timeshift_go_live` | User taps GO LIVE | `event_id`, `offset_sec`, `platform` | Yes |
-| `timeshift_event_end_session_dvr` | Event ends while user stays in DVR session | `event_id`, `position_sec`, `next_event_available` | Yes |
-| `timeshift_ended_reentry` | User opens ended event | `event_id`, `dvr_available`, `next_event_available` | Yes |
-| `timeshift_next_event_click` | User manually opens next event CTA | `event_id`, `next_event_id`, `source_state` | Yes |
-
----
-
-## 13. Product Acceptance Matrix
-
-| ID | Scenario | Given | When | Then |
-|---|---|---|---|---|
-| QA-001 | Eligible FPTLive event | CMS ON, not EPL, user has package, DVR HLS exists | User opens player | API returns `dvr_enabled=true`; seekbar active. |
-| QA-002 | EPL event excluded | Event is EPL | User opens player | `dvr_enabled=false`; no DVR URL; seek disabled. |
-| QA-003 | CMS flag OFF | FPTLive event, entitled user, CMS OFF | User opens player | `dvr_enabled=false`; no DVR URL. |
-| QA-004 | No package | FPTLive, CMS ON, DVR manifest exists, user lacks package | User opens player | No DVR URL; FE hides/disables DVR seek. |
-| QA-005 | HLS DVR support | Eligible event has HLS DVR | Web/iOS requests playback | HLS DVR URL returned/played. |
-| QA-006 | DASH DVR support | Eligible event has DASH DVR | Android/Web requests playback | DASH DVR URL returned/played if platform policy selects DASH. |
-| QA-007 | 8h max window | Event duration > 8h | User opens player | DVR start = `live_edge - 8h`, not event start. |
-| QA-008 | Short event window | Event duration < 8h | User opens player | DVR start = event start. |
-| QA-009 | Seek valid point | DVR enabled | User seeks inside window | Playback starts at selected point. |
-| QA-010 | Seek before window | DVR enabled | User seeks before DVR start | Player clamps/rejects; no crash. |
-| QA-011 | No thumbnail | DVR enabled on Web | User hovers seekbar | Time tooltip appears; no thumbnail request/preview. |
-| QA-012 | Pause live with DVR | DVR enabled and event is live | User pauses then resumes within DVR window | Player resumes from paused position; user is behind live. |
-| QA-013 | Pause exceeds DVR window | DVR enabled and event is live | User resumes after paused position is outside DVR window | App recovers to nearest valid DVR point, live edge, or unavailable state. |
-| QA-014 | GO LIVE while live | User is behind live | User taps GO LIVE | Player jumps to live edge. |
-| QA-015 | Event ends at live edge | User in player when event ends | System detects ended | ended/backdrop shown; next event CTA optional. |
-| QA-016 | Event ends while behind live | User is watching DVR behind live | Event ends | User is not forced to next event; session DVR can continue if valid. |
-| QA-017 | Exit ends DVR session | User in ended-session DVR | User exits player | Session ends. |
-| QA-018 | Re-enter ended event with valid DVR | Event ended and DVR still valid | App loads event | Show “Sự kiện đã kết thúc”; DVR replay available; no auto next. |
-| QA-019 | Next event CTA only | Ended event has next event | User enters ended state | CTA visible; no auto jump; DVR remains available if valid. |
-| QA-020 | DVR playback unavailable when disabled | Any gate fails | App receives playback state | User cannot start DVR playback. |
-| QA-021 | CMS flag toggled | Admin turns flag OFF | User reloads player | DVR becomes unavailable in new response. |
-
----
-
-## 14. References
+## 10. References
 
 | Item | Path / Link |
 |---|---|
@@ -701,15 +604,15 @@ System should be able to tell the app:
 
 ---
 
-## 15. Handoff Checklist
+## 11. Handoff Checklist
 
 - [x] Use Case Summary derives from actual goals/branches, not fixed count.
 - [x] Activity Flows cover all UCs, with Covered UCs listed.
 - [x] Each flow has diagram + Field/Details table.
 - [x] Surface details are consolidated in 8.4.
 - [x] Each meaningful surface has text-based wireframe + surface elements table.
-- [x] Status/state behavior is testable per surface.
-- [x] API dependencies and error behavior are clear.
-- [x] QA acceptance matrix covers main and edge cases.
+- [x] Surface behavior is covered inside each surface block.
+- [x] Integration expectations are covered in business rules.
+- [x] Main and edge cases are covered by use cases, flows, rules, and error messages.
 - [ ] BE confirms exact endpoint/field names against implementation.
 - [ ] CMS confirms exact flag name and event source/competition fields.

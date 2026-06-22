@@ -18,7 +18,7 @@ Default final output:
 features/final-docs/<Large-Feature>/<Sub-Feature>/<feature-name>-functional-requirements.md
 ```
 
-`<feature-name>-functional-requirements.md` combines Product, UX, API/integration, state, error, analytics if relevant, and QA acceptance coverage.
+`<feature-name>-functional-requirements.md` combines Product, UX, integration expectations, state/behavior rules, and error handling. Do not create standalone API/State/Analytics/QA sections unless explicitly requested.
 
 ## When this legacy template is allowed
 

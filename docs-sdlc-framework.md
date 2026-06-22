@@ -115,7 +115,7 @@ Screen Element Specification must support complex features:
 - keep all surface-level UI details in **8.4 Surface Details by Surface**;
 - one surface block per meaningful surface/location;
 - each surface should include **Sketching wireframe / Text-Based Wireframing** plus a surface elements table;
-- put status/state behavior and placement notes inside the relevant surface block;
+- put placement notes and any status/state behavior as brief notes inside the relevant surface block;
 - do not create separate 8.3 Surface Inventory, 8.5 Status Matrix, or 8.6 Placement Rules sections.
 
 ## 4. Reusable Templates

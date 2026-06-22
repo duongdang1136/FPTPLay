@@ -194,17 +194,18 @@ Use this as the single place for all surface-level UI details. Do not split surf
 
 Create one block per meaningful surface/location. Each surface block should include:
 
-1. **Surface summary** — where it appears, platform, when shown, related UC / Flow.
+1. **Surface details** — location, platform, when shown, related UC/Flow, placement notes.
 2. **Sketching wireframe / Text-Based Wireframing** — layout by text.
 3. **Surface elements table** — element states, format/copy, rules.
-4. **Status / state rows** inside the same surface block when the surface changes by status.
-5. **Placement notes** inside the same surface block when the surface/element appears in multiple locations.
+4. **Surface behavior notes** — only when the surface changes by status/state; keep it as bullets or short notes inside the same surface block.
+
+Do not create separate standalone sections for Surface Inventory, State Model, API / Integration Contract, Analytics / Observability, or QA Acceptance Matrix in the final functional requirements file. Put reusable state/API/measurement/test expectations into Business Rules, Activity Flow tables, Surface details, Error Handling, and Handoff Checklist.
 
 Do not force all surfaces into one generic table when the feature has many statuses, placements, or platforms.
 
 #### SURF-001 — <Surface name>
 
-**Surface summary:**
+**Surface details:**
 
 | Field | Details |
 |---|---|
@@ -236,14 +237,11 @@ Do not force all surfaces into one generic table when the feature has many statu
 | 1 | <Element> | default, loading, error | <Format/copy> | <Rule> |
 | 2 | <Element> | visible, hidden, disabled | <Format/copy> | <Rule> |
 
-**Status / state behavior for this surface:**
+**Surface behavior notes:**
 
-| Status / State | User-facing copy | Visual treatment | Allowed actions | Notes |
-|---|---|---|---|---|
-| default | <Copy> | <Visual> | <Actions> | <Notes> |
-| loading | <Copy> | Skeleton/spinner | None / Cancel | <Notes> |
-| empty | <Copy> | Empty state | Retry / Back | <Notes> |
-| error | <Copy> | Error state | Retry | <Notes> |
+- Default: <copy/visual/actions>.
+- Loading: <copy/visual/actions>.
+- Empty/error/unavailable: <copy/visual/actions/recovery>.
 
 **Surface-specific notes:**
 
@@ -251,7 +249,7 @@ Do not force all surfaces into one generic table when the feature has many statu
 
 #### SURF-002 — <Surface name>
 
-**Surface summary:**
+**Surface details:**
 
 | Field | Details |
 |---|---|
@@ -277,12 +275,10 @@ Do not force all surfaces into one generic table when the feature has many statu
 |---:|---|---|---|---|
 | 1 | <Element> | default, selected, unavailable | <Format/copy> | <Rule> |
 
-**Status / state behavior for this surface:**
+**Surface behavior notes:**
 
-| Status / State | User-facing copy | Visual treatment | Allowed actions | Notes |
-|---|---|---|---|---|
-| default | <Copy> | <Visual> | <Actions> | <Notes> |
-| unavailable | <Copy> | <Visual> | <Actions> | <Notes> |
+- Default: <copy/visual/actions>.
+- Unavailable: <copy/visual/actions/recovery>.
 
 **Surface-specific notes:**
 
@@ -290,76 +286,13 @@ Do not force all surfaces into one generic table when the feature has many statu
 
 ---
 
-## 9. API / Integration Contract
-
-### 9.1 API Dependencies
-
-| API | Purpose | Required? | Notes |
-|---|---|---:|---|
-| `<METHOD> /path` | <Purpose> | Yes / No | <Notes> |
-
-### 9.2 Request / Response Notes
-
-```json
-{
-  "status": "1",
-  "error_code": "0",
-  "msg": "Success",
-  "data": {}
-}
-```
-
-### 9.3 Error Mapping
-
-| Error code / Case | User-facing message | UI behavior | Recovery |
-|---|---|---|---|
-| `<ERROR_CODE>` | <Message> | <Behavior> | <Recovery> |
-
----
-
-## 10. State Model
-
-### 10.1 Page / Surface States
-
-| State | Trigger | UI behavior | Allowed actions |
-|---|---|---|---|
-| loading | <Trigger> | <Behavior> | <Actions> |
-| empty | <Trigger> | <Behavior> | <Actions> |
-| error | <Trigger> | <Behavior> | <Actions> |
-
-### 10.2 Entity States
-
-| Entity state | Meaning | Product behavior |
-|---|---|---|
-| <State> | <Meaning> | <Behavior> |
-
----
-
-## 11. Error Handling & User-Facing Messages
+## 9. Error Handling & User-Facing Messages
 
 | Case | User-facing message | Behavior |
 |---|---|---|
 | <Case> | <Message> | <Behavior> |
 
----
-
-## 12. Analytics / Observability — If applicable
-
-| Event / Metric | Trigger | Properties | Required? |
-|---|---|---|---:|
-| <event_name> | <Trigger> | <Properties> | Yes / No |
-
----
-
-## 13. QA Acceptance Matrix
-
-| ID | Scenario | Given | When | Then |
-|---|---|---|---|---|
-| QA-001 | <Scenario> | <Given> | <When> | <Then> |
-
----
-
-## 14. References
+## 10. References
 
 | Item | Path / Link |
 |---|---|
@@ -369,13 +302,13 @@ Do not force all surfaces into one generic table when the feature has many statu
 
 ---
 
-## 15. Handoff Checklist
+## 11. Handoff Checklist
 
 - [ ] Use Case Summary derives from actual goals/branches, not fixed count.
 - [ ] Activity Flows cover all UCs, either dedicated or merged with Covered UCs listed.
 - [ ] Each flow has diagram + Field/Details table.
 - [ ] Each meaningful surface has text-based wireframe + surface elements table.
-- [ ] Status/state display is testable.
-- [ ] API dependencies and error behavior are clear.
-- [ ] QA acceptance matrix covers main and edge cases.
+- [ ] Surface behavior is covered inside each surface block when relevant.
+- [ ] Integration/API expectations are covered as business rules or flow preconditions, not as a standalone section.
+- [ ] Main and edge cases are covered by use cases, flows, rules, and error messages.
 - [ ] No critical open questions remain, or accepted assumptions are explicit.

@@ -8,7 +8,7 @@ FPTPlay final docs use flat final handoff artifacts by default:
 features/final-docs/<Large-Feature>/<Sub-Feature>/<feature-name>-functional-requirements.md
 ```
 
-`<feature-name>-functional-requirements.md` is the main implementation contract. It combines Product, UX, API/integration, state, error, analytics if relevant, and QA acceptance coverage.
+`<feature-name>-functional-requirements.md` is the main implementation contract. It combines Product, UX, integration expectations, state/behavior rules, and error handling.
 
 Do not auto-create `<feature-name>-mockup.html`. Create a mockup/prototype only when the user explicitly asks.
 
@@ -37,10 +37,10 @@ Keep all surface-level UI details in `8.4 Surface Details by Surface` inside `<f
 
 Each meaningful surface/location should include:
 
-- Surface summary: location, platform, when shown, related UC/Flow, placement notes
+- Surface details: location, platform, when shown, related UC/Flow, placement notes
 - Sketching wireframe / Text-Based Wireframing
 - Surface elements table
-- Status/state behavior for that surface, if needed
+- Surface behavior notes, if needed
 - Surface-specific notes, if needed
 
-Do not create separate `8.3 Surface Inventory`, `8.5 Status / State Display Matrix`, or `8.6 Placement Rules` sections. Put those details inside the relevant 8.4 surface block.
+Do not create separate `Surface summary`, `Status/state behavior`, `8.3 Surface Inventory`, `8.5 Status / State Display Matrix`, or `8.6 Placement Rules` sections. Put those details inside the relevant 8.4 surface block as surface details / surface behavior notes.
