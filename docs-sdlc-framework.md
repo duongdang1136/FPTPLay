@@ -66,10 +66,8 @@ Use `skills/sdlc/03-document-writer/skill.md` to:
 Default output:
 
 ```text
-features/final-docs/<Large-Feature>/<Sub-Feature>/README.md
-features/final-docs/<Large-Feature>/<Sub-Feature>/product/functional-specification.md
-features/final-docs/<Large-Feature>/<Sub-Feature>/api/technical-contract.md
-features/final-docs/<Large-Feature>/<Sub-Feature>/design/design-contract.md
+features/final-docs/<Large-Feature>/<Sub-Feature>/<feature-name>-functional-requirements.md
+features/final-docs/<Large-Feature>/<Sub-Feature>/<feature-name>-mockup.html
 ```
 
 ## 3. Repository Output Convention
@@ -104,13 +102,23 @@ Use final docs when the feature is ready for FE/BE/QA implementation handoff.
 
 ```text
 features/final-docs/<Large-Feature>/<Sub-Feature>/
-  README.md
-  product/functional-specification.md
-  api/technical-contract.md
-  design/design-contract.md
+  <feature-name>-functional-requirements.md
+  <feature-name>-mockup.html
 ```
 
 Final docs must not be a raw copy of lightweight docs. They should collect accepted decisions and rewrite them into concise, implementation-ready contracts.
+
+`<feature-name>-functional-requirements.md` is the main handoff contract. It combines Product, UX, API/integration, state, error, and QA requirements.
+
+`<feature-name>-mockup.html` is the visual companion/prototype when useful.
+
+Screen Element Specification must support complex features:
+
+- keep all surface-level UI details in **8.4 Surface Details by Surface**;
+- one surface block per meaningful surface/location;
+- each surface should include **Sketching wireframe / Text-Based Wireframing** plus a surface elements table;
+- put status/state behavior and placement notes inside the relevant surface block;
+- do not create separate 8.3 Surface Inventory, 8.5 Status Matrix, or 8.6 Placement Rules sections.
 
 ## 4. Reusable Templates
 

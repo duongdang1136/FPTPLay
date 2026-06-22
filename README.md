@@ -66,21 +66,19 @@ Typical structure:
 
 ```text
 features/final-docs/<Large-Feature>/<Sub-Feature>/
-  README.md
-  product/functional-specification.md
-  api/technical-contract.md
-  design/design-contract.md
+  <feature-name>-functional-requirements.md
+  <feature-name>-mockup.html
 ```
 
 Example:
 
 ```text
 features/final-docs/Pre-Waiting-Room/Pre-Live-Waiting-Room/
-  README.md
-  product/functional-specification.md
-  api/technical-contract.md
-  design/design-contract.md
+  pre-live-waiting-room-functional-requirements.md
+  pre-live-waiting-room-mockup.html
 ```
+
+The functional requirements file combines Product, UX, API/integration, state, error, and QA requirements. Screen Element Specification should include text-based wireframes per surface when useful.
 
 ## Workflow
 

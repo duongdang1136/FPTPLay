@@ -64,11 +64,105 @@ Use for `design/<feature>-design.md` and `design/design-contract.md`.
 
 This is the required implementation map for FE/QA. It replaces long prose when possible.
 
-### Screen: <Screen Name>
+Use one surface block per meaningful surface/location. Do not force everything into one table when the feature has multiple statuses, placements, or platform surfaces.
 
-| # | Element | States | Logic / Notes |
-|---:|---|---|---|
-| 1 | ... | default, hover, focus, disabled, loading, error | ... |
+Keep all surface-level details inside this section. Do not split surface inventory, status matrix, or placement rules into separate later sections.
+
+### 7.1 Surface Details by Surface
+
+Each surface block should include:
+
+1. **Surface summary** — where it appears, platform, when shown, related UC / Flow.
+2. **Sketching wireframe / Text-Based Wireframing** — layout by text.
+3. **Surface elements table** — element states, format/copy, rules.
+4. **Status / state rows** inside the same surface block when the surface changes by status.
+5. **Placement notes** inside the same surface block when the surface/element appears in multiple locations.
+
+#### SURF-001 — <Surface name>
+
+**Surface summary:**
+
+| Field | Details |
+|---|---|
+| Surface / Location | <Surface name / app location> |
+| Platform | iOS / Android / Web / TV |
+| When shown | <Condition> |
+| Related UC / Flow | <UC / Flow> |
+| Placement notes | <Where it appears; repeat rules if any> |
+
+**Sketching wireframe / Text-Based Wireframing:**
+
+```text
+<Surface name>
+┌────────────────────────────────────┐
+│ <Header / Status / Context>        │
+├────────────────────────────────────┤
+│ <Primary content area>             │
+│ - <Main value / message>           │
+│ - <Supporting metadata>            │
+├────────────────────────────────────┤
+│ [Primary button] [Secondary]       │
+└────────────────────────────────────┘
+```
+
+**Surface elements:**
+
+| # | Element | States | Format / Copy | Rules / Notes |
+|---:|---|---|---|---|
+| 1 | <Element> | default, loading, error | <Format/copy> | <Rule> |
+| 2 | <Element> | visible, hidden, disabled | <Format/copy> | <Rule> |
+
+**Status / state behavior for this surface:**
+
+| Status / State | User-facing copy | Visual treatment | Allowed actions | Notes |
+|---|---|---|---|---|
+| default | <Copy> | <Visual> | <Actions> | <Notes> |
+| loading | <Copy> | Skeleton/spinner | None / Cancel | <Notes> |
+| empty | <Copy> | Empty state | Retry / Back | <Notes> |
+| error | <Copy> | Error state | Retry | <Notes> |
+
+**Surface-specific notes:**
+
+- <Note>
+
+#### SURF-002 — <Surface name>
+
+**Surface summary:**
+
+| Field | Details |
+|---|---|
+| Surface / Location | <Surface name / app location> |
+| Platform | iOS / Android / Web / TV |
+| When shown | <Condition> |
+| Related UC / Flow | <UC / Flow> |
+| Placement notes | <Where it appears; repeat rules if any> |
+
+**Sketching wireframe / Text-Based Wireframing:**
+
+```text
+<Surface name>
+┌────────────────────────────────────┐
+│ <Compact / alternate layout>       │
+│ <Element A>   <Element B>          │
+└────────────────────────────────────┘
+```
+
+**Surface elements:**
+
+| # | Element | States | Format / Copy | Rules / Notes |
+|---:|---|---|---|---|
+| 1 | <Element> | default, selected, unavailable | <Format/copy> | <Rule> |
+
+**Status / state behavior for this surface:**
+
+| Status / State | User-facing copy | Visual treatment | Allowed actions | Notes |
+|---|---|---|---|---|
+| default | <Copy> | <Visual> | <Actions> | <Notes> |
+| unavailable | <Copy> | <Visual> | <Actions> | <Notes> |
+
+**Surface-specific notes:**
+
+- <Note>
 
 ## 8. Components
 

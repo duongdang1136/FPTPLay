@@ -81,12 +81,15 @@ features/lightweight/<Large-Feature>/<Sub-Feature>/
   design/<feature>-design.md
 
 features/final-docs/<Large-Feature>/<Sub-Feature>/
-  product/functional-specification.md
-  api/technical-contract.md
-  design/design-contract.md
+  <feature-name>-functional-requirements.md
+  <feature-name>-mockup.html
 ```
 
-For small features, omit `<Sub-Feature>`. For large features, split into sub-features when the contract would become hard to review.
+For FPTPlay final docs, `<feature-name>-functional-requirements.md` is the main handoff contract. It combines Product, UX, API/integration, state, error, and QA requirements. `<feature-name>-mockup.html` is the visual companion/prototype when useful.
+
+For Screen Element Specification, keep all surface-level UI details in **8.4 Surface Details by Surface**. Use one surface block per meaningful surface/location. Each surface block should include **Sketching wireframe / Text-Based Wireframing** plus a surface elements table. Put status/state behavior and placement notes inside the relevant surface block; do not create separate 8.3, 8.5, or 8.6 sections for those details.
+
+For small features, omit `<Sub-Feature>` only when the repo convention supports it. For large features, split into sub-features when the contract would become hard to review.
 
 ### 2c. Public/private repo split
 
@@ -101,7 +104,7 @@ For small features, omit `<Sub-Feature>`. For large features, split into sub-fea
 Use `skills/sdlc/03-document-writer/templates/product-template.md` as canonical shape.
 
 For lightweight mode, write `product/SRS-<feature>.md` with open questions allowed.
-For final mode, write `product/functional-specification.md` with open questions resolved or marked as accepted assumptions.
+For final mode in FPTPlay, write or update `<feature-name>-functional-requirements.md` with open questions resolved or marked as accepted assumptions. Do not split new final docs into `product/`, `api/`, and `design/` folders unless the user explicitly asks for legacy format.
 
 Minimum final Product coverage:
 
@@ -134,7 +137,7 @@ Release Checklist
 Use `skills/sdlc/03-document-writer/templates/api-template.md` as canonical shape.
 
 For lightweight mode, write `api/API-<feature>.md`.
-For final mode, write `api/technical-contract.md`.
+For final mode in FPTPlay, fold API/integration details into `<feature-name>-functional-requirements.md` under `API / Integration Contract`.
 For formal task-state mode, write/maintain `state/tasks/{TASK-ID}/technical_contract.md`.
 
 Default Pulse envelope unless code-backed API docs prove otherwise:
@@ -272,31 +275,28 @@ Nếu action trigger side effects:
 Use `skills/sdlc/03-document-writer/templates/design-template.md` as canonical shape.
 
 For lightweight mode, write `design/<feature>-design.md`.
-For final mode, write `design/design-contract.md`.
+For final mode in FPTPlay, fold UI/design details into `<feature-name>-functional-requirements.md` under `Screen Element Specification`, and create/update `<feature-name>-mockup.html` when a visual companion is useful.
 For formal task-state mode, include design/UI state sections in `functional_document.md` or attach a separate design note if PM requests it.
 
-Minimum final Design coverage:
+Minimum final Design coverage inside the functional requirements file:
 
 ```text
-Design Goal
+Design Goal / Surface intent
 Reference Materials
-Route / Surface Contract
-User Intent & UX Principles
 Information Architecture
-Layout Requirements
-Required Regions
-Component Contracts
+Surface Details by Surface
+- Surface summary
+- Text-Based Wireframing / Sketching wireframe
+- Surface Elements table
+- Status/state behavior inside each surface block when needed
+- Placement notes inside each surface block when needed
 Interaction Contract
-Page/component State Contract
-Error Copy Rules
 Loading / Empty / Error UX
 Copy & Microcopy
 Accessibility
 Responsive Behavior
-Data Display Rules
 Security / Privacy UX
 Design QA Checklist
-Design-to-Implementation Acceptance Criteria
 ```
 
 ---
@@ -383,9 +383,8 @@ Feature docs mode:
 features/lightweight/<...>/product/SRS-<feature>.md
 features/lightweight/<...>/api/API-<feature>.md
 features/lightweight/<...>/design/<feature>-design.md
-features/final-docs/<...>/product/functional-specification.md
-features/final-docs/<...>/api/technical-contract.md
-features/final-docs/<...>/design/design-contract.md
+features/final-docs/<...>/<feature-name>-functional-requirements.md
+features/final-docs/<...>/<feature-name>-mockup.html
 ```
 
 Update `state.yaml`:
@@ -406,12 +405,12 @@ agent: document
 status: done | needs_clarification
 summary: "Spec complete: {N} APIs, {M} schemas, {K} acceptance criteria. {X} change requirements recorded."
 artifacts:
-  - name: product contract
-    path: state/tasks/{TASK-ID}/functional_document.md OR features/.../product/functional-specification.md
-  - name: api contract
-    path: state/tasks/{TASK-ID}/technical_contract.md OR features/.../api/technical-contract.md
-  - name: design contract
-    path: features/.../design/design-contract.md (if feature docs mode)
+  - name: functional requirements contract
+    path: state/tasks/{TASK-ID}/functional_document.md OR features/.../<feature-name>-functional-requirements.md
+  - name: mockup / visual companion
+    path: features/.../<feature-name>-mockup.html (if useful)
+  - name: technical contract
+    path: state/tasks/{TASK-ID}/technical_contract.md (formal task-state mode only)
 assumptions:
   - {assumption tự đưa ra khi BA không đủ rõ}
 blockers: []

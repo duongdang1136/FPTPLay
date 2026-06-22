@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>&lt;Feature Name&gt; Mockup</title>
+  <style>
+    body { margin: 0; font-family: Inter, Arial, sans-serif; background: #0f172a; color: #e5e7eb; }
+    main { max-width: 1120px; margin: 0 auto; padding: 32px 20px; }
+    h1, h2 { margin: 0 0 12px; }
+    .note { color: #94a3b8; margin-bottom: 24px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .surface { border: 1px solid #334155; border-radius: 18px; padding: 18px; background: #111827; box-shadow: 0 16px 40px rgba(0,0,0,.25); }
+    .wireframe { border: 1px dashed #64748b; border-radius: 14px; padding: 14px; background: #020617; color: #cbd5e1; white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; line-height: 1.45; }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 10px 0; }
+    .pill { border-radius: 999px; padding: 4px 10px; background: #1d4ed8; color: white; font-size: 12px; }
+    .button { border: 0; border-radius: 12px; padding: 10px 14px; background: #ef4444; color: white; font-weight: 700; }
+    .secondary { background: #334155; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>&lt;Feature Name&gt; — Mockup</h1>
+    <p class="note">Use this HTML as a lightweight visual companion to <code>&lt;feature-name&gt;-functional-requirements.md</code>. Replace placeholder surfaces with feature-specific UI.</p>
+
+    <section class="grid">
+      <article class="surface">
+        <div class="row">
+          <h2>SURF-001 — &lt;Surface name&gt;</h2>
+          <span class="pill">default</span>
+        </div>
+        <div class="wireframe">┌──────────────────────────────┐
+│ Header / Status / Context    │
+├──────────────────────────────┤
+│ Primary content area          │
+│ - Main value / message        │
+│ - Supporting metadata         │
+├──────────────────────────────┤
+│ [Primary] [Secondary]         │
+└──────────────────────────────┘</div>
+        <div class="row">
+          <button class="button">Primary button</button>
+          <button class="button secondary">Secondary</button>
+        </div>
+      </article>
+
+      <article class="surface">
+        <div class="row">
+          <h2>SURF-002 — &lt;Surface name&gt;</h2>
+          <span class="pill">compact</span>
+        </div>
+        <div class="wireframe">┌──────────────────────────────┐
+│ Compact / alternate layout   │
+│ Element A        Element B   │
+└──────────────────────────────┘</div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
