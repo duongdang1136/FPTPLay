@@ -67,12 +67,6 @@
 
 - <Out-of-scope item>
 
-### 3.7 Non-functional requirements
-
-| ID | Requirement | Notes |
-|---|---|---|
-| <CODE>-NFR-001 | <Requirement> | <Notes> |
-
 ---
 
 ## 4. Entry Points
@@ -100,19 +94,24 @@ Note:
 
 ## 6. Business Rules
 
-### 6.1 Global Business Rules
+### Global Business Rules
 
-| Rule ID | Rule | Applies to |
-|---|---|---|
-| <CODE>-BR-001 | <Rule> | <UC / Surface / API / QA> |
+#### <Rule group name>
 
-### 6.2 Platform-specific Rules
+1. <Rule viết ngắn, rõ, giống Live Activity style>.
+2. <Rule tiếp theo>.
+3. <Rule tiếp theo>.
 
-| Platform | Rule | Notes |
-|---|---|---|
-| iOS | <Rule> | <Notes> |
-| Android | <Rule> | <Notes> |
-| Web | <Rule> | <Notes> |
+#### Platform-specific rules — if needed
+
+1. iOS: <Rule / note>.
+2. Android: <Rule / note>.
+3. Web: <Rule / note>.
+
+Notes:
+- Hạn chế dùng table trong Business Rules. Ưu tiên numbered list + subheading giống Live Activity.
+- Chỉ dùng table nếu rule thật sự cần so sánh matrix nhiều cột.
+- Fold integration/state/measurement/test expectations vào đây khi cần, không tạo section riêng.
 
 ---
 

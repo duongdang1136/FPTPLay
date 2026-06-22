@@ -80,16 +80,6 @@ User đang xem live event có thể tua lại nội dung đã phát trong giới
 - Offline download.
 - Editing CMS UI details beyond required flag/fields.
 
-### 3.7 Non-functional requirements
-
-| ID | Requirement | Notes |
-|---|---|---|
-| TS-NFR-001 | Seek should feel responsive under normal network conditions. | Buffering state allowed when segment is slow. |
-| TS-NFR-002 | DVR availability must be decided server-side. | DVR availability should come from system/API, not client-side guesswork. |
-| TS-NFR-003 | System must not expose DVR playback to users without valid package. | Entitlement gate is mandatory. |
-| TS-NFR-004 | DVR range must never exceed 8 hours. | Even if event is longer. |
-| TS-NFR-005 | Seek preview should not depend on thumbnail assets. | Time tooltip only. |
-
 ---
 
 ## 4. Entry Points
@@ -127,76 +117,65 @@ User flows may merge UCs when they are one coherent journey. Merged flows must l
 
 ## 6. Business Rules
 
-### 6.1 Eligibility / gating rules
+### Global Business Rules
 
-| Rule ID | Rule | Applies to |
-|---|---|---|
-| TS-BR-001 | DVR is enabled only when CMS flag for the event is ON. | BE/CMS/API |
-| TS-BR-002 | DVR is enabled only for allowed FPTLive events. | BE/API |
-| TS-BR-003 | EPL events must not enable DVR/start-over. | BE/API/FE |
-| TS-BR-004 | User must have valid package/entitlement before server returns DVR link. | BE/API |
-| TS-BR-005 | Stream/packager must support DVR manifest for requested protocol. | BE/API/Infra |
-| TS-BR-006 | If any gate fails, System reports DVR unavailable and does not expose DVR stream URL. | BE/API |
-| TS-BR-007 | App should not show interactive DVR seek unless system says DVR is available. | FE |
+#### Eligibility / gating rules
 
-### 6.2 DVR window rules
+1. DVR chỉ bật khi CMS flag của event đang ON.
+2. DVR chỉ bật cho FPTLive event đủ điều kiện.
+3. EPL event không bật DVR / start-over.
+4. User phải có package/entitlement hợp lệ trước khi hệ thống expose DVR playback.
+5. Stream/packager phải có DVR manifest hợp lệ cho protocol được dùng.
+6. Nếu bất kỳ gate nào fail, hệ thống báo DVR unavailable và không expose DVR stream URL.
+7. App không hiển thị interactive DVR seek nếu hệ thống chưa xác nhận DVR available.
 
-| Rule ID | Rule | Applies to |
-|---|---|---|
-| TS-BR-008 | DVR max window is 8 hours. | BE/FE/Player |
-| TS-BR-009 | Live DVR range is `[max(event_start_time, live_edge - 8h), live_edge]`. | BE/FE/Player |
-| TS-BR-010 | If event duration is less than 8h, DVR can start at event start. | BE/FE/Player |
-| TS-BR-011 | User cannot seek before DVR start or after live edge. | Player |
-| TS-BR-012 | No seek thumbnail is shown. Tooltip may show timestamp only. | FE/Design |
-| TS-BR-013 | If user pauses live playback while DVR is enabled, resume should continue from the paused position while it remains inside the DVR window. | FE/Player |
-| TS-BR-014 | If paused position falls outside the DVR window, app should recover to nearest valid DVR position, live edge, or an unavailable state based on player capability. | FE/Player |
+#### DVR window rules
 
-### 6.3 Event end and re-entry rules
+1. DVR max window là **8 giờ**.
+2. Live DVR range = từ `max(event_start_time, live_edge - 8h)` đến `live_edge`.
+3. Nếu event duration nhỏ hơn 8 giờ, DVR có thể start từ event start.
+4. User không được seek trước DVR start hoặc sau live edge.
+5. Seek không có thumbnail. Tooltip chỉ cần hiển thị timestamp nếu cần.
+6. Nếu user pause live playback khi DVR enabled, resume từ paused position nếu vị trí đó còn nằm trong DVR window.
+7. Nếu paused position đã rơi khỏi DVR window, app recover về nearest valid DVR position, live edge, hoặc unavailable state tùy player capability.
 
-| Rule ID | Rule | Applies to |
-|---|---|---|
-| TS-BR-015 | First event-end moment may show existing backdrop and next-event prompt. | FE/Player |
-| TS-BR-016 | If user is currently watching/seeking/paused in the player when event ends, do not force auto-transition to next event. | FE/Player |
-| TS-BR-017 | Next event after event end is optional CTA only when DVR session is active. | FE/Player |
-| TS-BR-018 | DVR replay after event end depends on normal DVR validity: entitlement, CMS flag, stream availability, and DVR window. | FE/Player/API |
-| TS-BR-019 | If user enters/re-enters the ended event after exit or after event already ended, show Event Ended state first, then allow DVR replay if DVR is still valid. | FE/Player |
-| TS-BR-020 | Ended event re-entry must not auto-jump to next event. DVR replay remains allowed when entitlement, CMS flag, and DVR window are still valid. | FE/Player |
+#### Event end and re-entry rules
 
-### 6.4 Protocol rules
+1. Khi event vừa end, app có thể giữ backdrop / next-event prompt hiện tại.
+2. Nếu user đang watch/seek/pause trong player lúc event end, không force auto-transition sang next event.
+3. Next event chỉ là CTA thủ công khi DVR session còn active.
+4. DVR replay sau event end vẫn theo điều kiện hợp lệ bình thường: entitlement, CMS flag, stream availability, và DVR window.
+5. Nếu user enter/re-enter ended event, app show **Sự kiện đã kết thúc** trước. Nếu DVR vẫn valid thì cho user mở DVR replay.
+6. Ended event re-entry không được auto-jump sang next event.
 
-| Rule ID | Rule | Applies to |
-|---|---|---|
-| TS-BR-021 | System may provide HLS and/or DASH DVR playback depending on platform capability. | BE/API |
-| TS-BR-022 | App/player follows existing platform playback policy for protocol selection. | FE/Player |
-| TS-BR-023 | If a protocol has no valid DVR playback, system should either disable DVR for that context or use a supported protocol. | BE/API/Player |
+#### Protocol rules
 
-### 6.5 Integration / system expectation rules
+1. Hệ thống có thể cung cấp HLS và/hoặc DASH DVR playback tùy platform capability.
+2. App/player chọn protocol theo playback policy hiện tại của từng platform.
+3. Nếu protocol không có DVR playback hợp lệ, hệ thống disable DVR cho context đó hoặc fallback sang protocol được support.
 
-| Rule ID | Rule | Applies to |
-|---|---|---|
-| TS-BR-024 | App needs playback/event status to know whether event is scheduled, live, ended, and DVR-capable. | App/API |
-| TS-BR-025 | App needs entitlement result before DVR replay is exposed. | App/API |
-| TS-BR-026 | App needs CMS DVR flag and stream availability before enabling DVR controls. | App/API/CMS |
-| TS-BR-027 | System should provide DVR availability, DVR window start/end, protocol availability, and unavailable reason at product level. | App/API |
-| TS-BR-028 | If DVR is unavailable, app maps reason to the user-facing behavior in Section 9. | App/API |
+#### Integration / system expectation rules
 
-### 6.6 Product behavior state rules
+1. App cần playback/event status để biết event đang scheduled, live, ended, và có DVR-capable hay không.
+2. App cần entitlement result trước khi expose DVR replay.
+3. App cần CMS DVR flag và stream availability trước khi enable DVR controls.
+4. Hệ thống nên trả được DVR availability, DVR window start/end, protocol availability, và unavailable reason ở mức product.
+5. Nếu DVR unavailable, app map reason sang user-facing behavior trong Section 9.
 
-| Rule ID | Rule | Applies to |
-|---|---|---|
-| TS-BR-029 | When DVR gates fail, player behaves as normal live playback without interactive DVR seek. | Player |
-| TS-BR-030 | When DVR is enabled and user is at live edge, seekbar is active and GO LIVE is hidden. | Player |
-| TS-BR-031 | When user is behind live, show behind-live treatment and GO LIVE action. | Player |
-| TS-BR-032 | When event ended and DVR remains valid, ended overlay may keep final DVR seek controls. | Player |
-| TS-BR-033 | When user re-enters an ended event, show ended state first; DVR replay action is visible only if DVR is still valid. | App/Player |
-| TS-BR-034 | If DVR expires or becomes unavailable, hide DVR replay action and keep safe ended/unavailable state. | App/Player |
+#### Product behavior rules
 
-### 6.7 Measurement notes — if product requires
+1. Khi DVR gates fail, player chạy như normal live playback, không có interactive DVR seek.
+2. Khi DVR enabled và user ở live edge, seekbar active và GO LIVE hidden.
+3. Khi user behind live, show behind-live treatment và GO LIVE action.
+4. Seek/resume nên cho cảm giác responsive trong điều kiện mạng bình thường; buffering state được phép khi segment chậm.
+5. Khi event ended và DVR vẫn valid, ended overlay có thể giữ final DVR seek controls.
+6. Khi user re-enter ended event, show ended state trước; DVR replay action chỉ hiện nếu DVR vẫn valid.
+7. Nếu DVR expired hoặc unavailable, hide DVR replay action và giữ safe ended/unavailable state.
 
-| Rule ID | Rule | Applies to |
-|---|---|---|
-| TS-BR-035 | If analytics is required, measure DVR availability, unavailable reason, seek start/success/failure, pause/resume, GO LIVE, event-end DVR session, ended re-entry, and next-event click. | Analytics |
-| TS-BR-036 | Analytics must not expose private package/user data beyond approved tracking properties. | Analytics/Privacy |
+#### Measurement notes — if product requires
+
+1. Nếu cần analytics, đo DVR availability, unavailable reason, seek start/success/failure, pause/resume, GO LIVE, event-end DVR session, ended re-entry, và next-event click.
+2. Analytics không được expose private package/user data ngoài tracking properties đã được approve.
 
 ---
 

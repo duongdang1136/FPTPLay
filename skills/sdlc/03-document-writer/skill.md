@@ -115,7 +115,7 @@ Definitions
 Actors / Permissions
 Entry Points
 User Journeys
-Business Rules
+Business Rules (prefer numbered list + subheadings; hạn chế table)
 Functional Requirements
 Error Handling & Product Copy
 UX/UI Requirements
