@@ -1,22 +1,22 @@
 # Legacy Timeshift Seek Doc — Superseded
 
-This split final-doc file is kept only for historical reference.
+File split final-doc này chỉ giữ để tham khảo lịch sử.
 
-Canonical current implementation contract:
+Canonical implementation contract hiện tại:
 
 ```text
 ../timeshift-seek-functional-requirements.md
 ```
 
-Use the canonical flat file for Product, UX, API/integration, state, error, and QA requirements.
+Khi implement, dùng canonical flat file cho Product, UX, API/integration, state, error, và QA requirements.
 
-Major drift fixed in the canonical file:
+Các drift chính đã sửa trong canonical file:
 
-- DVR/start-over max window is 8 hours, not full-event unlimited.
-- DVR applies to eligible FPTLive events only.
-- EPL events are excluded.
-- Server must check user package before returning DVR link.
-- CMS flag controls DVR availability per event.
-- Event end must not switch to VOD.
-- Seek has no thumbnail preview.
-- Post-end DVR replay is session-bound. Re-entering an ended event shows Event Ended state only.
+- DVR/start-over max window là 8 giờ, không phải full-event unlimited.
+- DVR chỉ áp dụng cho FPTLive event đủ điều kiện.
+- Không áp dụng cho EPL event.
+- Hệ thống phải check package của user trước khi trả DVR link.
+- CMS flag điều khiển DVR availability theo từng event.
+- Event end không switch sang VOD.
+- Seek không có thumbnail preview.
+- DVR sau event end chỉ giữ trong active player session. User từ ngoài mở event đã kết thúc thì chỉ thấy **Sự kiện đã kết thúc** rồi end flow.
