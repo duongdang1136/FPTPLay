@@ -6,14 +6,14 @@
 > Audience: Product, BA, FE, BE, QA
 > Status: Final implementation handoff
 > Source: Rewritten from lightweight docs / accepted assumptions
-> Writing style: Caveman Vietnam — ngắn, rõ, dễ implement/test
+> Writing style: Caveman Vietnam — ít chữ, dễ đọc, đúng ý, không low-level
 > Last updated: YYYY-MM-DD
 
 ---
 
 ## 1. Description
 
-<Feature làm gì, cho ai, giải quyết intent gì. Viết ngắn, rõ.>
+<Feature làm gì, cho ai, giải quyết intent gì. Viết ngắn, rõ, giống Live Activity style.>
 
 - Epic: <Large-Feature>
 - Feature: <Sub-Feature>
@@ -56,7 +56,7 @@
 
 | User type | Scope | Notes |
 |---|---|---|
-| <Actor> | In scope | <Note> |
+| Logged-in User | In scope | Main actor. |
 | <Actor> | Out of scope | <Note> |
 
 ### 3.5 In scope
@@ -112,6 +112,7 @@ Notes:
 - Hạn chế dùng table trong Business Rules. Ưu tiên numbered list + subheading giống Live Activity.
 - Chỉ dùng table nếu rule thật sự cần so sánh matrix nhiều cột.
 - Fold integration/state/measurement/test expectations vào đây khi cần, không tạo section riêng.
+- Actor/diagram style theo Live Activity: ưu tiên `Logged-in User` + `App`; chỉ thêm Server/API/CMS khi thật sự cần hiểu flow.
 
 ---
 
@@ -126,7 +127,7 @@ Notes:
 **Description:**
 <Mô tả ngắn capability.>
 
-#### <CODE>-FLOW-001 — <Flow name>
+#### <CODE>-UC-001 — <Flow name>
 
 **Activity Flows:**
 
@@ -136,16 +137,13 @@ sequenceDiagram
 
     actor User as User
     participant App
-    participant Server
 
     User->>App: <Action>
-    App->>Server: <Request/check, if needed>
+    App->>App: <Check condition / state>
 
     alt <Condition A>
-        Server-->>App: <Result A>
         App-->>User: <UI result A>
     else <Condition B>
-        Server-->>App: <Result B>
         App-->>User: <UI result B>
     end
 ```
@@ -154,7 +152,7 @@ sequenceDiagram
 |---|---|
 | Covered UCs | <CODE>-UC-001, <CODE>-UC-002 |
 | Description | <Flow mô tả gì> |
-| Actor | <Actor chính>, App/System nếu có |
+| Actor | Logged-in User, App |
 | Triggers | <User action hoặc system trigger> |
 | Pre-condition | <Điều kiện trước khi flow chạy> |
 | Basic Path | 1. <Step 1>.<br>2. <Step 2>.<br>3. <Step 3>. |

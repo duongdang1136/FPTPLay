@@ -4,19 +4,19 @@
 > Epic: Event
 > Feature: Timeshift Seek
 > Audience: Product, BA, FE, BE, QA
-> Status: Final product requirements handoff
-> Writing style: High-level product language — ngắn, rõ, đủ cho BA/FE/BE/QA align; không khóa implementation detail quá sớm
+> Status: Final implementation handoff
+> Writing style: Caveman Vietnam — ít chữ, dễ đọc, đúng ý, không low-level
 > Last updated: 2026-06-22
 
 ---
 
 ## 1. Description
 
-Timeshift Seek cho phép user đang xem **sự kiện live FPTLive** tua lại nội dung đã phát trong DVR window tối đa **8 tiếng** và bấm về live edge khi cần.
+Timeshift Seek giúp user đang xem **sự kiện live FPTLive** tua lại nội dung đã phát trong DVR window tối đa **8 tiếng**. User có thể xem lại đoạn đã qua, pause/resume, hoặc bấm **GO LIVE** để quay về live edge.
 
-Feature này **không áp dụng cho EPL**. DVR link chỉ được trả khi user có gói hợp lệ và sự kiện được bật cờ DVR qua CMS.
+Feature này **không áp dụng cho EPL**. User cần có gói hợp lệ. Event cần được bật cờ DVR qua CMS.
 
-Sau khi sự kiện kết thúc, player giữ trải nghiệm DVR theo điều kiện hợp lệ. Nếu user đang ở trong player tại thời điểm event end, user được giữ trong DVR replay session hiện tại. Nếu user thoát player hoặc vào lại event đã kết thúc, app báo **Sự kiện đã kết thúc** nhưng vẫn có thể cho DVR replay nếu DVR còn hợp lệ; không tự động nhảy sang next event.
+Khi event kết thúc, App không tự nhảy sang next event. Nếu DVR còn hợp lệ, user vẫn có thể xem lại DVR từ màn **Sự kiện đã kết thúc**.
 
 ---
 
@@ -33,7 +33,7 @@ Sau khi sự kiện kết thúc, player giữ trải nghiệm DVR theo điều k
 
 ### 3.1 Goal
 
-User đang xem live event có thể tua lại nội dung đã phát trong giới hạn cho phép, rồi quay về live edge.
+User đang xem live event có thể tua lại nội dung đã phát, tạm dừng/xem tiếp, rồi quay về live edge khi muốn.
 
 ### 3.2 Platform scope
 
@@ -102,14 +102,14 @@ Use cases are derived from actual goals/branches. Do not force a fixed count.
 
 | Use Case ID | Use Case | Primary Actor | Trigger | Outcome |
 |---|---|---|---|---|
-| TS-UC-001 | Load eligible FPTLive event with DVR | User | Opens live event | Player shows DVR seek if CMS flag, entitlement, event source, and stream support pass. |
-| TS-UC-002 | Seek within DVR window | User | Selects earlier point on seekbar | Player plays selected point within max 8h DVR range. |
-| TS-UC-003 | Pause and resume live event | User | Pauses live playback, then resumes | Playback resumes from paused position if still valid; user becomes behind live. |
-| TS-UC-004 | Return to live edge | User | Taps GO LIVE | Playback jumps to live edge; behind-live UI clears. |
-| TS-UC-005 | DVR unavailable due to gates | User/System | Event/user fails one or more gates | System does not expose DVR playback; app hides/disables DVR seek. |
-| TS-UC-006 | Event ends while user is inside player | System/User | Event ends during playback | session-bound DVR replay can continue; next event is optional CTA only. |
-| TS-UC-007 | User enters ended event after exit/re-entry | User | Opens ended event | App shows Event Ended state; DVR replay may remain available if valid; no auto next event. |
-| TS-UC-008 | CMS toggles DVR flag | Admin/CMS | Flag changes | DVR availability changes for future playback responses. |
+| TS-UC-001 | Mở FPTLive event có DVR | Logged-in User | User mở live event | Player hiển thị DVR seek nếu event/user/stream đủ điều kiện. |
+| TS-UC-002 | Tua lại trong DVR window | Logged-in User | User chọn mốc trước đó trên seekbar | Player phát từ mốc đã chọn trong giới hạn 8 giờ. |
+| TS-UC-003 | Pause / Resume live event | Logged-in User | User pause rồi resume | Player phát tiếp từ vị trí đã pause nếu còn hợp lệ; user chuyển sang behind live. |
+| TS-UC-004 | Quay về live edge | Logged-in User | User bấm GO LIVE | Player nhảy về live edge. |
+| TS-UC-005 | DVR không khả dụng | Logged-in User, App | Event/user/stream không đủ điều kiện | App ẩn hoặc disable DVR seek. |
+| TS-UC-006 | Event end khi user còn trong player | Logged-in User, App | Event kết thúc trong lúc user đang xem | DVR replay có thể tiếp tục nếu còn hợp lệ; next event chỉ là CTA. |
+| TS-UC-007 | User vào lại event đã kết thúc | Logged-in User | User mở ended event | App hiện **Sự kiện đã kết thúc**; DVR vẫn có nếu còn valid; không auto next. |
+| TS-UC-008 | CMS bật/tắt DVR flag | Admin/CMS User | DVR flag thay đổi | DVR availability đổi theo cấu hình mới. |
 
 User flows may merge UCs when they are one coherent journey. Merged flows must list Covered UCs.
 
@@ -181,34 +181,35 @@ User flows may merge UCs when they are one coherent journey. Merged flows must l
 
 ## 7. Functional Requirements
 
-### TS-US-001 — Load live FPTLive event with DVR eligibility
+### TS-US-001 — User mở live FPTLive event có DVR
 
-User opens a live event. System checks event type, CMS flag, entitlement, and stream support before enabling DVR seek.
+- User mở một sự kiện FPTLive đang live.
+- User muốn xem live bình thường, nhưng có thể tua lại nếu đủ điều kiện.
+- App chỉ bật DVR seek khi event/user/stream hợp lệ.
 
-#### TS-FLOW-001 — Load player and decide DVR availability
+**Description:**
+User mở player. App check event, gói user, CMS flag và stream support. Nếu đủ điều kiện, App hiển thị DVR seek. Nếu không đủ, user vẫn xem live theo khả năng hiện tại.
+
+#### TS-UC-001 — Mở event → Check DVR availability
+
+**Activity Flows:**
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User
+
+    actor User as User
     participant App
-    participant API
-    participant Entitlement
-    participant CMS
-    participant Stream as Stream/Packager
 
-    User->>App: Open live event player
-    App->>API: Request playback info(event_id, user, platform)
-    API->>CMS: Check event DVR flag
-    API->>Entitlement: Check user package
-    API->>Stream: Check HLS/DASH DVR support
+    User->>App: Mở live event player
+    App->>App: Check FPTLive / EPL / CMS flag
+    App->>App: Check user package
+    App->>App: Check HLS/DASH DVR support
 
-    alt FPTLive + not EPL + CMS ON + entitled + DVR manifest exists
-        API-->>App: dvr_enabled=true + DVR URL(s) + DVR window
-        App-->>User: Show interactive DVR seekbar
-    else Any gate fails
-        API-->>App: dvr_enabled=false + no DVR URL
-        App-->>User: Hide/disable DVR seek
+    alt Event + user + stream đủ điều kiện
+        App-->>User: Hiển thị DVR seekbar
+    else Không đủ điều kiện
+        App-->>User: Xem live bình thường / DVR bị ẩn hoặc disable
     end
 ```
 
@@ -216,37 +217,45 @@ sequenceDiagram
 |---|---|
 | Covered UCs | TS-UC-001, TS-UC-005, TS-UC-008 |
 | Description | Player loads and the system determines whether DVR is available. |
-| Actor | User, App, API, CMS, Entitlement, Stream/Packager |
-| Triggers | User opens a live event player. |
-| Pre-condition | Event exists; playback API is reachable. |
-| Basic Path | 1. User opens event player.<br>2. App requests playback info.<br>3. API checks CMS DVR flag, event source, EPL exclusion, entitlement, and stream support.<br>4. If all gates pass, API returns DVR-enabled response.<br>5. Player shows interactive DVR seekbar. |
-| Post-condition | Player is live with DVR enabled or live with DVR disabled/read-only. |
-| Alternative Path | CMS flag OFF / event is EPL / user has no package / no DVR manifest → `dvr_enabled=false`; no DVR URL. |
-| Exception Handling | System error → player shows normal playback error or live-only fallback if live playback is still available. |
-| Business Rules Applied | TS-BR-001 to TS-BR-007, TS-BR-021 to TS-BR-028. |
+| Actor | Logged-in User, App |
+| Triggers | User mở live event player. |
+| Pre-condition | Event tồn tại. User có quyền mở player. |
+| Basic Path | 1. User mở event player.<br>2. App check event có phải FPTLive và không phải EPL.<br>3. App check CMS flag, package của user và stream DVR support.<br>4. Đủ điều kiện → App hiển thị DVR seekbar.<br>5. Không đủ điều kiện → App ẩn/disable DVR seek, user vẫn xem live nếu stream live khả dụng. |
+| Post-condition | Player mở thành công. DVR enabled hoặc disabled theo điều kiện thực tế. |
+| Alternative Path | CMS flag OFF / event là EPL / user không có gói / stream không hỗ trợ DVR → không hiển thị DVR seek. |
+| Exception Handling | Check DVR lỗi → App fallback live-only nếu live stream còn xem được; nếu không thì hiện lỗi playback phù hợp. |
+| Business Rules Applied | 1. DVR chỉ bật khi CMS flag ON.<br>2. Chỉ áp dụng cho FPTLive đủ điều kiện, không áp dụng EPL.<br>3. User phải có gói hợp lệ.<br>4. Stream phải hỗ trợ DVR HLS/DASH.<br>5. App chỉ hiển thị DVR seek khi hệ thống xác nhận DVR available. |
 
-### TS-US-002 — Seek within max 8-hour DVR window
+### TS-US-002 — User tua lại trong DVR window
 
-User can seek backward only inside the allowed DVR window.
+- User đang xem live event có DVR.
+- User muốn tua lại đoạn đã phát.
+- User có thể quay về live edge bằng **GO LIVE**.
 
-#### TS-FLOW-002 — User seeks behind live and returns to live
+**Description:**
+User kéo seekbar về mốc trước đó. App chỉ cho tua trong DVR window tối đa 8 giờ. Khi user đang behind live, App hiển thị trạng thái phù hợp và nút **GO LIVE**.
+
+#### TS-UC-002 — Seek behind live / GO LIVE
+
+**Activity Flows:**
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User
-    participant Player
 
-    User->>Player: Drag/click/D-pad seek to past time
-    Player->>Player: Validate target within DVR window
+    actor User as User
+    participant App
 
-    alt Target valid
-        Player-->>User: Buffer and play selected position
-        Player-->>User: Show behind-live state + GO LIVE
-        User->>Player: Tap GO LIVE
-        Player-->>User: Jump to live edge
-    else Target outside DVR window
-        Player-->>User: Clamp to nearest valid point or show error
+    User->>App: Kéo seekbar về mốc đã phát
+    App->>App: Check mốc seek trong DVR window
+
+    alt Mốc seek hợp lệ
+        App-->>User: Phát từ mốc đã chọn
+        App-->>User: Hiển thị behind-live + GO LIVE
+        User->>App: Bấm GO LIVE
+        App-->>User: Quay về live edge
+    else Mốc seek ngoài DVR window
+        App-->>User: Đưa về mốc hợp lệ gần nhất hoặc báo không khả dụng
     end
 ```
 
@@ -254,37 +263,45 @@ sequenceDiagram
 |---|---|
 | Covered UCs | TS-UC-002, TS-UC-004 |
 | Description | User seeks within DVR range and may jump back to live edge. |
-| Actor | User, Player |
-| Triggers | User interacts with seekbar. |
-| Pre-condition | `dvr_enabled=true`; valid DVR URL; event is live or session-bound post-end DVR is still active. |
-| Basic Path | 1. User selects a past point.<br>2. Player validates point within DVR window.<br>3. Player seeks and buffers.<br>4. Player shows behind-live state.<br>5. User taps GO LIVE.<br>6. Player jumps to live edge if event is still live. |
+| Actor | Logged-in User, App |
+| Triggers | User kéo/click/D-pad seekbar. |
+| Pre-condition | DVR đang available. Event đang live hoặc DVR sau event end vẫn còn valid. |
+| Basic Path | 1. User chọn mốc đã phát.<br>2. App check mốc đó còn trong DVR window.<br>3. App phát từ mốc đã chọn.<br>4. App hiển thị behind-live state.<br>5. User bấm **GO LIVE**.<br>6. App đưa playback về live edge nếu event còn live. |
 | Post-condition | User watches selected DVR position or returns to live edge. |
 | Alternative Path | If event already ended, GO LIVE is hidden; user can seek only within session-bound ended DVR range. |
 | Exception Handling | Segment missing/network error → show buffering/error; keep last valid position. |
-| Business Rules Applied | TS-BR-008 to TS-BR-012. |
+| Business Rules Applied | 1. DVR window tối đa 8 giờ.<br>2. User không seek trước DVR start hoặc sau live edge.<br>3. Seek không có thumbnail; tooltip chỉ cần timestamp nếu cần.<br>4. Khi behind live, App hiển thị GO LIVE. |
 
-### TS-US-003 — Pause and resume live playback
+### TS-US-003 — User pause / resume live event
 
-User can pause an eligible live event and resume from the paused position. After resume, user is behind live and can continue watching, seek within DVR window, or go back to live edge.
+- User đang xem live event có DVR.
+- User tạm dừng playback.
+- Khi resume, user xem tiếp từ vị trí đã pause nếu vị trí đó còn hợp lệ.
 
-#### TS-FLOW-003 — User pauses live and resumes behind live
+**Description:**
+Pause live làm user bị lệch khỏi live edge. Khi user resume, App phát tiếp từ paused position nếu còn trong DVR window. User có thể tiếp tục xem lại hoặc bấm **GO LIVE**.
+
+#### TS-UC-003 — Pause live → Resume behind live
+
+**Activity Flows:**
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User
-    participant Player
 
-    User->>Player: Pause live playback
-    Player-->>User: Keep paused position
-    Note over Player: Live event continues progressing
-    User->>Player: Resume playback
+    actor User as User
+    participant App
 
-    alt Paused position still inside DVR window
-        Player-->>User: Resume from paused position
-        Player-->>User: Show behind-live state + GO LIVE
-    else Paused position outside DVR window
-        Player-->>User: Recover to nearest valid DVR position, live edge, or unavailable state
+    User->>App: Pause live playback
+    App->>App: Lưu paused position
+    Note over App: Live event vẫn tiếp tục chạy
+    User->>App: Resume playback
+
+    alt Paused position còn trong DVR window
+        App-->>User: Phát tiếp từ paused position
+        App-->>User: Hiển thị behind-live + GO LIVE
+    else Paused position hết hợp lệ
+        App-->>User: Recover về mốc DVR hợp lệ / live edge / unavailable state
     end
 ```
 
@@ -292,87 +309,111 @@ sequenceDiagram
 |---|---|
 | Covered UCs | TS-UC-003, TS-UC-004 |
 | Description | User pauses live playback and resumes from the paused point when possible. |
-| Actor | User, Player |
-| Triggers | User taps pause, then play/resume. |
-| Pre-condition | `dvr_enabled=true`; event is live; paused position can be represented in DVR window. |
-| Basic Path | 1. User pauses live playback.<br>2. Live event continues in real time.<br>3. User resumes.<br>4. Player resumes from paused position if still valid.<br>5. Player shows behind-live state and GO LIVE option. |
+| Actor | Logged-in User, App |
+| Triggers | User bấm pause, sau đó bấm play/resume. |
+| Pre-condition | DVR đang available. Event đang live. Paused position có thể nằm trong DVR window. |
+| Basic Path | 1. User pause live playback.<br>2. Event vẫn chạy theo thời gian thật.<br>3. User resume.<br>4. App phát tiếp từ paused position nếu còn hợp lệ.<br>5. App hiển thị behind-live state và **GO LIVE**. |
 | Post-condition | User watches behind live or returns to live edge manually. |
 | Alternative Path | If paused position is no longer inside DVR window, app recovers to nearest valid DVR point, live edge, or unavailable state based on player capability. |
 | Exception Handling | If DVR is disabled while paused or stream becomes unavailable, show safe playback/unavailable state. |
-| Business Rules Applied | TS-BR-008 to TS-BR-014. |
+| Business Rules Applied | 1. Pause live tạo behind-live position khi resume.<br>2. Resume từ paused position nếu còn trong DVR window.<br>3. Nếu paused position hết hợp lệ, App recover về mốc DVR hợp lệ / live edge / unavailable state. |
 
-### TS-US-004 — Event end with session-bound DVR replay
+### TS-US-004 — Event end khi user còn trong player
 
-When event ends, user can keep DVR replay when the DVR session remains valid. Next event is optional CTA only; do not force auto-transition.
+- Event kết thúc trong lúc user đang xem.
+- App có thể hiện backdrop / next event CTA.
+- App không tự nhảy sang next event.
 
-#### TS-FLOW-004 — Event ends while user is inside player
+**Description:**
+Khi event end, App giữ user trong ngữ cảnh hiện tại. Nếu DVR còn hợp lệ, user vẫn có thể xem lại trong DVR session. Next event chỉ là CTA thủ công.
+
+#### TS-UC-006 — Event end → Keep DVR session if valid
+
+**Activity Flows:**
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User
-    participant Player
-    participant API
 
-    API-->>Player: event_status=ended or stream end detected
-    Player-->>User: Show event-ended/backdrop state
+    actor User as User
+    participant App
 
-    alt User is watching/seeking/paused inside current DVR session
-        Player-->>User: Keep DVR replay available within final DVR window
-        Player-->>User: Show next event as optional CTA only
-    else User at live edge and no replay action
-        Player-->>User: Show ended state + optional next event CTA
+    App->>App: Event chuyển End
+    App-->>User: Hiện ended/backdrop state
+
+    alt User còn trong player và DVR còn valid
+        App-->>User: Giữ DVR replay trong DVR window còn lại
+        App-->>User: Hiện next event như CTA thủ công nếu có
+    else DVR không còn valid
+        App-->>User: Hiện ended state + CTA phù hợp
     end
 
-    User->>Player: Exit player
-    Player-->>User: End DVR replay session
+    User->>App: Thoát player
+    App->>App: Kết thúc player session hiện tại
 ```
 
 | Field | Details |
 |---|---|
 | Covered UCs | TS-UC-006 |
-| Description | Event ends while user is already in player. DVR replay remains only for current session. |
-| Actor | User, Player, API/System |
-| Triggers | Stream end, `event_status=ended`, event schedule end, or polling update. |
-| Pre-condition | User is inside player before event ends. |
-| Basic Path | 1. Player detects event end.<br>3. Player may show existing backdrop/end overlay.<br>4. If DVR is valid, current session can continue seeking within final DVR window.<br>5. Next event appears only as optional CTA.<br>6. User exits player → DVR replay session ends. |
-| Post-condition | User either continues session-bound DVR replay or exits. |
-| Alternative Path | If DVR is not valid/expired, show ended state and optional next event CTA. |
-| Exception Handling | Stream hard-stops while user is behind live → show ended state and preserve latest valid seek position if player can continue from buffered/DVR manifest; otherwise show unavailable message. |
-| Business Rules Applied | TS-BR-015 to TS-BR-018. |
+| Description | Event end khi user đang ở trong player. DVR replay tiếp tục nếu còn valid. |
+| Actor | Logged-in User, App |
+| Triggers | Event chuyển End hoặc stream báo kết thúc. |
+| Pre-condition | User đang ở trong player trước khi event kết thúc. |
+| Basic Path | 1. Event kết thúc.<br>2. App hiện ended/backdrop state.<br>3. Nếu DVR còn valid, user tiếp tục xem/seek trong DVR window còn lại.<br>4. App có thể hiện next event CTA, nhưng chỉ là lựa chọn thủ công.<br>5. User thoát player → kết thúc player session hiện tại. |
+| Post-condition | User tiếp tục DVR replay nếu còn valid, hoặc thoát player. |
+| Alternative Path | Nếu DVR không còn valid/expired, App hiện ended state và CTA phù hợp. |
+| Exception Handling | Stream hard-stop khi user đang behind live → App giữ vị trí hợp lệ gần nhất nếu player còn phát được; nếu không thì hiện unavailable message. |
+| Business Rules Applied | 1. Event end không force auto-transition sang next event.<br>2. Next event chỉ là CTA thủ công.<br>3. DVR replay sau event end vẫn theo entitlement, CMS flag, stream và DVR window. |
 
-### TS-US-005 — Re-enter ended event
+### TS-US-005 — User vào lại event đã kết thúc
 
-User entering an already ended event sees the ended state first. If DVR is still valid, user can continue/open DVR replay from the ended event context. App must not auto-jump to next event.
+- User mở event đã kết thúc.
+- App hiện **Sự kiện đã kết thúc** trước.
+- Nếu DVR còn hợp lệ, user vẫn có thể bấm xem lại DVR.
 
-#### TS-FLOW-005 — User enters/re-enters ended event
+**Description:**
+Ended event re-entry không được auto next. App hiện ended state. DVR replay vẫn được mở nếu còn valid theo entitlement, CMS flag, stream và DVR window.
+
+#### TS-UC-007 — Re-enter ended event → Show ended state / DVR if valid
+
+**Activity Flows:**
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User
-    participant App
-    participant API
 
-    User->>App: Open ended event
-    App->>API: Request event/playback state
-    API-->>App: event_status=ended
-    App-->>User: Show Event Ended state
-    App-->>User: Show next-event CTA if available
+    actor User as User
+    participant App
+
+    User->>App: Mở event đã kết thúc
+    App->>App: Check event status + DVR validity
+    App-->>User: Hiện Sự kiện đã kết thúc
+
+    alt DVR còn valid
+        App-->>User: Hiện Xem lại DVR
+    else DVR không khả dụng
+        App-->>User: Ẩn DVR replay action
+    end
+
+    alt Có next event
+        App-->>User: Hiện CTA Xem sự kiện tiếp theo
+    else Không có next event
+        App-->>User: Hiện Back / Close
+    end
 ```
 
 | Field | Details |
 |---|---|
 | Covered UCs | TS-UC-007 |
-| Description | Ended event entry shows ended state first, with DVR replay available if still valid. |
-| Actor | User, App, API |
-| Triggers | User opens event after it ended or after exiting ended player session. |
-| Pre-condition | Event status is ended before player entry. |
-| Basic Path | 1. User opens ended event.<br>2. App/API confirms event ended.<br>3. App shows “Sự kiện đã kết thúc”.<br>4. If DVR is still valid, user can start/continue DVR replay.<br>5. If next event exists, show CTA only; do not auto-jump.<br>6. User chooses DVR, next CTA, or exits. |
-| Post-condition | User stays on ended event context; DVR may play if valid; next event only starts by manual CTA. |
-| Alternative Path | If next event unavailable, show Back/Close only. |
-| Exception Handling | API unavailable → show safe ended/unavailable state; do not guess DVR URL. |
-| Business Rules Applied | TS-BR-019, TS-BR-020. |
+| Description | User vào event đã kết thúc. App hiện ended state trước, DVR replay hiện nếu còn valid. |
+| Actor | Logged-in User, App |
+| Triggers | User mở event sau khi event đã kết thúc. |
+| Pre-condition | Event đã End trước khi user vào player. |
+| Basic Path | 1. User mở ended event.<br>2. App check event status và DVR validity.<br>3. App hiện **Sự kiện đã kết thúc**.<br>4. Nếu DVR còn valid, App hiện **Xem lại DVR**.<br>5. Nếu có next event, App hiện CTA thủ công.<br>6. User chọn DVR, next CTA, hoặc thoát. |
+| Post-condition | User vẫn ở context của ended event. DVR chạy nếu còn valid. Next event chỉ mở khi user tự bấm CTA. |
+| Alternative Path | Nếu không có next event, chỉ hiện DVR nếu valid và Back/Close. |
+| Exception Handling | Không check được DVR validity → App hiện safe ended/unavailable state; không đoán DVR availability. |
+| Business Rules Applied | 1. Re-enter ended event phải hiện **Sự kiện đã kết thúc** trước.<br>2. DVR replay vẫn hiện nếu còn valid.<br>3. Không auto-jump sang next event. |
 
 ---
 
@@ -415,7 +456,7 @@ Use this as the single place for all surface-level UI details. Do not split surf
 | Surface / Location | Event player controls |
 | Platform | iOS / Android / Web / TV |
 | When shown | Event is live and `dvr_enabled=true`. |
-| Related UC / Flow | TS-UC-001, TS-UC-002, TS-UC-003, TS-FLOW-001, TS-FLOW-002, TS-FLOW-003 |
+| Related UC / Flow | TS-UC-001, TS-UC-002, TS-UC-003, TS-UC-001, TS-UC-002, TS-UC-003 |
 | Placement notes | Seekbar in player control area; TV uses D-pad friendly focus. |
 
 **Sketching wireframe / Text-Based Wireframing:**
@@ -467,7 +508,7 @@ Live Event Player — DVR enabled
 | Surface / Location | Player overlay/backdrop after event end |
 | Platform | iOS / Android / Web / TV |
 | When shown | User was already inside player when event ended. |
-| Related UC / Flow | TS-UC-006, TS-FLOW-004 |
+| Related UC / Flow | TS-UC-006, TS-UC-006 |
 | Placement notes | Existing backdrop/next-event prompt may appear once, but next event is CTA only when DVR session is active. |
 
 **Sketching wireframe / Text-Based Wireframing:**
@@ -518,7 +559,7 @@ Event Ended — Current DVR Session
 | Surface / Location | Event/player entry for ended event |
 | Platform | iOS / Android / Web / TV |
 | When shown | Event is already ended before user enters, or user exited and re-enters. |
-| Related UC / Flow | TS-UC-007, TS-FLOW-005 |
+| Related UC / Flow | TS-UC-007, TS-UC-007 |
 | Placement notes | This is an ended state first; DVR replay entry can be shown when still valid. |
 
 **Sketching wireframe / Text-Based Wireframing:**

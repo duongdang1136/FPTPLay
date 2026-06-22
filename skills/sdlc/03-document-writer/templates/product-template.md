@@ -28,3 +28,15 @@ Use this split product template only when:
 - maintaining an existing old feature folder where split files already exist and must stay split.
 
 For lightweight docs, continue using `features/lightweight/<...>/product/SRS-<feature>.md` when needed.
+
+
+### FPTPlay final docs style reference
+
+Use `features/final-docs/Sport-Zone/Live-Activity/product/live-activity-user-flows-functional-requirements.md` as the writing-style reference when generating FPTPlay final functional docs:
+
+- Caveman Vietnam: ít chữ, dễ đọc, đúng ý, không low-level.
+- Actor names: prefer `Logged-in User`, `App`; only add Server/API/CMS when the reader truly needs it.
+- Diagrams: keep Mermaid sequence diagrams simple, usually `User` + `App`; hide backend implementation details behind App checks.
+- Flow heading style: `<CODE>-US-xxx` section, then `<CODE>-UC-xxx` flow with `**Activity Flows:**`.
+- Business Rules: numbered list + subheadings, not tables by default.
+- Business Rules Applied in flow tables: write concrete rules as a short list, not ID ranges.
