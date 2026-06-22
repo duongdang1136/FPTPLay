@@ -100,10 +100,11 @@ User đang xem live event có thể tua lại nội dung đã phát trong giới
 |---:|---|---|---|---|
 | 1 | Event detail → Watch | User opens live FPTLive event | Player | Player loads live stream; DVR seek active if all gates pass. |
 | 2 | Player seekbar | User drags/clicks/D-pad seeks backward | Player controls | Playback starts from selected DVR position. |
-| 3 | GO LIVE | User taps GO LIVE while behind live | Player controls | Player jumps to live edge. |
-| 4 | Event end while inside player | Stream/status indicates event ended | Player | No VOD switch. Show ended/backdrop/next-event prompt as optional; keep current DVR session if applicable. |
-| 5 | Re-enter ended event | User opens event after leaving/after event already ended | Event/player entry | Show Event Ended state; no DVR replay; no auto next event; no VOD. |
-| 6 | CMS flag changed | Admin enables/disables DVR on event | CMS/API | Future stream response reflects new DVR availability. |
+| 3 | Pause / Resume | User pauses live playback, then resumes | Player controls | Playback resumes from paused position if still inside DVR window; user becomes behind live. |
+| 4 | GO LIVE | User taps GO LIVE while behind live | Player controls | Player jumps to live edge. |
+| 5 | Event end while inside player | Stream/status indicates event ended | Player | No VOD switch. Show ended/backdrop/next-event prompt as optional; keep current DVR session if applicable. |
+| 6 | Re-enter ended event | User opens event after leaving/after event already ended | Event/player entry | Show Event Ended state; no DVR replay; no auto next event; no VOD. |
+| 7 | CMS flag changed | Admin enables/disables DVR on event | CMS/API | Future stream response reflects new DVR availability. |
 
 ---
 
@@ -115,11 +116,12 @@ Use cases are derived from actual goals/branches. Do not force a fixed count.
 |---|---|---|---|---|
 | TS-UC-001 | Load eligible FPTLive event with DVR | User | Opens live event | Player shows DVR seek if CMS flag, entitlement, event source, and stream support pass. |
 | TS-UC-002 | Seek within DVR window | User | Selects earlier point on seekbar | Player plays selected point within max 8h DVR range. |
-| TS-UC-003 | Return to live edge | User | Taps GO LIVE | Playback jumps to live edge; behind-live UI clears. |
-| TS-UC-004 | DVR unavailable due to gates | User/System | Event/user fails one or more gates | Server does not return DVR link; FE hides/disables DVR seek. |
-| TS-UC-005 | Event ends while user is inside player | System/User | Event ends during playback | No VOD switch; session-bound DVR replay can continue; next event is optional CTA only. |
-| TS-UC-006 | User enters ended event after exit/re-entry | User | Opens ended event | App shows Event Ended state; no DVR replay, no VOD, no auto next event. |
-| TS-UC-007 | CMS toggles DVR flag | Admin/CMS | Flag changes | DVR availability changes for future API responses. |
+| TS-UC-003 | Pause and resume live event | User | Pauses live playback, then resumes | Playback resumes from paused position if still valid; user becomes behind live. |
+| TS-UC-004 | Return to live edge | User | Taps GO LIVE | Playback jumps to live edge; behind-live UI clears. |
+| TS-UC-005 | DVR unavailable due to gates | User/System | Event/user fails one or more gates | System does not expose DVR playback; app hides/disables DVR seek. |
+| TS-UC-006 | Event ends while user is inside player | System/User | Event ends during playback | No VOD switch; session-bound DVR replay can continue; next event is optional CTA only. |
+| TS-UC-007 | User enters ended event after exit/re-entry | User | Opens ended event | App shows Event Ended state; no DVR replay, no VOD, no auto next event. |
+| TS-UC-008 | CMS toggles DVR flag | Admin/CMS | Flag changes | DVR availability changes for future playback responses. |
 
 User flows may merge UCs when they are one coherent journey. Merged flows must list Covered UCs.
 
@@ -148,26 +150,28 @@ User flows may merge UCs when they are one coherent journey. Merged flows must l
 | TS-BR-010 | If event duration is less than 8h, DVR can start at event start. | BE/FE/Player |
 | TS-BR-011 | User cannot seek before DVR start or after live edge. | Player |
 | TS-BR-012 | No seek thumbnail is shown. Tooltip may show timestamp only. | FE/Design |
+| TS-BR-013 | If user pauses live playback while DVR is enabled, resume should continue from the paused position while it remains inside the DVR window. | FE/Player |
+| TS-BR-014 | If paused position falls outside the DVR window, app should recover to nearest valid DVR position, live edge, or an unavailable state based on player capability. | FE/Player |
 
 ### 6.3 Event end rules
 
 | Rule ID | Rule | Applies to |
 |---|---|---|
-| TS-BR-013 | Event end must not switch player to VOD. | FE/Player/API |
-| TS-BR-014 | First event-end moment may show existing backdrop and next-event prompt. | FE/Player |
-| TS-BR-015 | If user is currently watching/seeking in the player when event ends, do not force auto-transition to next event. | FE/Player |
-| TS-BR-016 | Next event after event end is optional CTA only when DVR session is active. | FE/Player |
-| TS-BR-017 | DVR replay after event end is session-bound. If user exits player, that DVR replay session ends. | FE/Player |
-| TS-BR-018 | If user enters/re-enters the ended event after exit or after event already ended, show Event Ended state only. | FE/Player |
-| TS-BR-019 | Ended event re-entry must not reopen DVR replay, switch to VOD, or auto-jump to next event. | FE/Player |
+| TS-BR-015 | Event end must not switch player to VOD. | FE/Player/API |
+| TS-BR-016 | First event-end moment may show existing backdrop and next-event prompt. | FE/Player |
+| TS-BR-017 | If user is currently watching/seeking/paused in the player when event ends, do not force auto-transition to next event. | FE/Player |
+| TS-BR-018 | Next event after event end is optional CTA only when DVR session is active. | FE/Player |
+| TS-BR-019 | DVR replay after event end is session-bound. If user exits player, that DVR replay session ends. | FE/Player |
+| TS-BR-020 | If user enters/re-enters the ended event after exit or after event already ended, show Event Ended state only. | FE/Player |
+| TS-BR-021 | Ended event re-entry must not reopen DVR replay, switch to VOD, or auto-jump to next event. | FE/Player |
 
 ### 6.4 Protocol rules
 
 | Rule ID | Rule | Applies to |
 |---|---|---|
-| TS-BR-020 | System may provide HLS and/or DASH DVR playback depending on platform capability. | BE/API |
-| TS-BR-021 | App/player follows existing platform playback policy for protocol selection. | FE/Player |
-| TS-BR-022 | If a protocol has no valid DVR playback, system should either disable DVR for that context or use a supported protocol. | BE/API/Player |
+| TS-BR-022 | System may provide HLS and/or DASH DVR playback depending on platform capability. | BE/API |
+| TS-BR-023 | App/player follows existing platform playback policy for protocol selection. | FE/Player |
+| TS-BR-024 | If a protocol has no valid DVR playback, system should either disable DVR for that context or use a supported protocol. | BE/API/Player |
 
 ---
 
@@ -206,7 +210,7 @@ sequenceDiagram
 
 | Field | Details |
 |---|---|
-| Covered UCs | TS-UC-001, TS-UC-004, TS-UC-007 |
+| Covered UCs | TS-UC-001, TS-UC-005, TS-UC-008 |
 | Description | Player loads and the system determines whether DVR is available. |
 | Actor | User, App, API, CMS, Entitlement, Stream/Packager |
 | Triggers | User opens a live event player. |
@@ -215,7 +219,7 @@ sequenceDiagram
 | Post-condition | Player is live with DVR enabled or live with DVR disabled/read-only. |
 | Alternative Path | CMS flag OFF / event is EPL / user has no package / no DVR manifest → `dvr_enabled=false`; no DVR URL. |
 | Exception Handling | System error → player shows normal playback error or live-only fallback if live playback is still available. |
-| Business Rules Applied | TS-BR-001 to TS-BR-007, TS-BR-020 to TS-BR-022. |
+| Business Rules Applied | TS-BR-001 to TS-BR-007, TS-BR-022 to TS-BR-024. |
 
 ### TS-US-002 — Seek within max 8-hour DVR window
 
@@ -244,7 +248,7 @@ sequenceDiagram
 
 | Field | Details |
 |---|---|
-| Covered UCs | TS-UC-002, TS-UC-003 |
+| Covered UCs | TS-UC-002, TS-UC-004 |
 | Description | User seeks within DVR range and may jump back to live edge. |
 | Actor | User, Player |
 | Triggers | User interacts with seekbar. |
@@ -255,11 +259,49 @@ sequenceDiagram
 | Exception Handling | Segment missing/network error → show buffering/error; keep last valid position. |
 | Business Rules Applied | TS-BR-008 to TS-BR-012. |
 
-### TS-US-003 — Event end with session-bound DVR replay
+### TS-US-003 — Pause and resume live playback
+
+User can pause an eligible live event and resume from the paused position. After resume, user is behind live and can continue watching, seek within DVR window, or go back to live edge.
+
+#### TS-FLOW-003 — User pauses live and resumes behind live
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User
+    participant Player
+
+    User->>Player: Pause live playback
+    Player-->>User: Keep paused position
+    Note over Player: Live event continues progressing
+    User->>Player: Resume playback
+
+    alt Paused position still inside DVR window
+        Player-->>User: Resume from paused position
+        Player-->>User: Show behind-live state + GO LIVE
+    else Paused position outside DVR window
+        Player-->>User: Recover to nearest valid DVR position, live edge, or unavailable state
+    end
+```
+
+| Field | Details |
+|---|---|
+| Covered UCs | TS-UC-003, TS-UC-004 |
+| Description | User pauses live playback and resumes from the paused point when possible. |
+| Actor | User, Player |
+| Triggers | User taps pause, then play/resume. |
+| Pre-condition | `dvr_enabled=true`; event is live; paused position can be represented in DVR window. |
+| Basic Path | 1. User pauses live playback.<br>2. Live event continues in real time.<br>3. User resumes.<br>4. Player resumes from paused position if still valid.<br>5. Player shows behind-live state and GO LIVE option. |
+| Post-condition | User watches behind live or returns to live edge manually. |
+| Alternative Path | If paused position is no longer inside DVR window, app recovers to nearest valid DVR point, live edge, or unavailable state based on player capability. |
+| Exception Handling | If DVR is disabled while paused or stream becomes unavailable, show safe playback/unavailable state. |
+| Business Rules Applied | TS-BR-008 to TS-BR-014. |
+
+### TS-US-004 — Event end with session-bound DVR replay
 
 When event ends, player must not switch to VOD. If user is already in the player, they may continue current DVR replay session.
 
-#### TS-FLOW-003 — Event ends while user is inside player
+#### TS-FLOW-004 — Event ends while user is inside player
 
 ```mermaid
 sequenceDiagram
@@ -271,7 +313,7 @@ sequenceDiagram
     API-->>Player: event_status=ended or stream end detected
     Player-->>User: Show event-ended/backdrop state
 
-    alt User is watching/seeking inside current DVR session
+    alt User is watching/seeking/paused inside current DVR session
         Player-->>User: Keep DVR replay available within final DVR window
         Player-->>User: Show next event as optional CTA only
     else User at live edge and no replay action
@@ -284,7 +326,7 @@ sequenceDiagram
 
 | Field | Details |
 |---|---|
-| Covered UCs | TS-UC-005 |
+| Covered UCs | TS-UC-006 |
 | Description | Event ends while user is already in player. DVR replay remains only for current session. |
 | Actor | User, Player, API/System |
 | Triggers | Stream end, `event_status=ended`, event schedule end, or polling update. |
@@ -293,13 +335,13 @@ sequenceDiagram
 | Post-condition | User either continues session-bound DVR replay or exits. |
 | Alternative Path | If DVR is not valid/expired, show ended state and optional next event CTA. |
 | Exception Handling | Stream hard-stops while user is behind live → show ended state and preserve latest valid seek position if player can continue from buffered/DVR manifest; otherwise show unavailable message. |
-| Business Rules Applied | TS-BR-013 to TS-BR-017. |
+| Business Rules Applied | TS-BR-015 to TS-BR-019. |
 
-### TS-US-004 — Re-enter ended event
+### TS-US-005 — Re-enter ended event
 
 User entering an already ended event must not get DVR replay, VOD switch, or forced next-event jump.
 
-#### TS-FLOW-004 — User enters/re-enters ended event
+#### TS-FLOW-005 — User enters/re-enters ended event
 
 ```mermaid
 sequenceDiagram
@@ -317,7 +359,7 @@ sequenceDiagram
 
 | Field | Details |
 |---|---|
-| Covered UCs | TS-UC-006 |
+| Covered UCs | TS-UC-007 |
 | Description | Ended event entry is informational, not replay playback. |
 | Actor | User, App, API |
 | Triggers | User opens event after it ended or after exiting ended player session. |
@@ -326,7 +368,7 @@ sequenceDiagram
 | Post-condition | No DVR replay session starts. |
 | Alternative Path | If next event unavailable, show Back/Close only. |
 | Exception Handling | API unavailable → show safe ended/unavailable state; do not guess DVR URL. |
-| Business Rules Applied | TS-BR-018, TS-BR-019. |
+| Business Rules Applied | TS-BR-020, TS-BR-021. |
 
 ---
 
@@ -369,7 +411,7 @@ Use this as the single place for all surface-level UI details. Do not split surf
 | Surface / Location | Event player controls |
 | Platform | iOS / Android / Web / TV |
 | When shown | Event is live and `dvr_enabled=true`. |
-| Related UC / Flow | TS-UC-001, TS-UC-002, TS-FLOW-001, TS-FLOW-002 |
+| Related UC / Flow | TS-UC-001, TS-UC-002, TS-UC-003, TS-FLOW-001, TS-FLOW-002, TS-FLOW-003 |
 | Placement notes | Seekbar in player control area; TV uses D-pad friendly focus. |
 
 **Sketching wireframe / Text-Based Wireframing:**
@@ -395,14 +437,16 @@ Live Event Player — DVR enabled
 | 2 | Seek thumb | at live edge, behind live, dragging/focused | Position | Cannot move outside DVR window. |
 | 3 | Time tooltip | visible on hover/focus/drag | `HH:mm` or `mm:ss` | No thumbnail preview. |
 | 4 | LIVE badge | live edge, behind live, hidden after end | `LIVE` | Dimmed/behind state when user is behind live. |
-| 5 | GO LIVE button | visible, hidden, disabled | `GO LIVE` / `Trực tiếp` | Visible only while event live and user behind live. |
-| 6 | Error/toast | hidden, visible | Localized copy | For unavailable segment, entitlement, expired window. |
+| 5 | Play/Pause button | playing, paused, buffering | Standard player control | Pause creates behind-live position when resumed. |
+| 6 | GO LIVE button | visible, hidden, disabled | `GO LIVE` / `Trực tiếp` | Visible only while event live and user behind live. |
+| 7 | Error/toast | hidden, visible | Localized copy | For unavailable segment, entitlement, expired window. |
 
 **Status / state behavior for this surface:**
 
 | Status / State | User-facing copy | Visual treatment | Allowed actions | Notes |
 |---|---|---|---|---|
-| live_at_edge | LIVE | Red/live badge | Seek backward | GO LIVE hidden. |
+| live_at_edge | LIVE | Red/live badge | Seek backward, pause | GO LIVE hidden. |
+| paused_live | Tạm dừng | Paused control state | Resume/play | Live keeps progressing; resume becomes behind-live if still valid. |
 | behind_live | Đang xem lại | Dim LIVE/behind indicator | Seek, play/pause, GO LIVE | User remains behind until manual GO LIVE or seek to edge. |
 | buffering | Đang tải... | Spinner/skeleton on controls | Cancel/back optional | Keep target position. |
 | dvr_unavailable | Tua lại không khả dụng cho sự kiện này. | Disabled/hidden seekbar | Watch live only | Any gate failed. |
@@ -422,7 +466,7 @@ Live Event Player — DVR enabled
 | Surface / Location | Player overlay/backdrop after event end |
 | Platform | iOS / Android / Web / TV |
 | When shown | User was already inside player when event ended. |
-| Related UC / Flow | TS-UC-005, TS-FLOW-003 |
+| Related UC / Flow | TS-UC-006, TS-FLOW-004 |
 | Placement notes | Existing backdrop/next-event prompt may appear once, but next event is CTA only when DVR session is active. |
 
 **Sketching wireframe / Text-Based Wireframing:**
@@ -464,7 +508,7 @@ Event Ended — Current DVR Session
 **Surface-specific notes:**
 
 - First event-end moment may reuse existing backdrop and next-event prompt.
-- If user is actively seeking/watching DVR, do not interrupt them with forced next-event transition.
+- If user is actively seeking/watching/paused in DVR, do not interrupt them with forced next-event transition.
 
 #### SURF-003 — Re-enter ended event
 
@@ -475,7 +519,7 @@ Event Ended — Current DVR Session
 | Surface / Location | Event/player entry for ended event |
 | Platform | iOS / Android / Web / TV |
 | When shown | Event is already ended before user enters, or user exited and re-enters. |
-| Related UC / Flow | TS-UC-006, TS-FLOW-004 |
+| Related UC / Flow | TS-UC-007, TS-FLOW-005 |
 | Placement notes | This is an ended state, not player replay mode. |
 
 **Sketching wireframe / Text-Based Wireframing:**
@@ -568,7 +612,8 @@ System should be able to tell the app:
 |---|---|---|---|
 | `LIVE_NO_DVR` | DVR gates fail | Normal live player; no interactive DVR seek | Play/pause live. |
 | `LIVE_DVR_AT_EDGE` | DVR enabled; user at live edge | Seekbar active; LIVE badge | Seek backward. |
-| `LIVE_DVR_BEHIND` | User seeks behind live | Behind-live indicator; GO LIVE visible | Seek, play/pause, GO LIVE. |
+| `LIVE_DVR_PAUSED` | User pauses live while DVR is enabled | Paused control state | Resume/play, exit. |
+| `LIVE_DVR_BEHIND` | User seeks behind live or resumes after pause | Behind-live indicator; GO LIVE visible | Seek, play/pause, GO LIVE. |
 | `ENDED_SESSION_DVR` | Event ends while user inside player and DVR session valid | Ended overlay; final DVR seek range; no LIVE/GO LIVE | Seek current session, exit, optional next CTA. |
 | `ENDED_SESSION_NO_DVR` | Event ends but DVR invalid | Ended overlay/backdrop | Exit, optional next CTA. |
 | `ENDED_REENTRY` | User enters ended event after exit/end | Event Ended state | Back, optional next CTA only. |
@@ -610,6 +655,8 @@ System should be able to tell the app:
 | `timeshift_seek_start` | User starts seeking | `event_id`, `from_position_sec`, `target_position_sec`, `platform` | Yes |
 | `timeshift_seek_success` | Playback starts after seek | `event_id`, `target_position_sec`, `latency_ms` | Yes |
 | `timeshift_seek_failed` | Seek fails | `event_id`, `reason`, `platform` | Yes |
+| `timeshift_pause` | User pauses live playback | `event_id`, `position_sec`, `platform` | Yes |
+| `timeshift_resume` | User resumes after pause | `event_id`, `paused_duration_sec`, `resume_position_sec`, `platform` | Yes |
 | `timeshift_go_live` | User taps GO LIVE | `event_id`, `offset_sec`, `platform` | Yes |
 | `timeshift_event_end_session_dvr` | Event ends while user stays in DVR session | `event_id`, `position_sec`, `next_event_available` | Yes |
 | `timeshift_ended_reentry` | User opens ended event | `event_id`, `next_event_available` | Yes |
@@ -632,15 +679,17 @@ System should be able to tell the app:
 | QA-009 | Seek valid point | DVR enabled | User seeks inside window | Playback starts at selected point. |
 | QA-010 | Seek before window | DVR enabled | User seeks before DVR start | Player clamps/rejects; no crash. |
 | QA-011 | No thumbnail | DVR enabled on Web | User hovers seekbar | Time tooltip appears; no thumbnail request/preview. |
-| QA-012 | GO LIVE while live | User is behind live | User taps GO LIVE | Player jumps to live edge. |
-| QA-013 | Event ends at live edge | User in player when event ends | System detects ended | No VOD switch; ended/backdrop shown; next event CTA optional. |
-| QA-014 | Event ends while behind live | User is watching DVR behind live | Event ends | User is not forced to next event; session DVR can continue if valid. |
-| QA-015 | Exit ends DVR session | User in ended-session DVR | User exits player | Session ends. |
-| QA-016 | Re-enter ended event | Event ended and user opens again | App loads event | Show “Sự kiện đã kết thúc”; no DVR replay; no VOD; no auto next. |
-| QA-017 | Next event CTA only | Ended event has next event | User enters ended state | CTA visible; no auto jump. |
-| QA-018 | VOD not used | Event ended and backend may have VOD data | Player handles end | Feature must not switch to VOD for Timeshift Seek. |
-| QA-019 | DVR playback unavailable when disabled | Any gate fails | App receives playback state | User cannot start DVR playback. |
-| QA-020 | CMS flag toggled | Admin turns flag OFF | User reloads player | DVR becomes unavailable in new response. |
+| QA-012 | Pause live with DVR | DVR enabled and event is live | User pauses then resumes within DVR window | Player resumes from paused position; user is behind live. |
+| QA-013 | Pause exceeds DVR window | DVR enabled and event is live | User resumes after paused position is outside DVR window | App recovers to nearest valid DVR point, live edge, or unavailable state. |
+| QA-014 | GO LIVE while live | User is behind live | User taps GO LIVE | Player jumps to live edge. |
+| QA-015 | Event ends at live edge | User in player when event ends | System detects ended | No VOD switch; ended/backdrop shown; next event CTA optional. |
+| QA-016 | Event ends while behind live | User is watching DVR behind live | Event ends | User is not forced to next event; session DVR can continue if valid. |
+| QA-017 | Exit ends DVR session | User in ended-session DVR | User exits player | Session ends. |
+| QA-018 | Re-enter ended event | Event ended and user opens again | App loads event | Show “Sự kiện đã kết thúc”; no DVR replay; no VOD; no auto next. |
+| QA-019 | Next event CTA only | Ended event has next event | User enters ended state | CTA visible; no auto jump. |
+| QA-020 | VOD not used | Event ended and backend may have VOD data | Player handles end | Feature must not switch to VOD for Timeshift Seek. |
+| QA-021 | DVR playback unavailable when disabled | Any gate fails | App receives playback state | User cannot start DVR playback. |
+| QA-022 | CMS flag toggled | Admin turns flag OFF | User reloads player | DVR becomes unavailable in new response. |
 
 ---
 
