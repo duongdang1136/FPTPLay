@@ -174,7 +174,7 @@ sequenceDiagram
 |---|---|
 | Final Figma | TBD |
 | Wireframe reference | `features/lightweight/.../design/wireframe-suggestion-<feature>.md` |
-| Mockup reference | `<feature-name>-mockup.html` |
+| Mockup reference | Optional; create only when user explicitly asks. |
 
 ### 8.2 Information Architecture
 

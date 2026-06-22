@@ -67,7 +67,6 @@ Default output:
 
 ```text
 features/final-docs/<Large-Feature>/<Sub-Feature>/<feature-name>-functional-requirements.md
-features/final-docs/<Large-Feature>/<Sub-Feature>/<feature-name>-mockup.html
 ```
 
 ## 3. Repository Output Convention
@@ -103,14 +102,13 @@ Use final docs when the feature is ready for FE/BE/QA implementation handoff.
 ```text
 features/final-docs/<Large-Feature>/<Sub-Feature>/
   <feature-name>-functional-requirements.md
-  <feature-name>-mockup.html
 ```
 
 Final docs must not be a raw copy of lightweight docs. They should collect accepted decisions and rewrite them into concise, implementation-ready contracts.
 
 `<feature-name>-functional-requirements.md` is the main handoff contract. It combines Product, UX, API/integration, state, error, and QA requirements.
 
-`<feature-name>-mockup.html` is the visual companion/prototype when useful.
+Do not auto-create `<feature-name>-mockup.html`. Create a mockup/prototype only when the user explicitly asks.
 
 Screen Element Specification must support complex features:
 

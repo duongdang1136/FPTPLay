@@ -82,10 +82,9 @@ features/lightweight/<Large-Feature>/<Sub-Feature>/
 
 features/final-docs/<Large-Feature>/<Sub-Feature>/
   <feature-name>-functional-requirements.md
-  <feature-name>-mockup.html
 ```
 
-For FPTPlay final docs, `<feature-name>-functional-requirements.md` is the main handoff contract. It combines Product, UX, API/integration, state, error, and QA requirements. `<feature-name>-mockup.html` is the visual companion/prototype when useful.
+For FPTPlay final docs, `<feature-name>-functional-requirements.md` is the main handoff contract. It combines Product, UX, API/integration, state, error, and QA requirements. Do not auto-create `<feature-name>-mockup.html`; create a mockup/prototype only when the user explicitly asks.
 
 For Screen Element Specification, keep all surface-level UI details in **8.4 Surface Details by Surface**. Use one surface block per meaningful surface/location. Each surface block should include **Sketching wireframe / Text-Based Wireframing** plus a surface elements table. Put status/state behavior and placement notes inside the relevant surface block; do not create separate 8.3, 8.5, or 8.6 sections for those details.
 
@@ -275,7 +274,7 @@ Nếu action trigger side effects:
 Use `skills/sdlc/03-document-writer/templates/design-template.md` as canonical shape.
 
 For lightweight mode, write `design/<feature>-design.md`.
-For final mode in FPTPlay, fold UI/design details into `<feature-name>-functional-requirements.md` under `Screen Element Specification`, and create/update `<feature-name>-mockup.html` when a visual companion is useful.
+For final mode in FPTPlay, fold UI/design details into `<feature-name>-functional-requirements.md` under `Screen Element Specification`. Do not create/update `<feature-name>-mockup.html` unless the user explicitly asks for a mockup/prototype.
 For formal task-state mode, include design/UI state sections in `functional_document.md` or attach a separate design note if PM requests it.
 
 Minimum final Design coverage inside the functional requirements file:
@@ -384,7 +383,6 @@ features/lightweight/<...>/product/SRS-<feature>.md
 features/lightweight/<...>/api/API-<feature>.md
 features/lightweight/<...>/design/<feature>-design.md
 features/final-docs/<...>/<feature-name>-functional-requirements.md
-features/final-docs/<...>/<feature-name>-mockup.html
 ```
 
 Update `state.yaml`:
@@ -408,7 +406,7 @@ artifacts:
   - name: functional requirements contract
     path: state/tasks/{TASK-ID}/functional_document.md OR features/.../<feature-name>-functional-requirements.md
   - name: mockup / visual companion
-    path: features/.../<feature-name>-mockup.html (if useful)
+    path: features/.../<feature-name>-mockup.html (only when user explicitly asks)
   - name: technical contract
     path: state/tasks/{TASK-ID}/technical_contract.md (formal task-state mode only)
 assumptions:

@@ -12,7 +12,6 @@
 
 ```text
 <feature-name>-functional-requirements.md
-<feature-name>-mockup.html
 ```
 
 ## Functional requirements coverage
@@ -31,7 +30,7 @@ Do not create separate 8.3 Surface Inventory, 8.5 Status Matrix, or 8.6 Placemen
 
 ## Mockup coverage
 
-`<feature-name>-mockup.html` is the visual companion/prototype. Keep it aligned with the text-based wireframes and surface elements in the functional requirements file.
+Do not auto-create `<feature-name>-mockup.html`. Create a mockup/prototype only when the user explicitly asks. When created, keep it aligned with the text-based wireframes and surface elements in the functional requirements file.
 
 ## Accepted assumptions
 

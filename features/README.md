@@ -48,14 +48,13 @@ Use final docs when the feature is ready for FE/BE/QA implementation handoff.
 ```text
 features/final-docs/<Large-Feature>/<Sub-Feature>/
   <feature-name>-functional-requirements.md
-  <feature-name>-mockup.html
 ```
 
 Final docs must not be a raw copy of lightweight docs. They should collect accepted decisions and rewrite them into concise, implementation-ready contracts.
 
 `<feature-name>-functional-requirements.md` is the main handoff contract. It combines Product, UX, API/integration, state, error, and QA requirements.
 
-`<feature-name>-mockup.html` is the visual companion/prototype when useful.
+Do not auto-create `<feature-name>-mockup.html`. Create a mockup/prototype only when the user explicitly asks.
 
 Screen Element Specification should keep all surface-level UI details in **8.4 Surface Details by Surface**. Use one block per meaningful surface/location. Each surface block should have **Sketching wireframe / Text-Based Wireframing** plus a surface elements table. Put status/state behavior and placement notes inside the relevant surface block; do not create separate 8.3, 8.5, or 8.6 sections for those details.
 

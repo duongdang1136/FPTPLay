@@ -8,14 +8,12 @@ Use the flat final template instead:
 
 ```text
 features/_templates/final-feature/feature-functional-requirements.md
-features/_templates/final-feature/feature-mockup.html
 ```
 
 Default final output:
 
 ```text
 features/final-docs/<Large-Feature>/<Sub-Feature>/<feature-name>-functional-requirements.md
-features/final-docs/<Large-Feature>/<Sub-Feature>/<feature-name>-mockup.html
 ```
 
 `<feature-name>-functional-requirements.md` combines Product, UX, API/integration, state, error, analytics if relevant, and QA acceptance coverage.

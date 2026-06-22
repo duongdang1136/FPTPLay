@@ -6,12 +6,11 @@ FPTPlay final docs use flat final handoff artifacts by default:
 
 ```text
 features/final-docs/<Large-Feature>/<Sub-Feature>/<feature-name>-functional-requirements.md
-features/final-docs/<Large-Feature>/<Sub-Feature>/<feature-name>-mockup.html
 ```
 
 `<feature-name>-functional-requirements.md` is the main implementation contract. It combines Product, UX, API/integration, state, error, analytics if relevant, and QA acceptance coverage.
 
-`<feature-name>-mockup.html` is the visual companion/prototype when useful.
+Do not auto-create `<feature-name>-mockup.html`. Create a mockup/prototype only when the user explicitly asks.
 
 Do not create new `product/`, `api/`, or `design/` final-doc folders unless the user explicitly asks for legacy split format or the target feature folder already follows that older convention and must be maintained.
 

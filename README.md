@@ -67,7 +67,6 @@ Typical structure:
 ```text
 features/final-docs/<Large-Feature>/<Sub-Feature>/
   <feature-name>-functional-requirements.md
-  <feature-name>-mockup.html
 ```
 
 Example:
@@ -75,10 +74,9 @@ Example:
 ```text
 features/final-docs/Pre-Waiting-Room/Pre-Live-Waiting-Room/
   pre-live-waiting-room-functional-requirements.md
-  pre-live-waiting-room-mockup.html
 ```
 
-The functional requirements file combines Product, UX, API/integration, state, error, and QA requirements. Screen Element Specification should include text-based wireframes per surface when useful.
+The functional requirements file combines Product, UX, API/integration, state, error, and QA requirements. Screen Element Specification should include text-based wireframes per surface when useful. Do not auto-create `<feature-name>-mockup.html`; create a mockup only when the user explicitly asks.
 
 ## Workflow
 

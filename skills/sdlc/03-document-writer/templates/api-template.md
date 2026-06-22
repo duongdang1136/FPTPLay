@@ -10,7 +10,6 @@ Use the flat final template instead:
 
 ```text
 features/_templates/final-feature/feature-functional-requirements.md
-features/_templates/final-feature/feature-mockup.html
 ```
 
 In the flat final format, API/integration details belong inside:

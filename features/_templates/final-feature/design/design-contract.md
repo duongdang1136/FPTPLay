@@ -6,7 +6,6 @@ New FPTPlay final docs should use the flat final template instead:
 
 ```text
 features/_templates/final-feature/feature-functional-requirements.md
-features/_templates/final-feature/feature-mockup.html
 ```
 
 In the flat format, UI/design details belong inside `<feature-name>-functional-requirements.md`, especially `8.4 Surface Details by Surface`.
