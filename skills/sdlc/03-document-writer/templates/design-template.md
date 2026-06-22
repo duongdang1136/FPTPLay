@@ -1,9 +1,20 @@
-# Design Template
+# Legacy Design Template
 
-Use for `design/<feature>-design.md` and `design/design-contract.md`.
+This template is kept only for backward compatibility with older FPTPlay docs.
+
+New FPTPlay final docs should use the flat final template instead:
+
+```text
+features/_templates/final-feature/feature-functional-requirements.md
+features/_templates/final-feature/feature-mockup.html
+```
+
+In the flat format, UI/design details belong inside `<feature-name>-functional-requirements.md`, especially `8.4 Surface Details by Surface`.
+
+Use this split design template only when the user explicitly asks for old `product/api/design` format or when maintaining an existing old feature folder.
 
 - **Lightweight docs:** may include wireframe suggestions, ASCII sketches, UX questions, and discovery notes.
-- **Final docs:** must be implementation-ready and aligned with Product/API contracts. Keep it concise; do not duplicate Product/API prose except where needed for UI behavior.
+- **Legacy final docs:** must be implementation-ready and aligned with Product/API contracts. Keep it concise; do not duplicate Product/API prose except where needed for UI behavior.
 
 ```md
 # Design Contract — <Feature/Sub-feature Name>
@@ -30,8 +41,9 @@ Use for `design/<feature>-design.md` and `design/design-contract.md`.
 
 | Type | Path/Link | Notes |
 |---|---|---|
-| Product spec | `../product/functional-specification.md` | Product behavior source. |
-| API contract | `../api/technical-contract.md` | Data/error source. |
+| Product spec | `../product/functional-specification.md` | Legacy split product behavior source. |
+| API contract | `../api/technical-contract.md` | Legacy split data/error source. |
+| Flat final contract | `../<feature-name>-functional-requirements.md` | Preferred FPTPlay final source. |
 | Prototype | `...` | Reference only unless marked source-of-truth. |
 
 ## 3. Screen Inventory
