@@ -148,6 +148,8 @@ User flow có thể merge nhiều UC nếu cùng một hành trình. Nếu merge
 5. DVR replay sau event end vẫn phải đủ điều kiện: entitlement, CMS flag, stream availability, và DVR window.
 6. Nếu user từ ngoài mở event đã kết thúc, App chỉ hiện **Sự kiện đã kết thúc** rồi end flow; không mở DVR session mới.
 7. Nếu DVR expired hoặc không khả dụng trong active session, App ẩn DVR controls và giữ safe ended/unavailable state.
+8. Khi playback trong TS DVR chạy tới endtime lần nữa, App quay lại End State/Backdrop; không tự replay loop.
+9. Next Event/Auto Next Event đi theo logic hiện tại; Timeshift không can thiệp rule chọn next event.
 
 ---
 
@@ -328,8 +330,6 @@ flowchart LR
 
 | Field | Details |
 |---|---|
-| Covered UCs | TS-UC-006 |
-| Description | Event end khi user đang ở trong player. DVR replay tiếp tục nếu active session còn hợp lệ. |
 | Actor | Logged-in User, App |
 | Triggers | Event chuyển End hoặc stream báo kết thúc. |
 | Pre-condition | User đang ở trong player trước khi event kết thúc. |
@@ -337,7 +337,6 @@ flowchart LR
 | Post-condition | User tiếp tục xem/tua trong TS DVR, thoát player, hoặc chuyển sang next event theo logic hiện tại. |
 | Alternative Path | Nếu DVR session không còn hợp lệ, App hiển thị **Sự kiện đã kết thúc** và end flow. |
 | Exception Handling | Stream hard-stop khi user đang xem lại trong TS DVR → App giữ vị trí hợp lệ gần nhất nếu player còn phát được; nếu không thì hiện unavailable message. |
-| Business Rules Applied | 1. DVR replay sau event end chỉ giữ trong active player session.<br>2. DVR replay vẫn theo entitlement, CMS flag, stream và DVR window.<br>3. Khi playback trong TS DVR chạy tới endtime lần nữa, App quay lại End State/Backdrop; không tự replay loop.<br>4. Next Event/Auto Next Event đi theo logic hiện tại; Timeshift không can thiệp rule chọn next event. |
 
 ### TS-US-005 — User mở event đã kết thúc từ ngoài
 
