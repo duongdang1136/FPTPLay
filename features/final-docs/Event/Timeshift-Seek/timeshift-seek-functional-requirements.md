@@ -6,7 +6,7 @@
 > Audience: Product, BA, FE, BE, QA
 > Status: Final implementation handoff
 > Writing style: Caveman Vietnam — ít chữ, dễ đọc, đúng ý, không low-level
-> Last updated: 2026-06-22
+> Last updated: 2026-06-23
 
 ---
 
@@ -26,6 +26,7 @@ Khi event kết thúc, App không tự nhảy sang next event và không thay đ
 |---|---|---|---|---|
 | v1.0 | 2026-06-16 | Dylan | Initial split docs: full-event DVR and legacy post-event behavior. | Pending |
 | v2.0 | 2026-06-22 | Dylan | Rewrite theo requirement mới: DVR 8 giờ, chỉ FPTLive, loại EPL, có entitlement gate, CMS flag, không thumbnail, DVR sau event end theo active session và không auto next. | Pending |
+| v2.1 | 2026-06-23 | Dylan | Làm rõ DVR window bằng mô tả nghiệp vụ thay vì công thức; rà QA handoff. | Pending |
 
 ---
 
@@ -132,7 +133,7 @@ User flow có thể merge nhiều UC nếu cùng một hành trình. Nếu merge
 #### DVR window rules
 
 1. DVR max window là **8 giờ**.
-2. Live DVR range = từ `max(event_start_time, live_edge - 8h)` đến `live_edge`.
+2. User chỉ tua lại được trong phần nội dung đã phát, tối đa **8 giờ gần nhất**. Nếu event mới live chưa đủ 8 giờ, user có thể tua về từ đầu event.
 3. Nếu event duration nhỏ hơn 8 giờ, DVR có thể start từ event start.
 4. User không được seek trước DVR start hoặc sau live edge.
 5. Seek không có thumbnail. Tooltip chỉ cần hiển thị timestamp nếu cần.
@@ -414,7 +415,7 @@ sequenceDiagram
 
 | Item | Link / Note |
 |---|---|
-| Final Figma | TBD |
+| Final Figma | Chưa có link Figma final trong scope hiện tại; QA dùng text wireframe và surface elements trong tài liệu này để verify behavior. |
 | Existing design docs | `features/final-docs/Event/Timeshift-Seek/design/design-specification.md` is legacy and superseded by this file for changed behavior. |
 | Mockup | Không auto-create. Chỉ tạo khi user yêu cầu rõ. |
 
