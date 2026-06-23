@@ -304,24 +304,24 @@ Khi event end, App giữ user trong player session hiện tại. Nếu DVR còn 
 **Activity Flows:**
 
 ```mermaid
-sequenceDiagram
-    autonumber
+flowchart TD
+    A[Event kết thúc khi user đang trong player] --> B[Hiện End State / Backdrop]
 
-    actor User as User
-    participant App
+    B --> C{DVR session còn hợp lệ?}
 
-    App->>App: Event chuyển End
-    App-->>User: Hiện ended/backdrop state
+    C -- Không --> D[Ẩn DVR controls<br/>Giữ End State / Backdrop]
+    D --> E{User muốn làm gì?}
 
-    alt User còn trong player và DVR còn hợp lệ
-        App-->>User: Giữ DVR replay trong DVR window còn lại
-        App-->>User: Giữ next event CTA theo logic hiện tại nếu có
-    else DVR không còn hợp lệ
-        App-->>User: Hiện ended state + CTA phù hợp
-    end
+    C -- Có --> F[User vẫn có thể xem/tua trong TS DVR]
+    F --> G{Playback tới Endtime?}
 
-    User->>App: Thoát player
-    App->>App: Kết thúc player session hiện tại
+    G -- Chưa --> F
+    G -- Rồi --> H[Quay lại End State / Backdrop]
+
+    H --> E
+    E -- Tua lại tiếp --> F
+    E -- Bấm Next Event CTA --> I[Đi theo logic next event hiện tại]
+    E -- Thoát player --> J[Kết thúc player session]
 ```
 
 | Field | Details |
@@ -331,11 +331,11 @@ sequenceDiagram
 | Actor | Logged-in User, App |
 | Triggers | Event chuyển End hoặc stream báo kết thúc. |
 | Pre-condition | User đang ở trong player trước khi event kết thúc. |
-| Basic Path | 1. Event kết thúc.<br>2. App hiện ended/backdrop state.<br>3. Nếu DVR còn hợp lệ, user tiếp tục xem/seek trong DVR window còn lại.<br>4. App có thể hiện next event CTA, nhưng chỉ là lựa chọn thủ công.<br>5. User thoát player → kết thúc player session hiện tại. |
-| Post-condition | User tiếp tục DVR replay nếu còn hợp lệ, hoặc thoát player. |
-| Alternative Path | Nếu DVR không còn hợp lệ/expired, App hiện ended state và CTA phù hợp. |
-| Exception Handling | Stream hard-stop khi user đang behind live → App giữ vị trí hợp lệ gần nhất nếu player còn phát được; nếu không thì hiện unavailable message. |
-| Business Rules Applied | 1. Event end không force auto-transition sang next event.<br>2. Next event nếu có thì theo logic hiện tại và chỉ là CTA thủ công.<br>3. DVR replay sau event end chỉ giữ trong active player session.<br>4. DVR replay vẫn theo entitlement, CMS flag, stream và DVR window. |
+| Basic Path | 1. Event kết thúc khi user đang ở trong player.<br>2. App hiện End State/Backdrop.<br>3. Nếu DVR session còn hợp lệ, user vẫn có thể xem/tua trong TS DVR.<br>4. Khi playback trong TS DVR chạy tới Endtime của event, App quay lại End State/Backdrop.<br>5. Từ End State/Backdrop, user có thể tua lại tiếp nếu DVR còn hợp lệ, bấm Next Event CTA nếu có, hoặc thoát player.<br>6. Nếu user thoát player, App kết thúc player session hiện tại. |
+| Post-condition | User ở lại End State/Backdrop, tiếp tục tua lại trong TS DVR nếu còn hợp lệ, chuyển next event bằng CTA thủ công nếu có, hoặc thoát player. |
+| Alternative Path | Nếu DVR session không còn hợp lệ hoặc DVR window đã hết hạn, App ẩn DVR controls và giữ End State/Backdrop. User chỉ có thể dùng CTA hiện có hoặc thoát player. |
+| Exception Handling | Stream hard-stop khi user đang xem lại trong TS DVR → App giữ vị trí hợp lệ gần nhất nếu player còn phát được; nếu không thì hiện unavailable message. App không tự chuyển sang next event. |
+| Business Rules Applied | 1. Event end không force auto-transition sang next event.<br>2. Next event nếu có thì theo logic hiện tại và chỉ là CTA thủ công.<br>3. DVR replay sau event end chỉ giữ trong active player session.<br>4. DVR replay vẫn theo entitlement, CMS flag, stream và DVR window.<br>5. Khi playback trong TS DVR chạy tới Endtime của event, App quay lại End State/Backdrop; không tự replay loop và không tự chuyển sang next event. |
 
 ### TS-US-005 — User mở event đã kết thúc từ ngoài
 
