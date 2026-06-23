@@ -14,7 +14,7 @@
 
 Timeshift Seek giúp user đang xem **sự kiện live FPTLive** tua lại nội dung đã phát trong DVR window tối đa **8 tiếng**. User có thể xem lại đoạn đã qua, pause/resume khi đang xem lại trong TS DVR, hoặc bấm **GO LIVE** để quay về live edge.
 
-Feature này **không áp dụng cho EPL**. User cần có gói hợp lệ. Event cần được bật cờ DVR qua CMS.
+Feature này **không áp dụng cho EPL**. User cần có gói **V.VIP1**. Event cần được bật cờ DVR qua CMS.
 
 Khi event kết thúc, hệ thống không tự nhảy sang next event và không thay đổi logic next event hiện có. Sau event end, user vẫn có thể xem/tua lại trong phiên player hiện tại nếu TS DVR còn khả dụng.
 
@@ -25,7 +25,7 @@ Khi event kết thúc, hệ thống không tự nhảy sang next event và khôn
 | Version | Date | Updated By | Notes | Approved By |
 |---|---|---|---|---|
 | v1.0 | 2026-06-16 | Dylan | Initial split docs: full-event DVR and legacy post-event behavior. | Pending |
-| v2.0 | 2026-06-22 | Dylan | Rewrite theo requirement mới: DVR 8 giờ, chỉ FPTLive, loại EPL, có entitlement gate, CMS flag, không thumbnail, DVR sau event end trong phiên player hiện tại và không auto next. | Pending |
+| v2.0 | 2026-06-22 | Dylan | Rewrite theo requirement mới: DVR 8 giờ, chỉ FPTLive, loại EPL, gói V.VIP1, CMS flag, không thumbnail, DVR sau event end trong phiên player hiện tại và không auto next. | Pending |
 | v2.1 | 2026-06-23 | Dylan | Làm rõ DVR window bằng mô tả nghiệp vụ thay vì công thức; rà QA handoff. | Pending |
 | v2.2 | 2026-06-23 | Dylan | Align docs về 4 UC chính; bỏ ended-event entry UC khỏi scope Timeshift Seek; đồng bộ wording hệ thống. | Pending |
 
@@ -41,16 +41,16 @@ User đang xem live event có thể tua lại nội dung đã phát, tạm dừn
 
 | Platform | Scope | Notes |
 |---|---|---|
-| iOS | In | hệ thống hỗ trợ DVR seek cho HLS/DASH nếu platform/player cho phép. |
-| Android | In | hệ thống hỗ trợ DVR seek cho HLS/DASH nếu platform/player cho phép. |
-| Web | In | Web hỗ trợ DVR seek cho HLS/DASH nếu có; không có thumbnail preview. |
+| iOS | In | hệ thống hỗ trợ thanh tua Timeshift Seek cho HLS/DASH nếu platform/player cho phép. |
+| Android | In | hệ thống hỗ trợ thanh tua Timeshift Seek cho HLS/DASH nếu platform/player cho phép. |
+| Web | In | Web hỗ trợ thanh tua Timeshift Seek cho HLS/DASH nếu có; không có thumbnail preview. |
 | SmartTV / Box | In | TV/Box giữ seek đơn giản, dùng được bằng remote/D-pad; không có thumbnail preview. |
 
 ### 3.3 Event scope
 
 | Event type/source | Scope | Rule |
 |---|---|---|
-| FPTLive event | In scope | DVR bật theo CMS flag nếu stream hỗ trợ DVR và user có entitlement. |
+| FPTLive event | In scope | Timeshift Seek bật khi event không phải EPL, CMS flag đang bật, và user có gói V.VIP1. |
 | EPL event | Out of scope | Không bật DVR/start-over, kể cả khi config chung có DVR. |
 | Non-FPTLive event | Out of scope by default | Chỉ bật nếu sau này có requirement rõ. |
 | User đang trong player khi event end | In scope | Có thể tiếp tục xem/tua lại trong phiên player hiện tại nếu TS DVR còn khả dụng; không auto next. |
@@ -59,18 +59,18 @@ User đang xem live event có thể tua lại nội dung đã phát, tạm dừn
 
 | User type | Scope | Notes |
 |---|---|---|
-| User có package hợp lệ | In scope | Hệ thống có thể bật DVR khi tất cả gate pass. |
-| User không có package hợp lệ | Limited | Hệ thống không expose DVR playback; hệ thống ẩn/disable DVR seek. |
-| Anonymous / guest | Limited | Không có DVR access trừ khi entitlement rule cho phép rõ. |
+| User có gói V.VIP1 | In scope | Hệ thống có thể bật Timeshift Seek khi các điều kiện còn lại cũng thỏa. |
+| User không có gói V.VIP1 | Limited | Hệ thống chạy live playback bình thường và không hiện thanh tua Timeshift Seek. |
+| Anonymous / guest | Limited | Không có Timeshift Seek trừ khi product có rule riêng. |
 | Admin/CMS operator | Supporting actor | Bật/tắt DVR flag theo từng event trong CMS. |
 
 ### 3.5 In scope
 
-- Start over / DVR seek cho FPTLive event đủ điều kiện.
+- Timeshift Seek cho FPTLive event đủ điều kiện.
 - DVR window tối đa 8 giờ.
 - Hỗ trợ HLS và DASH DVR stream khi có.
 - CMS flag để bật/tắt DVR theo từng event.
-- Check entitlement trước khi trả DVR link.
+- Check gói V.VIP1 trước khi bật Timeshift Seek.
 - Không có seek thumbnail preview.
 - Sau event end, user vẫn có thể xem/tua lại trong phiên player hiện tại nếu TS DVR còn khả dụng.
 
@@ -88,7 +88,7 @@ User đang xem live event có thể tua lại nội dung đã phát, tạm dừn
 
 | # | Entry Point | User action / System trigger | Surface | Expected result |
 |---:|---|---|---|---|
-| 1 | Event detail → Watch | User mở live FPTLive event | Player | Player load live stream; DVR seek active nếu tất cả gate pass. |
+| 1 | Event detail → Watch | User mở live FPTLive event | Player | Player load live stream; Timeshift Seek active nếu tất cả điều kiện thỏa. |
 | 2 | Player seekbar | User drags/clicks/D-pad seeks backward | Player controls | Playback starts from selected DVR position. |
 | 3 | Pause / Resume trong TS DVR | User đang xem lại trong TS DVR và bấm pause/resume | Player controls | Playback resume từ paused position nếu còn trong DVR window. |
 | 4 | Event end khi user còn trong player | Stream/status báo event ended | Player | Hiện ended/backdrop theo logic hiện tại; giữ DVR session nếu còn hợp lệ. |
@@ -101,22 +101,25 @@ Use case lấy từ goal/branch thật. Không ép số lượng cố định.
 
 | Use Case ID | Use Case | Primary Actor | Trigger | Outcome |
 |---|---|---|---|---|
-| TS-UC-001 | Mở FPTLive event có DVR | Logged-in User | User mở live event | User xem live bình thường; TS DVR enabled/disabled theo điều kiện thực tế. |
+| TS-UC-001 | Mở FPTLive event có Timeshift Seek | Logged-in User | User mở live event | User xem live bình thường; Timeshift Seek enabled/disabled theo điều kiện thực tế. |
 | TS-UC-002 | Tua lại trong DVR window / GO LIVE | Logged-in User | User seek process bar | User xem từ mốc đã tua hoặc quay về live hiện tại bằng **Trở về đang phát / GO LIVE**. |
 | TS-UC-003 | Pause / Resume trong TS DVR | Logged-in User | User đang xem lại trong TS DVR và bấm pause/resume | User tiếp tục phát từ vị trí pause nếu còn trong DVR window. |
-| TS-UC-004 | Event end khi user còn trong player | Logged-in User, hệ thống | Event kết thúc trong lúc user đang xem | TS DVR có thể tiếp tục trong active session nếu còn hợp lệ; next event theo logic hiện tại. |
+| TS-UC-004 | Event end khi user còn trong player | Logged-in User, hệ thống | Event kết thúc trong lúc user đang xem | TS DVR có thể tiếp tục trong phiên player hiện tại nếu còn hợp lệ; next event theo logic hiện tại. |
 
-User flow hiện tại gồm 4 UC chính. Các nhánh như DVR không khả dụng, CMS flag, package, GO LIVE được cover trong UC tương ứng; không tách thành UC riêng.
+User flow hiện tại gồm 4 UC chính. Các nhánh như Timeshift Seek không khả dụng, CMS flag, gói V.VIP1, GO LIVE được cover trong UC tương ứng; không tách thành UC riêng.
 
 ---
 
 ## 6. Business Rules
 
-### 6.1 Điều kiện bật DVR
+### 6.1 Điều kiện bật Timeshift Seek
 
-1. DVR chỉ bật khi event thỏa đủ các điều kiện: là **FPTLive event**, không phải EPL, CMS flag DVR đang bật, user có package/entitlement hợp lệ, và stream hỗ trợ DVR playback.
-2. Nếu thiếu bất kỳ điều kiện nào, hệ thống chạy live playback bình thường và không hiện thanh tua DVR.
-3. Hệ thống chỉ hiển thị thanh tua DVR khi hệ thống xác nhận event này được phép tua lại.
+1. Timeshift Seek Event chỉ bật khi event thỏa đủ các điều kiện:
+   - Là **FPTLive event** ngoại trừ EPL.
+   - CMS flag đang bật.
+   - User có gói **V.VIP1**.
+2. Nếu thiếu bất kỳ điều kiện nào, hệ thống chạy live playback bình thường và không hiện thanh tua Timeshift Seek.
+3. Hệ thống chỉ hiển thị thanh tua Timeshift Seek khi hệ thống xác nhận event này được phép tua lại.
 
 ### 6.2 Cách tua DVR
 
@@ -136,8 +139,8 @@ User flow hiện tại gồm 4 UC chính. Các nhánh như DVR không khả dụ
 2. Nếu user đang watch/seek/pause trong player lúc event end, hệ thống không tự chuyển sang next event.
 3. Next event nếu có thì chỉ là CTA thủ công; Timeshift không can thiệp rule chọn next event.
 4. Sau event end, user vẫn có thể xem/tua lại trong phiên player hiện tại nếu user đã ở trong player trước khi event end.
-5. TS DVR sau event end vẫn phải đủ điều kiện: entitlement, CMS flag, stream availability, và DVR window.
-6. Nếu DVR expired hoặc không khả dụng trong phiên player hiện tại, hệ thống ẩn DVR controls và giữ safe ended/unavailable state.
+5. TS DVR sau event end vẫn phải đủ điều kiện: user có gói V.VIP1, CMS flag đang bật, stream availability, và DVR window.
+6. Nếu TS DVR expired hoặc không khả dụng trong phiên player hiện tại, hệ thống ẩn thanh tua Timeshift Seek và giữ safe ended/unavailable state.
 7. Khi playback trong TS DVR chạy tới endtime lần nữa, hệ thống quay lại End State/Backdrop; không tự replay loop.
 8. Next Event/Auto Next Event đi theo logic hiện tại; Timeshift không can thiệp rule chọn next event.
 
@@ -145,16 +148,16 @@ User flow hiện tại gồm 4 UC chính. Các nhánh như DVR không khả dụ
 
 ## 7. Functional Requirements
 
-### TS-US-001 — User mở live FPTLive event có DVR
+### TS-US-001 — User mở live FPTLive event có Timeshift Seek
 
 - User mở một sự kiện FPTLive đang live.
 - User muốn xem live bình thường, nhưng có thể tua lại nếu đủ điều kiện.
-- Hệ thống chỉ bật DVR seek khi event/user/stream hợp lệ.
+- Hệ thống chỉ bật Timeshift Seek khi event thỏa điều kiện và user có gói V.VIP1.
 
 **Description:**
-User mở player. Hệ thống check event, gói user, CMS flag và stream support. Nếu đủ điều kiện, hệ thống hiển thị DVR seek. Nếu không đủ, user vẫn xem live theo khả năng hiện tại.
+User mở player. Hệ thống check event có phải FPTLive ngoại trừ EPL, CMS flag và gói V.VIP1. Nếu đủ điều kiện, hệ thống hiển thị thanh tua Timeshift Seek. Nếu không đủ, user vẫn xem live theo khả năng hiện tại.
 
-#### TS-UC-001 — Mở event → Check DVR availability
+#### TS-UC-001 — Mở event → Check Timeshift Seek availability
 
 **Activity Flows:**
 
@@ -163,15 +166,15 @@ flowchart LR
  Start([" "]) --> A["Vào event player Live"]
  A --> B{Là FPTLive\nevent/ CMS flag?}
 
- B -- No --> C["Xem live bình thường\nKhông apply TS DVR"]
+ B -- No --> C["Xem live bình thường\nKhông apply Timeshift Seek"]
  C --> End1([" "])
 
- B -- Yes --> D{User có\npackage hợp lệ?}
+ B -- Yes --> D{User có\ngói V.VIP1?}
 
- D -- Yes --> E["Xem live bình thường,\nTS DVR enable process seek"]
+ D -- Yes --> E["Xem live bình thường,\nTimeshift Seek enable"]
  E --> End2([" "])
 
- D -- No --> F["Xem live bình thường,\nTS DVR disable process seek"]
+ D -- No --> F["Xem live bình thường,\nTimeshift Seek disable"]
  F --> End3([" "])
 ```
 
@@ -180,10 +183,10 @@ flowchart LR
 | Actor | Logged-in User, hệ thống |
 | Triggers | User mở live event player. |
 | Pre-condition | Event tồn tại. User có quyền mở player. |
-| Basic Path | 1. User vào event player Live.<br>2. Hệ thống check event có phải FPTLive và CMS flag có bật không.<br>3. Nếu không thỏa điều kiện, user xem live bình thường và không apply TS DVR.<br>4. Nếu thỏa điều kiện, hệ thống check package của user.<br>5. Nếu user có package hợp lệ, user xem live bình thường và TS DVR enable process seek.<br>6. Nếu user không có package hợp lệ, user xem live bình thường và TS DVR disable process seek. |
-| Post-condition | Player mở thành công. User luôn xem live bình thường; TS DVR enabled hoặc disabled theo điều kiện thực tế. |
+| Basic Path | 1. User vào event player Live.<br>2. Hệ thống check event có phải FPTLive ngoại trừ EPL và CMS flag có bật không.<br>3. Nếu không thỏa điều kiện, user xem live bình thường và không apply Timeshift Seek.<br>4. Nếu thỏa điều kiện, hệ thống check user có gói V.VIP1 không.<br>5. Nếu user có gói V.VIP1, user xem live bình thường và Timeshift Seek enable.<br>6. Nếu user không có gói V.VIP1, user xem live bình thường và Timeshift Seek disable. |
+| Post-condition | Player mở thành công. User luôn xem live bình thường; Timeshift Seek enabled hoặc disabled theo điều kiện thực tế. |
 | Alternative Path | Không có. Các nhánh điều kiện đã được thể hiện trong Basic Path. |
-| Exception Handling | Nếu hệ thống không check được điều kiện TS DVR, user vẫn xem live bình thường và TS DVR không được bật. |
+| Exception Handling | Nếu hệ thống không check được điều kiện Timeshift Seek, user vẫn xem live bình thường và Timeshift Seek không được bật. |
 
 ### TS-US-002 — User tua lại trong DVR window
 
@@ -346,14 +349,14 @@ Event Player
     ├── Seekbar without thumbnail
     ├── Time tooltip only
     ├── GO LIVE button
-    └── Error / entitlement messages
+    └── Error / gói V.VIP1 messages
 ```
 
 ### 8.4 Surface Details by Surface
 
 Dùng 8.4 làm nơi duy nhất chứa UI detail theo surface. Không tách surface inventory, status matrix, hoặc placement rules thành 8.3 / 8.5 / 8.6 riêng.
 
-#### SURF-001 — Live Player có DVR enabled
+#### SURF-001 — Live Player có Timeshift Seek enabled
 
 **Surface details:**
 
@@ -361,14 +364,14 @@ Dùng 8.4 làm nơi duy nhất chứa UI detail theo surface. Không tách surfa
 |---|---|
 | Surface / Location | Event player controls |
 | Platform | iOS / Android / Web / TV |
-| When shown | Event đang live và `dvr_enabled=true`. |
+| When shown | Event đang live và Timeshift Seek enabled. |
 | Related UC / Flow | TS-UC-001, TS-UC-002, TS-UC-003 |
 | Placement notes | Seekbar nằm trong player control area; TV dùng focus thân thiện với D-pad. |
 
 **Sketching wireframe / Text-Based Wireframing:**
 
 ```text
-Live Event Player — DVR enabled
+Live Event Player — Timeshift Seek enabled
 ┌──────────────────────────────────────────┐
 │                Video Surface             │
 │                                  [LIVE]  │
@@ -384,13 +387,13 @@ Live Event Player — DVR enabled
 
 | # | Element | States | Format / Copy | Rules / Notes |
 |---:|---|---|---|---|
-| 1 | Seekbar track | active, buffering, disabled | Time range | Active chỉ khi DVR enabled. Max range 8h. |
+| 1 | Seekbar track | active, buffering, disabled | Time range | Active chỉ khi Timeshift Seek enabled. Max range 8h. |
 | 2 | Seek thumb | at live edge, behind live, dragging/focused | Position | Không kéo ra ngoài DVR window. |
 | 3 | Time tooltip | visible khi hover/focus/drag | `HH:mm` hoặc `mm:ss` | Không có thumbnail preview. |
 | 4 | LIVE badge | live edge, behind live, hidden after end | `LIVE` | Dim/behind state khi user behind live. |
 | 5 | Pause/Resume button | visible, hidden, playing, paused | Standard player control | Chỉ hiển thị khi user đang xem lại trong TS DVR. |
 | 6 | GO LIVE button | visible, hidden, disabled | `GO LIVE` / `Trực tiếp` | Chỉ hiện khi event còn live và user đang xem chậm hơn live. |
-| 7 | Error/toast | hidden, visible | Localized copy | Cho case segment unavailable, entitlement, expired window. |
+| 7 | Error/toast | hidden, visible | Localized copy | Cho case segment unavailable, user không có gói V.VIP1, expired window. |
 
 **Surface behavior notes:**
 
@@ -398,7 +401,7 @@ Live Event Player — DVR enabled
 - Pause/resume chỉ hiển thị khi user đang xem lại trong TS DVR.
 - Behind live: dim/behind treatment; cho seek, play/pause, và GO LIVE.
 - Buffering: hiện loading treatment và giữ target position.
-- DVR không khả dụng/no entitlement: ẩn hoặc disable DVR controls; chỉ hiện message/CTA đã approve khi product support.
+- Timeshift Seek không khả dụng hoặc user không có gói V.VIP1: ẩn hoặc disable thanh tua Timeshift Seek; chỉ hiện message/CTA đã approve khi product support.
 
 **Surface-specific notes:**
 
@@ -447,8 +450,8 @@ Event Ended — Current DVR Session
 
 **Surface behavior notes:**
 
-- Ended session có DVR hợp lệ: hiện ended overlay và giữ final DVR seekbar active.
-- Ended session không có DVR hợp lệ: hiện ended overlay/backdrop và ẩn DVR controls.
+- Ended session có TS DVR hợp lệ: hiện ended overlay và giữ final DVR seekbar active.
+- Ended session không có TS DVR hợp lệ: hiện ended overlay/backdrop và ẩn thanh tua Timeshift Seek.
 - Next event: chỉ hiện như manual action; không auto-jump khi user còn trong DVR session.
 
 **Surface-specific notes:**
@@ -460,11 +463,11 @@ Event Ended — Current DVR Session
 
 | Case | User-facing message | Behavior |
 |---|---|---|
-| DVR không khả dụng | `Tua lại không khả dụng cho sự kiện này.` | Ẩn/disable seekbar. |
-| User thiếu package | `Nội dung tua lại yêu cầu gói phù hợp.` | Ẩn DVR seek; chỉ hiện package CTA nếu product support. |
+| Timeshift Seek không khả dụng | `Tua lại không khả dụng cho sự kiện này.` | Ẩn/disable thanh tua Timeshift Seek. |
+| User không có gói V.VIP1 | `Nội dung tua lại yêu cầu gói V.VIP1.` | Ẩn thanh tua Timeshift Seek; chỉ hiện package CTA nếu product support. |
 | Seek ngoài window | `Không thể tua đến thời điểm này.` | Đưa user về mốc hợp lệ gần nhất hoặc giữ vị trí trước đó. |
 | Segment unavailable | `Nội dung tua lại đang tạm thời không khả dụng.` | Retry/buffer; giữ vị trí hợp lệ trước đó. |
-| Event ended trong session | `Sự kiện đã kết thúc.` | Giữ TS DVR trong active session nếu còn hợp lệ; next event CTA optional theo logic hiện tại. |
+| Event ended trong session | `Sự kiện đã kết thúc.` | Giữ TS DVR trong phiên player hiện tại nếu còn hợp lệ; next event CTA optional theo logic hiện tại. |
 | API error | `Không thể tải thông tin sự kiện. Vui lòng thử lại.` | Thử lại hoặc quay lại. |
 
 ---
