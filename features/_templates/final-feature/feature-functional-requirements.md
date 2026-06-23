@@ -36,7 +36,7 @@
 
 ### 3.1 Goal
 
-<User muốn gì. App/System giúp gì.>
+<User muốn gì. hệ thống giúp gì.>
 
 ### 3.2 Platform scope
 
@@ -87,8 +87,9 @@ Do not force a fixed UC count. Derive UCs from real user goals, meaningful branc
 | <CODE>-UC-002 | <Use case name> | <Actor> | <Trigger> | <Outcome> |
 
 Note:
-- User Flows may be 1:1 with UCs or merged when multiple UCs are part of one coherent journey.
-- If flows are merged, the flow table must list all **Covered UCs**.
+- User Flows nên đi từng UC một để QA dễ đọc. Chỉ merge flow khi nhiều UC thật sự là một hành trình liền mạch.
+- Nếu merge flow, mới cần ghi rõ **Covered UCs**. Nếu flow chỉ cover 1 UC, không cần row `Covered UCs`.
+- Không biến behavior đang đúng / ngoài scope feature thành UC riêng.
 
 ---
 
@@ -102,6 +103,15 @@ Note:
 2. <Rule tiếp theo>.
 3. <Rule tiếp theo>.
 
+#### Điều kiện bật feature — nếu có
+
+1. <Feature> chỉ bật khi thỏa đủ các điều kiện:
+   - <Điều kiện cụ thể 1>.
+   - <Điều kiện cụ thể 2>.
+   - <Điều kiện cụ thể 3, ví dụ user có gói cụ thể>.
+2. Nếu thiếu bất kỳ điều kiện nào, hệ thống chạy behavior mặc định và không hiện surface/control của feature.
+3. Tránh wording mơ hồ như `đủ điều kiện`, `gói hợp lệ`, `package/entitlement hợp lệ` nếu chưa list rõ điều kiện.
+
 #### Platform-specific rules — if needed
 
 1. iOS: <Rule / note>.
@@ -112,7 +122,8 @@ Notes:
 - Hạn chế dùng table trong Business Rules. Ưu tiên numbered list + subheading giống Live Activity.
 - Chỉ dùng table nếu rule thật sự cần so sánh matrix nhiều cột.
 - Fold integration/state/measurement/test expectations vào đây khi cần, không tạo section riêng.
-- Actor/diagram style theo Live Activity: ưu tiên `Logged-in User` + `App`; chỉ thêm Server/API/CMS khi thật sự cần hiểu flow.
+- Actor/diagram style: dùng `Logged-in User` + `hệ thống`; chỉ thêm Server/API/CMS khi thật sự cần hiểu flow.
+- Diagram UC mặc định dùng Mermaid `flowchart LR`, không dùng `sequenceDiagram` trừ khi user yêu cầu.
 
 ---
 
@@ -132,34 +143,26 @@ Notes:
 **Activity Flows:**
 
 ```mermaid
-sequenceDiagram
-    autonumber
-
-    actor User as User
-    participant App
-
-    User->>App: <Action>
-    App->>App: <Check condition / state>
-
-    alt <Condition A>
-        App-->>User: <UI result A>
-    else <Condition B>
-        App-->>User: <UI result B>
-    end
+flowchart LR
+ Start([" "]) --> A["User thực hiện hành động"]
+ A --> B{Hệ thống check điều kiện?}
+ B -- Có --> C["Hiển thị kết quả hợp lệ"]
+ C --> End1([" "])
+ B -- Không --> D["Hiển thị fallback / giữ trạng thái hiện tại"]
+ D --> End2([" "])
 ```
 
 | Field | Details |
 |---|---|
-| Covered UCs | <CODE>-UC-001, <CODE>-UC-002 |
-| Description | <Flow mô tả gì> |
-| Actor | Logged-in User, App |
+| Actor | Logged-in User, hệ thống |
 | Triggers | <User action hoặc system trigger> |
 | Pre-condition | <Điều kiện trước khi flow chạy> |
 | Basic Path | 1. <Step 1>.<br>2. <Step 2>.<br>3. <Step 3>. |
 | Post-condition | <Kết quả sau flow> |
 | Alternative Path | 1. <Nhánh khác>.<br>2. <Nhánh khác>. |
 | Exception Handling | 1. <Lỗi/fallback>.<br>2. <Lỗi/fallback>. |
-| Business Rules Applied | 1. <Rule áp dụng>.<br>2. <Rule áp dụng>. |
+
+> Chỉ thêm `Covered UCs`, `Description`, hoặc `Business Rules Applied` nếu thật sự cần. Nếu Business Rules đã nằm ở Section 6, không lặp lại trong table.
 
 ---
 
@@ -302,10 +305,12 @@ Do not force all surfaces into one generic table when the feature has many statu
 ## 11. Handoff Checklist
 
 - [ ] Use Case Summary derives from actual goals/branches, not fixed count.
-- [ ] Activity Flows cover all UCs, either dedicated or merged with Covered UCs listed.
+- [ ] Activity Flows cover all UCs; default one flow per UC, merged flows only when justified.
 - [ ] Each flow has diagram + Field/Details table.
 - [ ] Each meaningful surface has text-based wireframe + surface elements table.
 - [ ] Surface behavior is covered inside each surface block when relevant.
 - [ ] Integration/API expectations are covered as business rules or flow preconditions, not as a standalone section.
+- [ ] Enable/eligibility rules list concrete conditions and avoid vague `đủ điều kiện/gói hợp lệ` wording.
+- [ ] Vietnamese docs use `hệ thống`, not `App`.
 - [ ] Main and edge cases are covered by use cases, flows, rules, and error messages.
 - [ ] No critical open questions remain, or accepted assumptions are explicit.

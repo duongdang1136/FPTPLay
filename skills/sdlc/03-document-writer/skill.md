@@ -88,6 +88,15 @@ For FPTPlay final docs, `<feature-name>-functional-requirements.md` is the main 
 
 For Screen Element Specification, keep all surface-level UI details in **8.4 Surface Details by Surface**. Use one surface block per meaningful surface/location. Each surface block should include surface details, **Sketching wireframe / Text-Based Wireframing**, and a surface elements table. Put placement notes and any status/state behavior as brief surface behavior notes inside the relevant surface block; do not create separate `Surface summary`, `Status/state behavior`, 8.3, 8.5, or 8.6 sections.
 
+For FPTPlay QA-readable functional docs, default to Vietnamese product wording:
+
+- Use `hệ thống`, not `App`.
+- Use Mermaid `flowchart LR` for UC Activity Flows unless the user asks otherwise.
+- Work one UC at a time when iterating with the user.
+- Keep UC detail tables lean; avoid redundant `Description`, `Covered UCs`, and `Business Rules Applied` rows unless they add real value.
+- Eligibility/enable conditions must be explicit: list exact event type, flag, package, role, platform, or other gates. Avoid vague `đủ điều kiện`, `gói hợp lệ`, `package/entitlement hợp lệ` wording when the condition is known.
+- Do not create UCs for existing behavior that is already correct and outside the feature scope.
+
 For small features, omit `<Sub-Feature>` only when the repo convention supports it. For large features, split into sub-features when the contract would become hard to review.
 
 ### 2c. Public/private repo split

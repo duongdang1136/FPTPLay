@@ -35,8 +35,10 @@ For lightweight docs, continue using `features/lightweight/<...>/product/SRS-<fe
 Use `features/final-docs/Sport-Zone/Live-Activity/product/live-activity-user-flows-functional-requirements.md` as the writing-style reference when generating FPTPlay final functional docs:
 
 - Caveman Vietnam: ít chữ, dễ đọc, đúng ý, không low-level.
-- Actor names: prefer `Logged-in User`, `App`; only add Server/API/CMS when the reader truly needs it.
-- Diagrams: keep Mermaid sequence diagrams simple, usually `User` + `App`; hide backend implementation details behind App checks.
+- Use `hệ thống`, not `App`, in Vietnamese product docs.
+- Diagrams: default to Mermaid `flowchart LR` for UC flows. Keep diagrams one UC at a time unless the user explicitly asks to merge.
 - Flow heading style: `<CODE>-US-xxx` section, then `<CODE>-UC-xxx` flow with `**Activity Flows:**`.
+- UC flow tables: keep only useful rows such as Actor, Triggers, Pre-condition, Basic Path, Post-condition, Alternative Path, Exception Handling. Remove redundant `Description`, `Covered UCs`, and `Business Rules Applied` unless needed.
 - Business Rules: numbered list + subheadings, not tables by default.
-- Business Rules Applied in flow tables: write concrete rules as a short list, not ID ranges.
+- Eligibility/enable rules must list concrete conditions explicitly. Do not write vague phrases like `đủ điều kiện`, `gói hợp lệ`, or `package/entitlement hợp lệ` without naming the exact conditions/package known from the feature.
+- If an existing/current behavior is already correct and outside the new feature scope, do not turn it into a separate UC.

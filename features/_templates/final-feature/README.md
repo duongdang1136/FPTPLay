@@ -47,3 +47,11 @@ Use `features/final-docs/Sport-Zone/Live-Activity/product/live-activity-user-flo
 - Flow heading style: `<CODE>-US-xxx` section, then `<CODE>-UC-xxx` flow with `**Activity Flows:**`.
 - Business Rules: numbered list + subheadings, not tables by default.
 - Business Rules Applied in flow tables: write concrete rules as a short list, not ID ranges.
+## QA-readable UC style
+
+- Viết ngắn, rõ, dễ QA test. Tránh BA/dev wording quá nặng.
+- Dùng `hệ thống`, không dùng `App` trong docs tiếng Việt.
+- Mặc định mỗi UC có một Mermaid `flowchart LR`; chỉ merge UC khi user yêu cầu hoặc các UC là một hành trình liền mạch.
+- UC table giữ các row cần thiết: Actor, Triggers, Pre-condition, Basic Path, Post-condition, Alternative Path, Exception Handling. Không lặp `Description`, `Covered UCs`, `Business Rules Applied` nếu đã rõ ở title/flow/Section 6.
+- Điều kiện bật feature phải list rõ từng điều kiện cụ thể. Không viết mơ hồ `đủ điều kiện`, `gói hợp lệ`, `package/entitlement hợp lệ` khi đã biết package/rule cụ thể.
+- Behavior hiện tại đã đúng hoặc ngoài scope feature thì không tách thành UC riêng.
