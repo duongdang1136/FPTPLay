@@ -128,7 +128,7 @@ User flow có thể merge nhiều UC nếu cùng một hành trình. Nếu merge
 4. User phải có package/entitlement hợp lệ trước khi hệ thống expose DVR playback.
 5. Stream/packager phải có DVR manifest hợp lệ cho protocol được dùng.
 6. Nếu bất kỳ gate nào fail, hệ thống báo DVR không khả dụng và không expose DVR stream URL.
-7. App không hiển thị interactive DVR seek nếu hệ thống chưa xác nhận DVR khả dụng.
+7. App chỉ hiển thị thanh tua DVR khi hệ thống xác nhận event này được phép tua lại.
 
 #### DVR window rules
 
@@ -172,11 +172,6 @@ User flow có thể merge nhiều UC nếu cùng một hành trình. Nếu merge
 5. Khi event ended và active DVR session còn hợp lệ, ended overlay có thể giữ final DVR seek controls.
 6. Khi user từ ngoài mở ended event, App hiện **Sự kiện đã kết thúc** rồi end flow; không hiện DVR replay action.
 7. Nếu DVR expired hoặc không khả dụng trong active session, App ẩn DVR controls và giữ safe ended/unavailable state.
-
-#### Measurement notes — nếu product cần
-
-1. Nếu cần analytics, đo DVR availability, lý do không khả dụng, seek start/success/failure, pause/resume, GO LIVE, event-end DVR session, ended event entry, và next-event click.
-2. Analytics không expose private package/user data ngoài tracking properties đã được approve.
 
 ---
 
