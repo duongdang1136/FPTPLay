@@ -118,59 +118,35 @@ User flow có thể merge nhiều UC nếu cùng một hành trình. Nếu merge
 
 ## 6. Business Rules
 
-### Global Business Rules
+### 6.1 Điều kiện bật DVR
 
-#### Eligibility / gating rules
-
-1. DVR chỉ bật khi CMS flag của event đang ON.
-2. DVR chỉ bật cho FPTLive event đủ điều kiện.
-3. EPL event không bật DVR / start-over.
-4. User phải có package/entitlement hợp lệ trước khi hệ thống expose DVR playback.
-5. Stream/packager phải có DVR manifest hợp lệ cho protocol được dùng.
-6. Nếu bất kỳ gate nào fail, hệ thống báo DVR không khả dụng và không expose DVR stream URL.
+1. DVR chỉ bật cho **FPTLive event** đủ điều kiện.
+2. EPL event không bật DVR / start-over.
+3. Event phải được bật DVR bằng CMS flag.
+4. User phải có package/entitlement hợp lệ.
+5. Stream phải hỗ trợ DVR playback trên protocol được dùng.
+6. Nếu thiếu bất kỳ điều kiện nào, App chạy live playback bình thường và không hiện thanh tua DVR.
 7. App chỉ hiển thị thanh tua DVR khi hệ thống xác nhận event này được phép tua lại.
 
-#### DVR window rules
+### 6.2 Cách tua DVR
 
 1. User chỉ tua lại được trong phần nội dung đã phát, tối đa **8 giờ gần nhất**.
 2. Nếu event mới live chưa đủ 8 giờ, user có thể tua về từ đầu event.
 3. User không được seek trước phần DVR cho phép hoặc sau live edge.
 4. Seek không có thumbnail. Tooltip chỉ cần hiển thị timestamp nếu cần.
-5. Nếu user pause live playback, App resume từ paused position nếu vị trí đó còn trong DVR window.
-6. Nếu paused position đã hết hạn, App recover về mốc DVR hợp lệ gần nhất, live edge, hoặc unavailable state tùy player capability.
+5. Khi user đang ở live edge, GO LIVE ẩn.
+6. Khi user đang xem chậm hơn live, App hiện GO LIVE.
+7. Nếu user pause live playback, App resume từ paused position nếu vị trí đó còn trong DVR window.
+8. Nếu paused position đã hết hạn, App recover về mốc DVR hợp lệ gần nhất, live edge, hoặc unavailable state tùy player capability.
 
-#### Event end / ended entry rules
+### 6.3 Khi event kết thúc
 
-1. Khi event vừa end, app có thể giữ backdrop / next-event prompt hiện tại.
-2. Nếu user đang watch/seek/pause trong player lúc event end, không force auto-transition sang next event.
-3. Next event nếu có thì đi theo logic hiện tại và chỉ là CTA thủ công; Timeshift không can thiệp rule chọn next event.
+1. Khi event vừa end, App có thể giữ backdrop / next-event prompt hiện tại.
+2. Nếu user đang watch/seek/pause trong player lúc event end, App không tự chuyển sang next event.
+3. Next event nếu có thì chỉ là CTA thủ công; Timeshift không can thiệp rule chọn next event.
 4. DVR replay sau event end chỉ giữ trong active player session nếu user đã ở trong player trước khi event end.
-5. DVR replay sau event end vẫn theo điều kiện hợp lệ bình thường: entitlement, CMS flag, stream availability, và DVR window.
+5. DVR replay sau event end vẫn phải đủ điều kiện: entitlement, CMS flag, stream availability, và DVR window.
 6. Nếu user từ ngoài mở event đã kết thúc, App chỉ hiện **Sự kiện đã kết thúc** rồi end flow; không mở DVR session mới.
-7. Ended event entry không được auto-jump sang next event.
-
-#### Protocol rules
-
-1. Hệ thống có thể cung cấp HLS và/hoặc DASH DVR playback tùy platform capability.
-2. App/player chọn protocol theo playback policy hiện tại của từng platform.
-3. Nếu protocol không có DVR playback hợp lệ, hệ thống disable DVR cho context đó hoặc fallback sang protocol được support.
-
-#### Integration / system expectation rules
-
-1. App cần playback/event status để biết event đang scheduled, live, ended, và có DVR-capable hay không.
-2. App cần entitlement result trước khi expose DVR replay.
-3. App cần CMS DVR flag và stream availability trước khi enable DVR controls.
-4. Hệ thống nên trả DVR availability, DVR window start/end, protocol availability, và lý do không khả dụng ở mức product.
-5. Nếu DVR không khả dụng, App map reason sang user-facing behavior trong Section 9.
-
-#### Product behavior rules
-
-1. Khi DVR gate fail, player chạy như normal live playback, không có interactive DVR seek.
-2. Khi DVR enabled và user ở live edge, seekbar active và GO LIVE ẩn.
-3. Khi user behind live, App hiện behind-live treatment và GO LIVE action.
-4. Khi user seek/resume, App phản hồi trong điều kiện mạng bình thường; nếu segment chậm thì hiện buffering state.
-5. Khi event ended và active DVR session còn hợp lệ, ended overlay có thể giữ final DVR seek controls.
-6. Khi user từ ngoài mở ended event, App hiện **Sự kiện đã kết thúc** rồi end flow; không hiện DVR replay action.
 7. Nếu DVR expired hoặc không khả dụng trong active session, App ẩn DVR controls và giữ safe ended/unavailable state.
 
 ---
