@@ -169,36 +169,31 @@ User mở player. App check event, gói user, CMS flag và stream support. Nếu
 **Activity Flows:**
 
 ```mermaid
-sequenceDiagram
-    autonumber
+flowchart LR
+ Start([" "]) --> A["Vào event player Live"]
+ A --> B{Là FPTLive\nevent/ CMS flag?}
 
-    actor User as User
-    participant App
+ B -- No --> C["Xem live bình thường\nKhông apply TS DVR"]
+ C --> End1([" "])
 
-    User->>App: Mở live event player
-    App->>App: Check FPTLive / EPL / CMS flag
-    App->>App: Check user package
-    App->>App: Check HLS/DASH DVR support
+ B -- Yes --> D{User có\npackage hợp lệ?}
 
-    alt Event + user + stream đủ điều kiện
-        App-->>User: Hiển thị DVR seekbar
-    else Không đủ điều kiện
-        App-->>User: Xem live bình thường / DVR bị ẩn hoặc disable
-    end
+ D -- Yes --> E["Xem live bình thường,\nTS DVR enable process seek"]
+ E --> End2([" "])
+
+ D -- No --> F["Xem live bình thường,\nTS DVR disable process seek"]
+ F --> End3([" "])
 ```
 
 | Field | Details |
 |---|---|
-| Covered UCs | TS-UC-001, TS-UC-005, TS-UC-008 |
-| Description | Player mở event. App quyết định DVR có khả dụng không. |
 | Actor | Logged-in User, App |
 | Triggers | User mở live event player. |
 | Pre-condition | Event tồn tại. User có quyền mở player. |
-| Basic Path | 1. User mở event player.<br>2. App check event có phải FPTLive và không phải EPL.<br>3. App check CMS flag, package của user và stream DVR support.<br>4. Đủ điều kiện → App hiển thị DVR seekbar.<br>5. Không đủ điều kiện → App ẩn/disable DVR seek, user vẫn xem live nếu stream live khả dụng. |
-| Post-condition | Player mở thành công. DVR enabled hoặc disabled theo điều kiện thực tế. |
-| Alternative Path | CMS flag OFF / event là EPL / user không có gói / stream không hỗ trợ DVR → không hiển thị DVR seek. |
-| Exception Handling | Check DVR lỗi → App fallback live-only nếu live stream còn xem được; nếu không thì hiện lỗi playback phù hợp. |
-| Business Rules Applied | 1. DVR chỉ bật khi CMS flag ON.<br>2. Chỉ áp dụng cho FPTLive đủ điều kiện, không áp dụng EPL.<br>3. User phải có gói hợp lệ.<br>4. Stream phải hỗ trợ DVR HLS/DASH.<br>5. App chỉ hiển thị DVR seek khi hệ thống xác nhận DVR khả dụng. |
+| Basic Path | 1. User vào event player Live.<br>2. App check event có phải FPTLive và CMS flag có bật không.<br>3. Nếu không thỏa điều kiện, user xem live bình thường và không apply TS DVR.<br>4. Nếu thỏa điều kiện, App check package của user.<br>5. Nếu user có package hợp lệ, user xem live bình thường và TS DVR enable process seek.<br>6. Nếu user không có package hợp lệ, user xem live bình thường và TS DVR disable process seek. |
+| Post-condition | Player mở thành công. User luôn xem live bình thường; TS DVR enabled hoặc disabled theo điều kiện thực tế. |
+| Alternative Path | Không có. Các nhánh điều kiện đã được thể hiện trong Basic Path. |
+| Exception Handling | Nếu App không check được điều kiện TS DVR, user vẫn xem live bình thường và TS DVR không được bật. |
 
 ### TS-US-002 — User tua lại trong DVR window
 
@@ -336,7 +331,7 @@ flowchart LR
 | Basic Path | 1. User đang xem live event enable TS DVR.<br>2. Event kết thúc, App hiện backdrop sự kiện.<br>3. Nếu DVR session còn hợp lệ, App giữ TS DVR enable trong session xem hiện tại.<br>4. User vẫn có thể xem/tua trong TS DVR.<br>5. Khi playback trong TS DVR chạy tới endtime lần nữa, App quay lại End State/Backdrop.<br>6. Từ End State/Backdrop, user có thể tua lại tiếp, thoát player, hoặc đi theo Next Event/Auto Next Event nếu logic hiện tại hỗ trợ. |
 | Post-condition | User tiếp tục xem/tua trong TS DVR, thoát player, hoặc chuyển sang next event theo logic hiện tại. |
 | Alternative Path | Nếu DVR session không còn hợp lệ, App hiển thị **Sự kiện đã kết thúc** và end flow. |
-| Exception Handling | Stream hard-stop khi user đang xem lại trong TS DVR → App giữ vị trí hợp lệ gần nhất nếu player còn phát được; nếu không thì hiện unavailable message. |
+| Exception Handling | Nếu App không thể tiếp tục phát TS DVR trong session hiện tại, App hiển thị **Sự kiện đã kết thúc** và không mở DVR session mới. |
 
 ### TS-US-005 — User mở event đã kết thúc từ ngoài
 
