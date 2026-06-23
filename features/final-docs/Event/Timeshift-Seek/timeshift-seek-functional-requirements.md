@@ -132,13 +132,12 @@ User flow có thể merge nhiều UC nếu cùng một hành trình. Nếu merge
 
 #### DVR window rules
 
-1. DVR max window là **8 giờ**.
-2. User chỉ tua lại được trong phần nội dung đã phát, tối đa **8 giờ gần nhất**. Nếu event mới live chưa đủ 8 giờ, user có thể tua về từ đầu event.
-3. Nếu event duration nhỏ hơn 8 giờ, DVR có thể start từ event start.
-4. User không được seek trước DVR start hoặc sau live edge.
-5. Seek không có thumbnail. Tooltip chỉ cần hiển thị timestamp nếu cần.
-6. Nếu user pause live playback khi DVR enabled, resume từ paused position nếu vị trí đó còn trong DVR window.
-7. Nếu paused position đã rơi khỏi DVR window, App recover về mốc DVR hợp lệ gần nhất, live edge, hoặc unavailable state tùy player capability.
+1. User chỉ tua lại được trong phần nội dung đã phát, tối đa **8 giờ gần nhất**.
+2. Nếu event mới live chưa đủ 8 giờ, user có thể tua về từ đầu event.
+3. User không được seek trước phần DVR cho phép hoặc sau live edge.
+4. Seek không có thumbnail. Tooltip chỉ cần hiển thị timestamp nếu cần.
+5. Nếu user pause live playback, App resume từ paused position nếu vị trí đó còn trong DVR window.
+6. Nếu paused position đã hết hạn, App recover về mốc DVR hợp lệ gần nhất, live edge, hoặc unavailable state tùy player capability.
 
 #### Event end / ended entry rules
 
@@ -169,7 +168,7 @@ User flow có thể merge nhiều UC nếu cùng một hành trình. Nếu merge
 1. Khi DVR gate fail, player chạy như normal live playback, không có interactive DVR seek.
 2. Khi DVR enabled và user ở live edge, seekbar active và GO LIVE ẩn.
 3. Khi user behind live, App hiện behind-live treatment và GO LIVE action.
-4. Seek/resume nên cho cảm giác responsive trong điều kiện mạng bình thường; buffering state được phép khi segment chậm.
+4. Khi user seek/resume, App phản hồi trong điều kiện mạng bình thường; nếu segment chậm thì hiện buffering state.
 5. Khi event ended và active DVR session còn hợp lệ, ended overlay có thể giữ final DVR seek controls.
 6. Khi user từ ngoài mở ended event, App hiện **Sự kiện đã kết thúc** rồi end flow; không hiện DVR replay action.
 7. Nếu DVR expired hoặc không khả dụng trong active session, App ẩn DVR controls và giữ safe ended/unavailable state.
@@ -595,7 +594,7 @@ Ended Event Entry
 |---|---|---|
 | DVR không khả dụng | `Tua lại không khả dụng cho sự kiện này.` | Ẩn/disable seekbar. |
 | User thiếu package | `Nội dung tua lại yêu cầu gói phù hợp.` | Ẩn DVR seek; chỉ hiện package CTA nếu product support. |
-| Seek ngoài window | `Không thể tua đến thời điểm này.` | Clamp về valid range hoặc restore vị trí trước đó. |
+| Seek ngoài window | `Không thể tua đến thời điểm này.` | Đưa user về mốc hợp lệ gần nhất hoặc giữ vị trí trước đó. |
 | Segment unavailable | `Nội dung tua lại đang tạm thời không khả dụng.` | Retry/buffer; giữ vị trí hợp lệ trước đó. |
 | Event ended trong session | `Sự kiện đã kết thúc.` | Giữ session DVR nếu còn hợp lệ; next event CTA optional theo logic hiện tại. |
 | User mở ended event từ ngoài | `Sự kiện đã kết thúc.` | End flow; không mở DVR session mới; không auto next. |
