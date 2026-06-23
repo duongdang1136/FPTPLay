@@ -209,37 +209,36 @@ User kéo seekbar về mốc trước đó. App chỉ cho tua trong DVR window t
 **Activity Flows:**
 
 ```mermaid
-sequenceDiagram
-    autonumber
+flowchart LR
+ Start([" "]) --> A["UC1: User đang\nxem Live event\nenable TS DVR"]
+ A --> B["User seek process bar"]
+ B --> C{Mốc seek còn\ntrong DVR window?}
 
-    actor User as User
-    participant App
+ C -- No --> D["Không tua đến mốc đó\nĐưa về mốc hợp lệ gần\nnhất hoặc giữ vị trí trước đó"]
+ D --> End1([" "])
 
-    User->>App: Kéo seekbar về mốc đã phát
-    App->>App: Check mốc seek trong DVR window
+ C -- Yes --> E["Phát từ mốc user chọn"]
+ E --> F["User đang xem chậm hơn live"]
+ F --> G["Hiện button Trở về\nđang phát/ Go LIVE"]
+ G --> H{User bấm Trở về\nđang phát/ Go LIVE?}
 
-    alt Mốc seek hợp lệ
-        App-->>User: Phát từ mốc đã chọn
-        App-->>User: Hiển thị behind-live + GO LIVE
-        User->>App: Bấm GO LIVE
-        App-->>User: Quay về live edge
-    else Mốc seek ngoài DVR window
-        App-->>User: Đưa về mốc hợp lệ gần nhất hoặc báo không khả dụng
-    end
+ H -- No --> I["Tiếp tục xem tại mốc đã tua"]
+ I --> End2([" "])
+
+ H -- Live --> J["Quay về live hiện tại"]
+ J --> K["Ẩn button Trở về\nđang phát/ go Live"]
+ K --> End3([" "])
 ```
 
 | Field | Details |
 |---|---|
-| Covered UCs | TS-UC-002, TS-UC-004 |
-| Description | User tua trong DVR range và có thể quay lại live edge. |
 | Actor | Logged-in User, App |
-| Triggers | User kéo/click/D-pad seekbar. |
-| Pre-condition | DVR đang khả dụng. Event đang live hoặc DVR sau event end trong active session vẫn còn hợp lệ. |
-| Basic Path | 1. User chọn mốc đã phát.<br>2. App check mốc đó còn trong DVR window.<br>3. App phát từ mốc đã chọn.<br>4. App hiển thị behind-live state.<br>5. User bấm **GO LIVE**.<br>6. App đưa playback về live edge nếu event còn live. |
-| Post-condition | User xem mốc DVR đã chọn hoặc quay lại live edge. |
-| Alternative Path | Nếu event đã End trong active session, GO LIVE ẩn; user chỉ seek trong DVR range còn lại của session đó. |
-| Exception Handling | Segment lỗi/mạng lỗi → hiện buffering/error; giữ vị trí hợp lệ gần nhất. |
-| Business Rules Applied | 1. DVR window tối đa 8 giờ.<br>2. User không seek trước DVR start hoặc sau live edge.<br>3. Seek không có thumbnail; tooltip chỉ cần timestamp nếu cần.<br>4. Khi behind live, App hiển thị GO LIVE. |
+| Triggers | User seek process bar. |
+| Pre-condition | User đang xem live event enable TS DVR. |
+| Basic Path | 1. User seek process bar.<br>2. App check mốc seek còn trong DVR window không.<br>3. Nếu mốc seek còn trong DVR window, App phát từ mốc user chọn.<br>4. User đang xem chậm hơn live.<br>5. App hiện button **Trở về đang phát / Go LIVE**.<br>6. Nếu user bấm **Trở về đang phát / Go LIVE**, App quay về live hiện tại và ẩn button này.<br>7. Nếu user không bấm, user tiếp tục xem tại mốc đã tua. |
+| Post-condition | User tiếp tục xem tại mốc đã tua hoặc quay về live hiện tại. |
+| Alternative Path | Nếu mốc seek không còn trong DVR window, App không tua đến mốc đó và đưa user về mốc hợp lệ gần nhất hoặc giữ vị trí trước đó. |
+| Exception Handling | Nếu App không xử lý được seek, user giữ vị trí xem trước đó và TS DVR không chuyển sang mốc lỗi. |
 
 ### TS-US-003 — User pause / resume live event
 
