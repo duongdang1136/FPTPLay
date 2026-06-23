@@ -12,21 +12,22 @@
 
 ## 1. Description
 
-Timeshift Seek giúp user đang xem **sự kiện live FPTLive** tua lại nội dung đã phát trong DVR window tối đa **8 tiếng**. User có thể xem lại đoạn đã qua, pause/resume, hoặc bấm **GO LIVE** để quay về live edge.
+Timeshift Seek giúp user đang xem **sự kiện live FPTLive** tua lại nội dung đã phát trong DVR window tối đa **8 tiếng**. User có thể xem lại đoạn đã qua, pause/resume khi đang xem lại trong TS DVR, hoặc bấm **GO LIVE** để quay về live edge.
 
 Feature này **không áp dụng cho EPL**. User cần có gói hợp lệ. Event cần được bật cờ DVR qua CMS.
 
-Khi event kết thúc, hệ thống không tự nhảy sang next event và không thay đổi logic next event hiện có. DVR sau event end chỉ giữ trong active player session nếu user đã ở trong player trước khi event end và DVR còn hợp lệ. Nếu user từ ngoài mở event đã kết thúc, hệ thống chỉ hiện **Sự kiện đã kết thúc** rồi end flow.
+Khi event kết thúc, hệ thống không tự nhảy sang next event và không thay đổi logic next event hiện có. DVR sau event end chỉ giữ trong active player session nếu user đã ở trong player trước khi event end và DVR còn hợp lệ.
 
 ---
 
 ## 2. Document History
 
-| Version | Date | Updated By | Notes | hệ thốngroved By |
+| Version | Date | Updated By | Notes | Approved By |
 |---|---|---|---|---|
 | v1.0 | 2026-06-16 | Dylan | Initial split docs: full-event DVR and legacy post-event behavior. | Pending |
 | v2.0 | 2026-06-22 | Dylan | Rewrite theo requirement mới: DVR 8 giờ, chỉ FPTLive, loại EPL, có entitlement gate, CMS flag, không thumbnail, DVR sau event end theo active session và không auto next. | Pending |
 | v2.1 | 2026-06-23 | Dylan | Làm rõ DVR window bằng mô tả nghiệp vụ thay vì công thức; rà QA handoff. | Pending |
+| v2.2 | 2026-06-23 | Dylan | Align docs về 4 UC chính; bỏ ended-event entry UC khỏi scope Timeshift Seek; đồng bộ wording hệ thống. | Pending |
 
 ---
 
@@ -34,7 +35,7 @@ Khi event kết thúc, hệ thống không tự nhảy sang next event và khôn
 
 ### 3.1 Goal
 
-User đang xem live event có thể tua lại nội dung đã phát, tạm dừng/xem tiếp, rồi quay về live edge khi muốn.
+User đang xem live event có thể tua lại nội dung đã phát, tạm dừng/xem tiếp khi đang xem lại trong TS DVR, rồi quay về live edge khi muốn.
 
 ### 3.2 Platform scope
 
@@ -89,11 +90,8 @@ User đang xem live event có thể tua lại nội dung đã phát, tạm dừn
 |---:|---|---|---|---|
 | 1 | Event detail → Watch | User mở live FPTLive event | Player | Player load live stream; DVR seek active nếu tất cả gate pass. |
 | 2 | Player seekbar | User drags/clicks/D-pad seeks backward | Player controls | Playback starts from selected DVR position. |
-| 3 | Pause / Resume | User pause live playback rồi resume | Player controls | Playback resume từ paused position nếu còn trong DVR window; user thành behind live. |
-| 4 | GO LIVE | User taps GO LIVE while behind live | Player controls | Player jumps to live edge. |
-| 5 | Event end khi user còn trong player | Stream/status báo event ended | Player | Hiện ended/backdrop theo logic hiện tại; giữ DVR session nếu còn hợp lệ. |
-| 6 | User mở event đã kết thúc từ ngoài | User mở event sau khi event đã End | Event/player entry | Hiện **Sự kiện đã kết thúc** rồi end flow; không mở DVR session mới; không auto next. |
-| 7 | CMS flag changed | Admin bật/tắt DVR trên event | CMS/API | Playback response sau đó phản ánh DVR availability mới. |
+| 3 | Pause / Resume trong TS DVR | User đang xem lại trong TS DVR và bấm pause/resume | Player controls | Playback resume từ paused position nếu còn trong DVR window. |
+| 4 | Event end khi user còn trong player | Stream/status báo event ended | Player | Hiện ended/backdrop theo logic hiện tại; giữ DVR session nếu còn hợp lệ. |
 
 ---
 
@@ -103,16 +101,12 @@ Use case lấy từ goal/branch thật. Không ép số lượng cố định.
 
 | Use Case ID | Use Case | Primary Actor | Trigger | Outcome |
 |---|---|---|---|---|
-| TS-UC-001 | Mở FPTLive event có DVR | Logged-in User | User mở live event | Player hiển thị DVR seek nếu event/user/stream đủ điều kiện. |
-| TS-UC-002 | Tua lại trong DVR window | Logged-in User | User chọn mốc trước đó trên seekbar | Player phát từ mốc đã chọn trong giới hạn 8 giờ. |
-| TS-UC-003 | Pause / Resume live event | Logged-in User | User pause rồi resume | Player phát tiếp từ vị trí đã pause nếu còn hợp lệ; user chuyển sang behind live. |
-| TS-UC-004 | Quay về live edge | Logged-in User | User bấm GO LIVE | Player nhảy về live edge. |
-| TS-UC-005 | DVR không khả dụng | Logged-in User, hệ thống | Event/user/stream không đủ điều kiện | hệ thống ẩn hoặc disable DVR seek. |
-| TS-UC-006 | Event end khi user còn trong player | Logged-in User, hệ thống | Event kết thúc trong lúc user đang xem | DVR replay có thể tiếp tục trong active session nếu còn hợp lệ; next event chỉ là CTA theo logic hiện tại. |
-| TS-UC-007 | User mở event đã kết thúc từ ngoài | Logged-in User | User mở ended event | hệ thống hiện **Sự kiện đã kết thúc** rồi end flow; không mở DVR session mới; không auto next. |
-| TS-UC-008 | CMS bật/tắt DVR flag | Admin/CMS User | DVR flag thay đổi | DVR availability đổi theo cấu hình mới. |
+| TS-UC-001 | Mở FPTLive event có DVR | Logged-in User | User mở live event | User xem live bình thường; TS DVR enabled/disabled theo điều kiện thực tế. |
+| TS-UC-002 | Tua lại trong DVR window / GO LIVE | Logged-in User | User seek process bar | User xem từ mốc đã tua hoặc quay về live hiện tại bằng **Trở về đang phát / GO LIVE**. |
+| TS-UC-003 | Pause / Resume trong TS DVR | Logged-in User | User đang xem lại trong TS DVR và bấm pause/resume | User tiếp tục phát từ vị trí pause nếu còn trong DVR window. |
+| TS-UC-004 | Event end khi user còn trong player | Logged-in User, hệ thống | Event kết thúc trong lúc user đang xem | TS DVR có thể tiếp tục trong active session nếu còn hợp lệ; next event theo logic hiện tại. |
 
-User flow có thể merge nhiều UC nếu cùng một hành trình. Nếu merge, flow table phải list rõ Covered UCs.
+User flow hiện tại gồm 4 UC chính. Các nhánh như DVR không khả dụng, CMS flag, package, GO LIVE được cover trong UC tương ứng; không tách thành UC riêng.
 
 ---
 
@@ -126,7 +120,7 @@ User flow có thể merge nhiều UC nếu cùng một hành trình. Nếu merge
 4. User phải có package/entitlement hợp lệ.
 5. Stream phải hỗ trợ DVR playback trên protocol được dùng.
 6. Nếu thiếu bất kỳ điều kiện nào, hệ thống chạy live playback bình thường và không hiện thanh tua DVR.
-7. hệ thống chỉ hiển thị thanh tua DVR khi hệ thống xác nhận event này được phép tua lại.
+7. Hệ thống chỉ hiển thị thanh tua DVR khi hệ thống xác nhận event này được phép tua lại.
 
 ### 6.2 Cách tua DVR
 
@@ -147,10 +141,9 @@ User flow có thể merge nhiều UC nếu cùng một hành trình. Nếu merge
 3. Next event nếu có thì chỉ là CTA thủ công; Timeshift không can thiệp rule chọn next event.
 4. DVR replay sau event end chỉ giữ trong active player session nếu user đã ở trong player trước khi event end.
 5. DVR replay sau event end vẫn phải đủ điều kiện: entitlement, CMS flag, stream availability, và DVR window.
-6. Nếu user từ ngoài mở event đã kết thúc, hệ thống chỉ hiện **Sự kiện đã kết thúc** rồi end flow; không mở DVR session mới.
-7. Nếu DVR expired hoặc không khả dụng trong active session, hệ thống ẩn DVR controls và giữ safe ended/unavailable state.
-8. Khi playback trong TS DVR chạy tới endtime lần nữa, hệ thống quay lại End State/Backdrop; không tự replay loop.
-9. Next Event/Auto Next Event đi theo logic hiện tại; Timeshift không can thiệp rule chọn next event.
+6. Nếu DVR expired hoặc không khả dụng trong active session, hệ thống ẩn DVR controls và giữ safe ended/unavailable state.
+7. Khi playback trong TS DVR chạy tới endtime lần nữa, hệ thống quay lại End State/Backdrop; không tự replay loop.
+8. Next Event/Auto Next Event đi theo logic hiện tại; Timeshift không can thiệp rule chọn next event.
 
 ---
 
@@ -163,7 +156,7 @@ User flow có thể merge nhiều UC nếu cùng một hành trình. Nếu merge
 - Hệ thống chỉ bật DVR seek khi event/user/stream hợp lệ.
 
 **Description:**
-User mở player. hệ thống check event, gói user, CMS flag và stream support. Nếu đủ điều kiện, hệ thống hiển thị DVR seek. Nếu không đủ, user vẫn xem live theo khả năng hiện tại.
+User mở player. Hệ thống check event, gói user, CMS flag và stream support. Nếu đủ điều kiện, hệ thống hiển thị DVR seek. Nếu không đủ, user vẫn xem live theo khả năng hiện tại.
 
 #### TS-UC-001 — Mở event → Check DVR availability
 
@@ -191,7 +184,7 @@ flowchart LR
 | Actor | Logged-in User, hệ thống |
 | Triggers | User mở live event player. |
 | Pre-condition | Event tồn tại. User có quyền mở player. |
-| Basic Path | 1. User vào event player Live.<br>2. hệ thống check event có phải FPTLive và CMS flag có bật không.<br>3. Nếu không thỏa điều kiện, user xem live bình thường và không apply TS DVR.<br>4. Nếu thỏa điều kiện, hệ thống check package của user.<br>5. Nếu user có package hợp lệ, user xem live bình thường và TS DVR enable process seek.<br>6. Nếu user không có package hợp lệ, user xem live bình thường và TS DVR disable process seek. |
+| Basic Path | 1. User vào event player Live.<br>2. Hệ thống check event có phải FPTLive và CMS flag có bật không.<br>3. Nếu không thỏa điều kiện, user xem live bình thường và không apply TS DVR.<br>4. Nếu thỏa điều kiện, hệ thống check package của user.<br>5. Nếu user có package hợp lệ, user xem live bình thường và TS DVR enable process seek.<br>6. Nếu user không có package hợp lệ, user xem live bình thường và TS DVR disable process seek. |
 | Post-condition | Player mở thành công. User luôn xem live bình thường; TS DVR enabled hoặc disabled theo điều kiện thực tế. |
 | Alternative Path | Không có. Các nhánh điều kiện đã được thể hiện trong Basic Path. |
 | Exception Handling | Nếu hệ thống không check được điều kiện TS DVR, user vẫn xem live bình thường và TS DVR không được bật. |
@@ -203,7 +196,7 @@ flowchart LR
 - User có thể quay về live edge bằng **GO LIVE**.
 
 **Description:**
-User kéo seekbar về mốc trước đó. hệ thống chỉ cho tua trong DVR window tối đa 8 giờ. Khi user đang behind live, hệ thống hiển thị trạng thái phù hợp và nút **GO LIVE**.
+User kéo seekbar về mốc trước đó. Hệ thống chỉ cho tua trong DVR window tối đa 8 giờ. Khi user đang behind live, hệ thống hiển thị trạng thái phù hợp và nút **GO LIVE**.
 
 #### TS-UC-002 — Seek behind live / GO LIVE
 
@@ -236,7 +229,7 @@ flowchart LR
 | Actor | Logged-in User, hệ thống |
 | Triggers | User seek process bar. |
 | Pre-condition | User đang xem live event enable TS DVR. |
-| Basic Path | 1. User seek process bar.<br>2. hệ thống check mốc seek còn trong DVR window không.<br>3. Nếu mốc seek còn trong DVR window, hệ thống phát từ mốc user chọn.<br>4. User đang xem chậm hơn live.<br>5. hệ thống hiện button **Trở về đang phát / Go LIVE**.<br>6. Nếu user bấm **Trở về đang phát / Go LIVE**, hệ thống quay về live hiện tại và ẩn button này.<br>7. Nếu user không bấm, user tiếp tục xem tại mốc đã tua. |
+| Basic Path | 1. User seek process bar.<br>2. Hệ thống check mốc seek còn trong DVR window không.<br>3. Nếu mốc seek còn trong DVR window, hệ thống phát từ mốc user chọn.<br>4. User đang xem chậm hơn live.<br>5. Hệ thống hiện button **Trở về đang phát / Go LIVE**.<br>6. Nếu user bấm **Trở về đang phát / Go LIVE**, hệ thống quay về live hiện tại và ẩn button này.<br>7. Nếu user không bấm, user tiếp tục xem tại mốc đã tua. |
 | Post-condition | User tiếp tục xem tại mốc đã tua hoặc quay về live hiện tại. |
 | Alternative Path | Nếu mốc seek không còn trong DVR window, hệ thống không tua đến mốc đó và đưa user về mốc hợp lệ gần nhất hoặc giữ vị trí trước đó. |
 | Exception Handling | Nếu hệ thống không xử lý được seek, user giữ vị trí xem trước đó và TS DVR không chuyển sang mốc lỗi. |
@@ -297,7 +290,7 @@ flowchart LR
 **Description:**
 Khi event end, hệ thống giữ user trong player session hiện tại. Nếu DVR còn hợp lệ, user vẫn có thể xem lại trong session đó. Next event nếu có thì vẫn theo logic hiện tại và chỉ là CTA thủ công.
 
-#### TS-UC-006 — Event end → Giữ DVR session nếu còn hợp lệ
+#### TS-UC-004 — Event end → Giữ DVR session nếu còn hợp lệ
 
 **Activity Flows:**
 
@@ -333,48 +326,6 @@ flowchart LR
 | Post-condition | User tiếp tục xem/tua trong TS DVR, thoát player, hoặc chuyển sang next event theo logic hiện tại. |
 | Alternative Path | Nếu DVR session không còn hợp lệ, hệ thống hiển thị **Sự kiện đã kết thúc** và end flow. |
 | Exception Handling | Nếu hệ thống không thể tiếp tục phát TS DVR trong session hiện tại, hệ thống hiển thị **Sự kiện đã kết thúc** và không mở DVR session mới. |
-
-### TS-US-005 — User mở event đã kết thúc từ ngoài
-
-- User mở event đã kết thúc.
-- Hệ thống hiện **Sự kiện đã kết thúc**.
-- Flow kết thúc tại ended state; Timeshift không mở DVR session mới.
-
-**Description:**
-Nếu user từ ngoài mở event đã End, hệ thống chỉ hiện ended state theo behavior hiện tại. Timeshift Seek không mở DVR replay mới và không auto next.
-
-#### TS-UC-007 — Open ended event → Show ended state
-
-**Activity Flows:**
-
-```mermaid
-sequenceDiagram
-    autonumber
-
-    actor User as User
-    participant System as Hệ thống
-
-    User->>System: Mở event đã kết thúc
-    System->>System: Check event status
-    System-->>User: Hiện Sự kiện đã kết thúc
-    System-->>User: Hiện next event CTA nếu logic hiện tại có
-    System-->>User: Hiện Back / Close
-```
-
-| Field | Details |
-|---|---|
-| Covered UCs | TS-UC-007 |
-| Description | User từ ngoài mở event đã kết thúc. hệ thống hiện ended state và kết thúc flow. |
-| Actor | Logged-in User, hệ thống |
-| Triggers | User mở event sau khi event đã kết thúc. |
-| Pre-condition | Event đã End trước khi user vào player. |
-| Basic Path | 1. User mở ended event từ ngoài.<br>2. hệ thống check event status.<br>3. hệ thống hiện **Sự kiện đã kết thúc**.<br>4. hệ thống giữ next event CTA theo logic hiện tại nếu có.<br>5. User bấm Back/Close hoặc tự chọn next event CTA nếu CTA đang có. |
-| Post-condition | User thấy ended state. Không có DVR session mới. Next event chỉ mở nếu user tự bấm CTA hiện có. |
-| Alternative Path | Nếu không có next event CTA, chỉ hiện ended state và Back/Close. |
-| Exception Handling | Không check được event status → hệ thống hiện safe unavailable/ended state; không đoán DVR availability. |
-| Business Rules Applied | 1. User mở ended event từ ngoài → hiện **Sự kiện đã kết thúc** rồi end flow.<br>2. Timeshift không mở DVR session mới sau event End.<br>3. Không auto-jump sang next event.<br>4. Next event CTA nếu có thì theo logic hiện tại. |
-
----
 
 ## 8. Screen Element Specification
 
@@ -429,7 +380,7 @@ Live Event Player — DVR enabled
 ├──────────────────────────────────────────┤
 │  18:30 ━━━━━●━━━━━━━━━━━━━━ LIVE 20:15   │
 │        tooltip: 19:05 only, no thumbnail │
-│  [Play/Pause] [GO LIVE khi behind]       │
+│  [Pause/Resume khi TS DVR] [GO LIVE]     │
 └──────────────────────────────────────────┘
 ```
 
@@ -441,14 +392,14 @@ Live Event Player — DVR enabled
 | 2 | Seek thumb | at live edge, behind live, dragging/focused | Position | Không kéo ra ngoài DVR window. |
 | 3 | Time tooltip | visible khi hover/focus/drag | `HH:mm` hoặc `mm:ss` | Không có thumbnail preview. |
 | 4 | LIVE badge | live edge, behind live, hidden after end | `LIVE` | Dim/behind state khi user behind live. |
-| 5 | Play/Pause button | playing, paused, buffering | Standard player control | Pause tạo behind-live position khi resume. |
-| 6 | GO LIVE button | visible, hidden, disabled | `GO LIVE` / `Trực tiếp` | Chỉ hiện khi event còn live và user đang behind live. |
+| 5 | Pause/Resume button | visible, hidden, playing, paused | Standard player control | Chỉ hiển thị khi user đang xem lại trong TS DVR. |
+| 6 | GO LIVE button | visible, hidden, disabled | `GO LIVE` / `Trực tiếp` | Chỉ hiện khi event còn live và user đang xem chậm hơn live. |
 | 7 | Error/toast | hidden, visible | Localized copy | Cho case segment unavailable, entitlement, expired window. |
 
 **Surface behavior notes:**
 
-- Ở live edge: hiện `LIVE`; GO LIVE ẩn; user có thể seek backward hoặc pause.
-- Paused live: hiện paused control; resume từ paused position nếu còn hợp lệ.
+- Ở live edge: hiện `LIVE`; GO LIVE ẩn; user có thể seek backward nhưng không pause.
+- Pause/resume chỉ hiển thị khi user đang xem lại trong TS DVR.
 - Behind live: dim/behind treatment; cho seek, play/pause, và GO LIVE.
 - Buffering: hiện loading treatment và giữ target position.
 - DVR không khả dụng/no entitlement: ẩn hoặc disable DVR controls; chỉ hiện message/CTA đã approve khi product support.
@@ -467,7 +418,7 @@ Live Event Player — DVR enabled
 | Surface / Location | Player overlay/backdrop after event end |
 | Platform | iOS / Android / Web / TV |
 | When shown | User đã ở trong player trước khi event kết thúc. |
-| Related UC / Flow | TS-UC-006 |
+| Related UC / Flow | TS-UC-004 |
 | Placement notes | Backdrop/next-event prompt hiện tại có thể xuất hiện; next event chỉ là CTA khi DVR session active. |
 
 **Sketching wireframe / Text-Based Wireframing:**
@@ -509,53 +460,6 @@ Event Ended — Current DVR Session
 - Thời điểm event vừa End có thể dùng lại backdrop và next-event prompt hiện tại.
 - Nếu user đang seek/watch/pause trong DVR, không interrupt bằng forced next-event transition.
 
-#### SURF-003 — User mở event đã kết thúc từ ngoài
-
-**Surface details:**
-
-| Field | Details |
-|---|---|
-| Surface / Location | Event/player entry cho ended event |
-| Platform | iOS / Android / Web / TV |
-| When shown | Event đã End trước khi user mở từ ngoài. |
-| Related UC / Flow | TS-UC-007 |
-| Placement notes | Đây là ended state flow; Timeshift không mở DVR session mới. |
-
-**Sketching wireframe / Text-Based Wireframing:**
-
-```text
-Ended Event Entry
-┌──────────────────────────────────────────┐
-│              Backdrop / Poster           │
-│                                          │
-│          Sự kiện đã kết thúc             │
-│                                          │
-│ [Xem sự kiện tiếp theo]                 │
-│ [Quay lại]                              │
-└──────────────────────────────────────────┘
-```
-
-**Surface elements:**
-
-| # | Element | States | Format / Copy | Rules / Notes |
-|---:|---|---|---|---|
-| 1 | Backdrop/poster | visible | Event image | Dùng backdrop của ended event hiện tại. |
-| 2 | Ended message | visible | `Sự kiện đã kết thúc` | Bắt buộc. |
-| 3 | Next event CTA | visible/hidden | `Xem sự kiện tiếp theo` | Optional; theo logic hiện tại; user tự bấm nếu muốn. |
-| 4 | Back/Close CTA | visible | `Quay lại` / Back | Đưa user về màn trước. |
-
-**Surface behavior notes:**
-
-- User từ ngoài mở event đã End: hiện **Sự kiện đã kết thúc** rồi end flow.
-- Next event CTA nếu có thì theo logic hiện tại và là manual action.
-- Error state: hiện safe error/retry; không đoán DVR availability.
-
-**Surface-specific notes:**
-
-- Ended event entry không mở DVR session mới. DVR after end chỉ giữ cho active player session đã mở trước khi event End.
-
----
-
 ## 9. Error Handling & User-Facing Messages
 
 | Case | User-facing message | Behavior |
@@ -564,8 +468,7 @@ Ended Event Entry
 | User thiếu package | `Nội dung tua lại yêu cầu gói phù hợp.` | Ẩn DVR seek; chỉ hiện package CTA nếu product support. |
 | Seek ngoài window | `Không thể tua đến thời điểm này.` | Đưa user về mốc hợp lệ gần nhất hoặc giữ vị trí trước đó. |
 | Segment unavailable | `Nội dung tua lại đang tạm thời không khả dụng.` | Retry/buffer; giữ vị trí hợp lệ trước đó. |
-| Event ended trong session | `Sự kiện đã kết thúc.` | Giữ session DVR nếu còn hợp lệ; next event CTA optional theo logic hiện tại. |
-| User mở ended event từ ngoài | `Sự kiện đã kết thúc.` | End flow; không mở DVR session mới; không auto next. |
+| Event ended trong session | `Sự kiện đã kết thúc.` | Giữ TS DVR trong active session nếu còn hợp lệ; next event CTA optional theo logic hiện tại. |
 | API error | `Không thể tải thông tin sự kiện. Vui lòng thử lại.` | Thử lại hoặc quay lại. |
 
 ---
@@ -585,7 +488,7 @@ Ended Event Entry
 ## 11. Handoff Checklist
 
 - [x] Use Case Summary lấy từ goal/branch thật, không ép số lượng cố định.
-- [x] Activity Flows cover đủ UC và có liệt kê Covered UCs.
+- [x] Activity Flows cover đủ 4 UC hiện tại.
 - [x] Mỗi flow có diagram + bảng Field/Details.
 - [x] Surface details gom chung trong mục 8.4.
 - [x] Mỗi surface chính có text-based wireframe + surface elements table.
