@@ -16,7 +16,7 @@ Timeshift Seek giúp user đang xem **sự kiện live FPTLive** tua lại nội
 
 Feature này **không áp dụng cho EPL**. User cần có gói hợp lệ. Event cần được bật cờ DVR qua CMS.
 
-Khi event kết thúc, hệ thống không tự nhảy sang next event và không thay đổi logic next event hiện có. DVR sau event end chỉ giữ trong active player session nếu user đã ở trong player trước khi event end và DVR còn hợp lệ.
+Khi event kết thúc, hệ thống không tự nhảy sang next event và không thay đổi logic next event hiện có. Sau event end, user vẫn có thể xem/tua lại trong phiên player hiện tại nếu TS DVR còn khả dụng.
 
 ---
 
@@ -25,7 +25,7 @@ Khi event kết thúc, hệ thống không tự nhảy sang next event và khôn
 | Version | Date | Updated By | Notes | Approved By |
 |---|---|---|---|---|
 | v1.0 | 2026-06-16 | Dylan | Initial split docs: full-event DVR and legacy post-event behavior. | Pending |
-| v2.0 | 2026-06-22 | Dylan | Rewrite theo requirement mới: DVR 8 giờ, chỉ FPTLive, loại EPL, có entitlement gate, CMS flag, không thumbnail, DVR sau event end theo active session và không auto next. | Pending |
+| v2.0 | 2026-06-22 | Dylan | Rewrite theo requirement mới: DVR 8 giờ, chỉ FPTLive, loại EPL, có entitlement gate, CMS flag, không thumbnail, DVR sau event end trong phiên player hiện tại và không auto next. | Pending |
 | v2.1 | 2026-06-23 | Dylan | Làm rõ DVR window bằng mô tả nghiệp vụ thay vì công thức; rà QA handoff. | Pending |
 | v2.2 | 2026-06-23 | Dylan | Align docs về 4 UC chính; bỏ ended-event entry UC khỏi scope Timeshift Seek; đồng bộ wording hệ thống. | Pending |
 
@@ -53,7 +53,7 @@ User đang xem live event có thể tua lại nội dung đã phát, tạm dừn
 | FPTLive event | In scope | DVR bật theo CMS flag nếu stream hỗ trợ DVR và user có entitlement. |
 | EPL event | Out of scope | Không bật DVR/start-over, kể cả khi config chung có DVR. |
 | Non-FPTLive event | Out of scope by default | Chỉ bật nếu sau này có requirement rõ. |
-| User đang trong player khi event end | In scope | Có thể giữ DVR replay trong active player session nếu DVR còn hợp lệ; không auto next. |
+| User đang trong player khi event end | In scope | Có thể tiếp tục xem/tua lại trong phiên player hiện tại nếu TS DVR còn khả dụng; không auto next. |
 
 ### 3.4 User scope
 
@@ -72,7 +72,7 @@ User đang xem live event có thể tua lại nội dung đã phát, tạm dừn
 - CMS flag để bật/tắt DVR theo từng event.
 - Check entitlement trước khi trả DVR link.
 - Không có seek thumbnail preview.
-- Session-bound DVR replay sau event end cho user đang ở trong active player session.
+- Sau event end, user vẫn có thể xem/tua lại trong phiên player hiện tại nếu TS DVR còn khả dụng.
 
 ### 3.6 Out of scope
 
@@ -114,13 +114,9 @@ User flow hiện tại gồm 4 UC chính. Các nhánh như DVR không khả dụ
 
 ### 6.1 Điều kiện bật DVR
 
-1. DVR chỉ bật cho **FPTLive event** đủ điều kiện.
-2. EPL event không bật DVR / start-over.
-3. Event phải được bật DVR bằng CMS flag.
-4. User phải có package/entitlement hợp lệ.
-5. Stream phải hỗ trợ DVR playback trên protocol được dùng.
-6. Nếu thiếu bất kỳ điều kiện nào, hệ thống chạy live playback bình thường và không hiện thanh tua DVR.
-7. Hệ thống chỉ hiển thị thanh tua DVR khi hệ thống xác nhận event này được phép tua lại.
+1. DVR chỉ bật khi event thỏa đủ các điều kiện: là **FPTLive event**, không phải EPL, CMS flag DVR đang bật, user có package/entitlement hợp lệ, và stream hỗ trợ DVR playback.
+2. Nếu thiếu bất kỳ điều kiện nào, hệ thống chạy live playback bình thường và không hiện thanh tua DVR.
+3. Hệ thống chỉ hiển thị thanh tua DVR khi hệ thống xác nhận event này được phép tua lại.
 
 ### 6.2 Cách tua DVR
 
@@ -139,9 +135,9 @@ User flow hiện tại gồm 4 UC chính. Các nhánh như DVR không khả dụ
 1. Khi event vừa end, hệ thống có thể giữ backdrop / next-event prompt hiện tại.
 2. Nếu user đang watch/seek/pause trong player lúc event end, hệ thống không tự chuyển sang next event.
 3. Next event nếu có thì chỉ là CTA thủ công; Timeshift không can thiệp rule chọn next event.
-4. DVR replay sau event end chỉ giữ trong active player session nếu user đã ở trong player trước khi event end.
-5. DVR replay sau event end vẫn phải đủ điều kiện: entitlement, CMS flag, stream availability, và DVR window.
-6. Nếu DVR expired hoặc không khả dụng trong active session, hệ thống ẩn DVR controls và giữ safe ended/unavailable state.
+4. Sau event end, user vẫn có thể xem/tua lại trong phiên player hiện tại nếu user đã ở trong player trước khi event end.
+5. TS DVR sau event end vẫn phải đủ điều kiện: entitlement, CMS flag, stream availability, và DVR window.
+6. Nếu DVR expired hoặc không khả dụng trong phiên player hiện tại, hệ thống ẩn DVR controls và giữ safe ended/unavailable state.
 7. Khi playback trong TS DVR chạy tới endtime lần nữa, hệ thống quay lại End State/Backdrop; không tự replay loop.
 8. Next Event/Auto Next Event đi theo logic hiện tại; Timeshift không can thiệp rule chọn next event.
 
