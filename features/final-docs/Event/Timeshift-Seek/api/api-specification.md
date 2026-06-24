@@ -12,7 +12,8 @@ Khi implement, dùng canonical flat file cho Product, UX, API/integration, state
 
 Các drift chính đã sửa trong canonical file:
 
-- DVR/start-over max window là 8 giờ, không phải full-event unlimited.
+- Start-over là xem từ đầu event đang live; không phải chọn mốc bất kỳ trong quá khứ và không mở entry mới sau event end.
+- DVR seek tối đa 8 giờ gần nhất; không phải full-event unlimited.
 - DVR chỉ áp dụng cho FPTLive event đủ điều kiện.
 - Không áp dụng cho EPL event.
 - Hệ thống phải check package của user trước khi trả DVR link.

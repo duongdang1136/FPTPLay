@@ -3,6 +3,7 @@
 > Feature: Event / Timeshift-Seek
 > Stage: Lightweight API draft (proposed — TBD, confirm with BE)
 > Last updated: 2026-06-16
+> ⚠️ Superseded draft. Current rule: Start-over = xem từ đầu event đang live; DVR seek tối đa 8 giờ gần nhất; no post-event VOD switch. Use `features/final-docs/Event/Timeshift-Seek/timeshift-seek-functional-requirements.md`.
 
 > ⚠️ All endpoints below are **proposed/TBD** — not yet confirmed with backend API owner.
 > Reconcile with actual backend implementation before coding.
@@ -57,8 +58,8 @@ Authorization: Bearer <accessToken>  (if paywalled; otherwise optional)
 - `event_status`: `"live"` | `"ended"` | `"upcoming"`.
 - `event_start_unix`: Unix timestamp (seconds UTC) of event start — fallback for wall-clock if `PROGRAM-DATE-TIME` not in HLS.
 - `dvr_enabled`: Whether DVR/timeshift is available for this event.
-- `dvr_start_unix`: Start of DVR window (equals `event_start_unix` for full-event DVR).
-- `vod_url`: Populated after event ends; player switches to this URL for VOD replay.
+- `dvr_start_unix`: Start of DVR window. For current requirement, this can equal `event_start_unix` only while event duration is within DVR limit; otherwise it is the rolling DVR start.
+- `vod_url`: Legacy draft only. Current requirement does not switch to VOD after event end.
 - `thumbnail_vtt_url`: Optional VTT sprite for seek thumbnails (null if not generated).
 
 ### `GET /api/v1/events/{event_id}/stream` — Post-event response
