@@ -6,20 +6,17 @@
 > Audience: Product, BA, FE, BE, QA
 > Status: Final implementation handoff
 > Writing style: Caveman Vietnam — ít chữ, dễ đọc, đúng ý, không low-level
-> Last updated: 2026-06-24
+> Last updated: 2026-06-23
 
 ---
 
 ## 1. Description
 
-Timeshift Seek gồm 2 hành vi chính cho **sự kiện live FPTLive** đủ điều kiện:
+Timeshift Seek giúp user đang xem **sự kiện live FPTLive** tua lại nội dung đã phát trong DVR window tối đa **8 tiếng**. User có thể xem lại đoạn đã qua, pause/resume khi đang xem lại trong TS DVR, hoặc bấm **GO LIVE** để quay về live edge.
 
-- **Start-over:** user có thể bắt đầu xem lại từ **thời điểm event bắt đầu** khi event vẫn đang live. User không chọn một mốc bất kỳ trong quá khứ từ entry này; entry này chỉ đưa user về đầu event. Khi event đã kết thúc, user không còn truy cập Start-over như một entry mới.
-- **DVR seek:** khi đã ở trong player, user có thể tua trong phần nội dung đã phát và còn nằm trong DVR window. DVR window tối đa **8 tiếng**; với event ngắn hơn 8 tiếng thì có thể về đầu event, với event dài hơn 8 tiếng thì chỉ còn tối đa 8 tiếng gần nhất.
+Feature này **không áp dụng cho EPL**. User cần có gói **V.VIP1**. Event cần được bật cờ DVR qua CMS.
 
-User có thể pause/resume khi đang xem lại trong TS DVR, hoặc bấm **GO LIVE** để quay về live edge. Feature này **không áp dụng cho EPL**. User cần có gói **V.VIP1**. Event cần được bật cờ DVR qua CMS.
-
-Khi event kết thúc, hệ thống không tự nhảy sang next event và không thay đổi logic next event hiện có. Sau event end, user vẫn có thể xem/tua lại trong phiên player hiện tại nếu TS DVR còn khả dụng, nhưng không mở Start-over như một entry mới.
+Khi event kết thúc, hệ thống không tự nhảy sang next event và không thay đổi logic next event hiện có. Sau event end, user vẫn có thể xem/tua lại trong phiên player hiện tại nếu TS DVR còn khả dụng.
 
 ---
 
@@ -31,7 +28,6 @@ Khi event kết thúc, hệ thống không tự nhảy sang next event và khôn
 | v2.0 | 2026-06-22 | Dylan | Rewrite theo requirement mới: DVR 8 giờ, chỉ FPTLive, loại EPL, gói V.VIP1, CMS flag, không thumbnail, DVR sau event end trong phiên player hiện tại và không auto next. | Pending |
 | v2.1 | 2026-06-23 | Dylan | Làm rõ DVR window bằng mô tả nghiệp vụ thay vì công thức; rà QA handoff. | Pending |
 | v2.2 | 2026-06-23 | Dylan | Align docs về 4 UC chính; bỏ ended-event entry UC khỏi scope Timeshift Seek; đồng bộ wording hệ thống. | Pending |
-| v2.3 | 2026-06-24 | Dylan | Làm rõ Start-over là xem từ đầu event đang live; tách khỏi DVR seek tối đa 8 giờ gần nhất. | Pending |
 
 ---
 
@@ -55,7 +51,7 @@ User đang xem live event có thể tua lại nội dung đã phát, tạm dừn
 | Event type/source | Scope | Rule |
 |---|---|---|
 | FPTLive event | In scope | Timeshift Seek bật khi event không phải EPL, CMS flag đang bật, và user có gói V.VIP1. |
-| EPL event | Out of scope | Không bật DVR seek hoặc Start-over, kể cả khi config chung có DVR. |
+| EPL event | Out of scope | Không bật DVR/start-over, kể cả khi config chung có DVR. |
 | Non-FPTLive event | Out of scope by default | Chỉ bật nếu sau này có requirement rõ. |
 | User đang trong player khi event end | In scope | Có thể tiếp tục xem/tua lại trong phiên player hiện tại nếu TS DVR còn khả dụng; không auto next. |
 
@@ -71,8 +67,7 @@ User đang xem live event có thể tua lại nội dung đã phát, tạm dừn
 ### 3.5 In scope
 
 - Timeshift Seek cho FPTLive event đủ điều kiện.
-- Start-over đưa user về đầu event khi event còn live.
-- DVR seek trong nội dung đã phát, tối đa 8 giờ gần nhất.
+- DVR window tối đa 8 giờ.
 - Hỗ trợ HLS và DASH DVR stream khi có.
 - CMS flag để bật/tắt DVR theo từng event.
 - Check gói V.VIP1 trước khi bật Timeshift Seek.
@@ -81,7 +76,7 @@ User đang xem live event có thể tua lại nội dung đã phát, tạm dừn
 
 ### 3.6 Out of scope
 
-- EPL DVR seek / Start-over.
+- EPL DVR/start-over.
 - Auto-jumping sang next event.
 - Seek thumbnail sprite/VTT.
 - Offline download.
@@ -128,16 +123,15 @@ User flow hiện tại gồm 4 UC chính. Các nhánh như Timeshift Seek không
 
 ### 6.2 Cách tua DVR
 
-1. Start-over là hành vi đưa user về **đầu event** khi event vẫn đang live; Start-over không phải chọn một mốc bất kỳ trong quá khứ.
-2. DVR seek là hành vi tua trong phần nội dung đã phát và còn nằm trong DVR window.
-3. DVR window tối đa **8 giờ gần nhất**. Nếu event mới live chưa đủ 8 giờ, user có thể tua về từ đầu event. Nếu event live quá 8 giờ, mốc xa nhất là đầu DVR window 8 giờ gần nhất, không phải đầu event.
-4. User không được seek trước phần DVR cho phép hoặc sau live edge.
-5. Seek không có thumbnail. Tooltip chỉ cần hiển thị timestamp nếu cần.
-6. Khi user đang ở live edge, GO LIVE ẩn.
-7. Khi user đang xem chậm hơn live, hệ thống hiện GO LIVE.
-8. Pause/resume chỉ hiển thị khi user đang xem lại trong TS DVR. Khi user đang ở live hiện tại, user không pause được.
-9. Nếu paused position còn trong DVR window, hệ thống tiếp tục phát từ vị trí đã pause.
-10. Nếu paused position đã hết hạn, hệ thống đưa user về mốc DVR hợp lệ gần nhất hoặc live hiện tại tùy thuộc vào player.
+1. User chỉ tua lại được trong phần nội dung đã phát, tối đa **8 giờ gần nhất**.
+2. Nếu event mới live chưa đủ 8 giờ, user có thể tua về từ đầu event.
+3. User không được seek trước phần DVR cho phép hoặc sau live edge.
+4. Seek không có thumbnail. Tooltip chỉ cần hiển thị timestamp nếu cần.
+5. Khi user đang ở live edge, GO LIVE ẩn.
+6. Khi user đang xem chậm hơn live, hệ thống hiện GO LIVE.
+7. Pause/resume chỉ hiển thị khi user đang xem lại trong TS DVR. Khi user đang ở live hiện tại, user không pause được.
+8. Nếu paused position còn trong DVR window, hệ thống tiếp tục phát từ vị trí đã pause.
+9. Nếu paused position đã hết hạn, hệ thống đưa user về mốc DVR hợp lệ gần nhất hoặc live hiện tại tùy thuộc vào player.
 
 ### 6.3 Khi event kết thúc
 
@@ -201,7 +195,7 @@ flowchart LR
 - User có thể quay về live edge bằng **GO LIVE**.
 
 **Description:**
-User dùng Start-over để về đầu event khi event còn live, hoặc kéo seekbar về mốc trước đó trong DVR window. Hệ thống chỉ cho tua trong nội dung đã phát còn hợp lệ: về đầu event nếu event chưa quá 8 giờ, hoặc tối đa 8 giờ gần nhất nếu event dài hơn 8 giờ. Khi user đang behind live, hệ thống hiển thị trạng thái phù hợp và nút **GO LIVE**.
+User kéo seekbar về mốc trước đó. Hệ thống chỉ cho tua trong DVR window tối đa 8 giờ. Khi user đang behind live, hệ thống hiển thị trạng thái phù hợp và nút **GO LIVE**.
 
 #### TS-UC-002 — Seek behind live / GO LIVE
 
@@ -234,7 +228,7 @@ flowchart LR
 | Actor | Logged-in User, hệ thống |
 | Triggers | User seek process bar. |
 | Pre-condition | User đang xem live event enable TS DVR. |
-| Basic Path | 1. User dùng Start-over hoặc seek process bar.<br>2. Nếu user dùng Start-over, hệ thống đưa user về đầu event khi event còn live và đầu event còn trong DVR window.<br>3. Nếu user seek process bar, hệ thống check mốc seek còn trong DVR window không.<br>4. Nếu mốc seek còn trong DVR window, hệ thống phát từ mốc user chọn.<br>5. User đang xem chậm hơn live.<br>6. Hệ thống hiện button **Trở về đang phát / Go LIVE**.<br>7. Nếu user bấm **Trở về đang phát / Go LIVE**, hệ thống quay về live hiện tại và ẩn button này.<br>8. Nếu user không bấm, user tiếp tục xem tại mốc đã tua. |
+| Basic Path | 1. User seek process bar.<br>2. Hệ thống check mốc seek còn trong DVR window không.<br>3. Nếu mốc seek còn trong DVR window, hệ thống phát từ mốc user chọn.<br>4. User đang xem chậm hơn live.<br>5. Hệ thống hiện button **Trở về đang phát / Go LIVE**.<br>6. Nếu user bấm **Trở về đang phát / Go LIVE**, hệ thống quay về live hiện tại và ẩn button này.<br>7. Nếu user không bấm, user tiếp tục xem tại mốc đã tua. |
 | Post-condition | User tiếp tục xem tại mốc đã tua hoặc quay về live hiện tại. |
 | Alternative Path | Nếu mốc seek không còn trong DVR window, hệ thống không tua đến mốc đó và đưa user về mốc hợp lệ gần nhất hoặc giữ vị trí trước đó. |
 | Exception Handling | Nếu hệ thống không xử lý được seek, user giữ vị trí xem trước đó và TS DVR không chuyển sang mốc lỗi. |
@@ -412,7 +406,7 @@ Live Event Player — Timeshift Seek enabled
 **Surface-specific notes:**
 
 - No thumbnail preview on any platform.
-- Start-over entry đưa user về đầu event khi event còn live; nếu event duration > 8h, seekbar left edge là rolling 8h start, không phải event start.
+- If event duration > 8h, left edge is rolling 8h start, not event start.
 
 #### SURF-002 — Event ended while user is inside player
 

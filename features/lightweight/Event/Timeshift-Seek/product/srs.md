@@ -4,7 +4,6 @@
 > Feature: Event / Timeshift-Seek
 > Stage: Lightweight SRS (draft)
 > Last updated: 2026-06-16
-> ⚠️ Superseded draft. Current rule: Start-over = xem từ đầu event đang live; DVR seek tối đa 8 giờ gần nhất; no post-event VOD switch. Use `features/final-docs/Event/Timeshift-Seek/timeshift-seek-functional-requirements.md`.
 
 ## 1. Summary
 

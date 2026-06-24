@@ -10,8 +10,7 @@ Các split docs cũ trong `product/`, `api/`, và `design/` chỉ là legacy ref
 
 Quyết định chính hiện tại:
 
-- Start-over: đưa user về đầu event khi event còn live; không chọn mốc bất kỳ khác trong quá khứ và không mở entry mới sau event end.
-- DVR seek: tua trong nội dung đã phát còn hợp lệ, tối đa 8 giờ gần nhất.
+- DVR/start-over max window: 8 giờ.
 - Chỉ bật cho FPTLive event đủ điều kiện.
 - Không áp dụng cho EPL event.
 - User phải có package hợp lệ trước khi hệ thống trả DVR link.
