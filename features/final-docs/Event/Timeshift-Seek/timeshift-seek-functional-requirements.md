@@ -531,42 +531,28 @@ flowchart LR
 
 ## 12. Analytics & Logging
 
-> Template log theo chuẩn FPTPlay. Log IDs thực tế do BE/FE xác nhận — mục này định nghĩa scope + đề xuất event name.
+> Template log theo chuẩn FPTPlay. Link definition chi tiết sẽ bổ sung sau.
 
-### 12.1 Log Timeshift Seek (Start / Stop)
+### 12.1 Log 192 — Timeshift Seek
 
-Chỉ ghi **1 log với 2 status** (`start` / `stop`) — không tách thành nhiều log riêng.
+**Tổng quát:** Thao tác Timeshift Seek
 
-**Trigger:**
-- **Status `start`:** Khi user thả seek tại mốc TS window thành công (seek vào TS DVR).
-- **Status `stop`:** Khi user chuyển luồng — seek sang mốc TS khác, hoặc seek về Live, hoặc nhấn **Trở về đang phát** / **Back**.
+**Yêu cầu:** Khi người dùng đang xem sự kiện live FPTLive tua lại nội dung đã phát. Ghi log sau khi thực hiện xong một thao tác tua.
 
-**Ví dụ luồng:**
-```
-User play Live
-  → Seek về TS A  → log: Start A
-  → Seek về TS B  → log: Stop A → Start B
-  → Seek về Live → log: Stop B
-```
+| Field | Value |
+|---|---|
+| LogId | 192 |
+| Screen | Kế thừa từ log 170 tương ứng |
 
-| Event | Status | Khi nào | Key properties |
-|---|---|---|---|
-| `ts_seek` | `start` | User thả seek tại mốc TS thành công | `content_id`, `event_id`, `seek_position`, `status: start` |
-| `ts_seek` | `stop` | User seek sang mốc khác hoặc quay về Live | `content_id`, `event_id`, `seek_position`, `status: stop`, `event: seek_new|go_live|back` |
+| Event | Mô tả | Ghi chú |
+|---|---|---|
+| `SkipForward` | Nhấn tua tới 10s (tất cả các loại hành vi) | — |
+| `SkipBack` | Nhấn tua lùi 10s (tất cả các loại hành vi) | — |
+| `Seek` | Kéo trên thanh slider của player | Mobile: ghi log ngay khi thực hiện Seek, không cần xác nhận thành công hay không |
 
-**Scope:**
-- Chỉ log khi user đang trong TS DVR window hợp lệ.
-- Không log khi user đang ở live edge.
-- Log gửi từ client (FE/mobile) sau khi thao tác tua hoàn tất.
+> 📋 **Link definition chi tiết Log 192:** _(sếp paste link vào đây)_
 
-### 12.2 Log Play trực tiếp (Live)
-
-| Event | Status | Khi nào | Key properties |
-|---|---|---|---|
-| `live_playback` | `start` | User vào player, bắt đầu xem live | `content_id`, `event_id`, `status: start`, `mode: live` |
-| `live_playback` | `stop` | User thoát player hoặc chuyển sang TS | `content_id`, `event_id`, `status: stop`, `mode: live` |
-
-### 12.3 PingLog 111 — Bổ sung case Timeshift
+### 12.2 PingLog 111 — Bổ sung case Timeshift
 
 > Log 111 hiện đã có định nghĩa cho event trực tiếp. Cần bổ sung field phân biệt mode TS.
 
