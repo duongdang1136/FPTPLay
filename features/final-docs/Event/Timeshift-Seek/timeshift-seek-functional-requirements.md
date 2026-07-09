@@ -6,7 +6,7 @@
 > Audience: Product, BA, FE, BE, QA
 > Status: Final implementation handoff
 > Writing style: Caveman Vietnam — ít chữ, dễ đọc, đúng ý, không low-level
-> Last updated: 2026-06-23
+> Last updated: 2026-07-09
 
 ---
 
@@ -28,6 +28,7 @@ Khi event kết thúc, hệ thống không tự nhảy sang next event và khôn
 | v2.0 | 2026-06-22 | Dylan | Rewrite theo requirement mới: DVR 8 giờ, chỉ FPTLive, loại EPL, gói V.VIP1, CMS flag, không thumbnail, DVR sau event end trong phiên player hiện tại và không auto next. | Pending |
 | v2.1 | 2026-06-23 | Dylan | Làm rõ DVR window bằng mô tả nghiệp vụ thay vì công thức; rà QA handoff. | Pending |
 | v2.2 | 2026-06-23 | Dylan | Align docs về 4 UC chính; bỏ ended-event entry UC khỏi scope Timeshift Seek; đồng bộ wording hệ thống. | Pending |
+| v2.3 | 2026-07-09 | Dylan | Bổ sung rule ẩn AR-WC khi TS enabled (BR 6.1 + SURF-001); thêm mục 12 Analytics & Logging; bổ sung getlink / secure m3u8 vào 3.5 In-scope + 3.6 Out-of-scope. | Pending |
 
 ---
 
@@ -70,7 +71,8 @@ User đang xem live event có thể tua lại nội dung đã phát, tạm dừn
 - DVR window tối đa 8 giờ.
 - Hỗ trợ HLS và DASH DVR stream khi có.
 - CMS flag để bật/tắt DVR theo từng event.
-- Check gói V.VIP1 trước khi bật Timeshift Seek.
+- Check gói hợp lệ (V.VIP1) trước khi trả TS link (secure link m3u8). Chi tiết logic getlink do BE định nghĩa.
+- Ẩn AR-WC khi Timeshift Seek enabled.
 - Không có seek thumbnail preview.
 - Sau event end, user vẫn có thể xem/tua lại trong phiên player hiện tại nếu TS DVR còn khả dụng.
 
@@ -81,6 +83,7 @@ User đang xem live event có thể tua lại nội dung đã phát, tạm dừn
 - Seek thumbnail sprite/VTT.
 - Offline download.
 - Chi tiết CMS UI ngoài flag/field cần thiết.
+- Chi tiết implement secure link m3u8, token generation — thuộc BE spec.
 
 ---
 
@@ -120,6 +123,7 @@ User flow hiện tại gồm 4 UC chính. Các nhánh như Timeshift Seek không
    - User có gói **V.VIP1**.
 2. Nếu thiếu bất kỳ điều kiện nào, hệ thống chạy live playback bình thường và không hiện thanh tua Timeshift Seek.
 3. Hệ thống chỉ hiển thị thanh tua Timeshift Seek khi hệ thống xác nhận event này được phép tua lại.
+4. Khi Timeshift Seek enabled, **ẩn AR-WC** trong player. AR-WC hiển thị trở lại khi Timeshift Seek disabled hoặc không khả dụng.
 
 ### 6.2 Cách tua DVR
 
@@ -393,7 +397,8 @@ Live Event Player — Timeshift Seek enabled
 | 4 | LIVE badge | live edge, behind live, hidden after end | `LIVE` | Dim/behind state khi user behind live. |
 | 5 | Pause/Resume button | visible, hidden, playing, paused | Standard player control | Chỉ hiển thị khi user đang xem lại trong TS DVR. |
 | 6 | GO LIVE button | visible, hidden, disabled | `GO LIVE` / `Trực tiếp` | Chỉ hiện khi event còn live và user đang xem chậm hơn live. |
-| 7 | Error/toast | hidden, visible | Localized copy | Cho case segment unavailable, user không có gói V.VIP1, expired window. |
+| 7 | AR-WC | hidden khi TS enabled | — | Ẩn khi Timeshift Seek active; hiển thị lại khi TS disabled/không khả dụng. |
+| 8 | Error/toast | hidden, visible | Localized copy | Cho case segment unavailable, user không có gói V.VIP1, expired window. |
 
 **Surface behavior notes:**
 
@@ -472,6 +477,26 @@ Event Ended — Current DVR Session
 
 ---
 
+## 12. Analytics & Logging
+
+> Log phân biệt mode `live` vs `timeshift` trong event player. Log IDs đã được define — mục này gắn link và mô tả scope áp dụng cho Timeshift Seek.
+
+| Log ID | Event name | Params liên quan | Khi nào gửi | Ghi chú |
+|---|---|---|---|---|
+| LOG-700 | _(xem log definition)_ | `mode: live \| timeshift` | Load player / khởi tạo stream | Phân biệt user đang xem live hay TS DVR |
+| LOG-701 | _(xem log definition)_ | `mode: live \| timeshift`, `seek_position` | User seek trên DVR seekbar | Ghi nhận hành động tua |
+| LOG-702 | _(xem log definition)_ | `mode: timeshift`, `action: pause \| resume` | User pause/resume trong TS DVR | Chỉ log khi đang trong TS mode |
+| LOG-703 | _(xem log definition)_ | `mode: live \| timeshift`, `event_status: ended` | Event kết thúc trong session | Ghi nhận state chuyển từ live → ended |
+
+> 📎 **Log definition chi tiết:** _(sếp paste link tài liệu log 700–703 vào đây)_
+
+**Scope áp dụng cho Timeshift Seek:**
+- Field `mode` phải có giá trị `timeshift` khi user đang xem trong TS DVR, và `live` khi đang ở live edge.
+- Không log TS event khi Timeshift Seek disabled hoặc user không đủ điều kiện.
+- Log gửi từ client (FE/mobile); BE không cần log riêng cho TS state trừ khi có yêu cầu riêng.
+
+---
+
 ## 10. References
 
 | Item | Path / Link |
@@ -481,6 +506,7 @@ Event Ended — Current DVR Session
 | Legacy API spec | `features/final-docs/Event/Timeshift-Seek/api/api-specification.md` |
 | Legacy design spec | `features/final-docs/Event/Timeshift-Seek/design/design-specification.md` |
 | Domain wiki | `sdlc-agent/wiki/Global/Domain/MediaStreaming/OTT/FPTPlay/DOM-MEDIASTREAMING-FPTPLAY-001.md` |
+| Log definition 700–703 | _(sếp paste link vào đây)_ |
 
 ---
 
