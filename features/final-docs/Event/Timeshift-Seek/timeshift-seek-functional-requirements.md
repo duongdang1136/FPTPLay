@@ -108,8 +108,9 @@ Use case lấy từ goal/branch thật. Không ép số lượng cố định.
 | TS-UC-002 | Tua lại trong DVR window / GO LIVE | Logged-in User | User seek process bar | User xem từ mốc đã tua hoặc quay về live hiện tại bằng **Trở về đang phát / GO LIVE**. |
 | TS-UC-003 | Pause / Resume trong TS DVR | Logged-in User | User đang xem lại trong TS DVR và bấm pause/resume | User tiếp tục phát từ vị trí pause nếu còn trong DVR window. |
 | TS-UC-004 | Event end khi user còn trong player | Logged-in User, hệ thống | Event kết thúc trong lúc user đang xem | TS DVR có thể tiếp tục trong phiên player hiện tại nếu còn hợp lệ; next event theo logic hiện tại. |
+| TS-UC-005 | Nhận push end từ Live khi đang xem TS | Logged-in User, hệ thống | Server push event-ended trong khi user đang xem TS DVR | User không bị interrupt — tiếp tục play TS đến hết; backdrop/end state chỉ hiện sau khi TS stream tự kết thúc. |
 
-User flow hiện tại gồm 4 UC chính. Các nhánh như Timeshift Seek không khả dụng, CMS flag, gói V.VIP1, GO LIVE được cover trong UC tương ứng; không tách thành UC riêng.
+User flow hiện tại gồm 5 UC chính. Các nhánh như Timeshift Seek không khả dụng, CMS flag, gói V.VIP1, GO LIVE được cover trong UC tương ứng; không tách thành UC riêng.
 
 ---
 
@@ -149,6 +150,7 @@ User flow hiện tại gồm 4 UC chính. Các nhánh như Timeshift Seek không
 7. Khi playback trong TS DVR chạy tới endtime, BE handle end-of-stream signal — client nhận signal và hiện End State/Backdrop; không tự replay loop.
 8. Khi user bấm **Trở về đang phát** hoặc **Back** trong lúc đang xem TS DVR, client xử lý ngay phía mình — dựng backdrop lên mà không cần đợi stream signal.
 9. Next Event/Auto Next Event đi theo logic hiện tại; Timeshift không can thiệp rule chọn next event.
+10. **Push end từ Live khi user đang xem TS:** Nếu hệ thống gửi push event-ended trong khi user đang play TS DVR, hệ thống không interrupt luồng TS. User tiếp tục xem TS bình thường đến khi stream tự kết thúc. Backdrop/end state chỉ hiện sau khi TS stream end.
 
 ### 6.4 Cast / Screen Mirroring
 
@@ -471,6 +473,48 @@ Event Ended — Current DVR Session
 
 - Thời điểm event vừa End có thể dùng lại backdrop và next-event prompt hiện tại.
 - Nếu user đang seek/watch/pause trong DVR, không interrupt bằng forced next-event transition.
+
+### TS-US-005 — Nhận push end từ Live khi đang xem TS
+
+- User đang xem TS DVR.
+- Hệ thống gửi push event-ended (luồng Live đã kết thúc).
+- User không bị interrupt — tiếp tục play TS đến hết.
+
+**Description:**
+Trong lúc user đang xem TS DVR, server push event-ended signal. Hệ thống không dừng TS hay hiện backdrop ngay. User xem tiếp bình thường. Chỉ khi TS stream tự kết thúc mới hiện end state.
+
+#### TS-UC-005 — Push end từ Live đang xem TS
+
+**Activity Flows:**
+
+```mermaid
+flowchart LR
+ Start([" "]) --> A["User đang xem TS DVR"]
+ A --> B["Server push event-ended"]
+ B --> C{User đang\ntrong TS DVR?}
+
+ C -- No --> D["Hiện backdrop/end state\ntheo logic hiện tại"]
+ D --> End1([" "])
+
+ C -- Yes --> E["Giữ TS stream chạy\nKhông interrupt"]
+ E --> F{TS stream\nkết thúc?}
+
+ F -- No --> G["Tiếp tục play TS"]
+ G --> F
+
+ F -- Yes --> H["Hiện End State/Backdrop"]
+ H --> End2([" "])
+```
+
+| Field | Details |
+|---|---|
+| Actor | Logged-in User, hệ thống |
+| Triggers | Server push event-ended trong khi user đang play TS DVR. |
+| Pre-condition | User đang xem TS DVR hợp lệ; event đang live. |
+| Basic Path | 1. Server gửi push event-ended.<br>2. Hệ thống kiểm tra user có đang xem TS DVR không.<br>3. Nếu có, giữ TS stream chạy bình thường; không hiện backdrop ngay.<br>4. Khi TS stream tự kết thúc, hệ thống hiện End State/Backdrop. |
+| Post-condition | User xem được hết nội dung TS đã tua; end state hiện sau khi stream kết thúc tự nhiên. |
+| Alternative Path | Nếu user không đang trong TS DVR khi nhận push end — hiện backdrop/end state theo logic hiện tại. |
+| Exception Handling | Nếu TS stream bị lỗi sau push end, hệ thống fallback về end state an toàn; không tự jump sang next event. |
 
 ## 9. Error Handling & User-Facing Messages
 
