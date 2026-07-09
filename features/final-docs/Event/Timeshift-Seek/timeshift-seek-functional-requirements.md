@@ -552,7 +552,7 @@ User play Live
 | Event | Status | Khi nào | Key properties |
 |---|---|---|---|
 | `ts_seek` | `start` | User thả seek tại mốc TS thành công | `content_id`, `event_id`, `seek_position`, `status: start` |
-| `ts_seek` | `stop` | User seek sang mốc khác hoặc quay về Live | `content_id`, `event_id`, `seek_position`, `status: stop`, `reason: seek_new|go_live|back` |
+| `ts_seek` | `stop` | User seek sang mốc khác hoặc quay về Live | `content_id`, `event_id`, `seek_position`, `status: stop`, `event: seek_new|go_live|back` |
 
 **Scope:**
 - Chỉ log khi user đang trong TS DVR window hợp lệ.
