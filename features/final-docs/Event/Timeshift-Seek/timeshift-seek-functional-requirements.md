@@ -146,8 +146,15 @@ User flow hiện tại gồm 4 UC chính. Các nhánh như Timeshift Seek không
 4. Sau event end, user vẫn có thể xem/tua lại trong phiên player hiện tại nếu user đã ở trong player trước khi event end.
 5. TS DVR sau event end vẫn phải đủ điều kiện: user có gói V.VIP1, CMS flag đang bật, stream availability, và DVR window.
 6. Nếu TS DVR expired hoặc không khả dụng trong phiên player hiện tại, hệ thống ẩn thanh tua Timeshift Seek và giữ safe ended/unavailable state.
-7. Khi playback trong TS DVR chạy tới endtime lần nữa, hệ thống quay lại End State/Backdrop; không tự replay loop.
-8. Next Event/Auto Next Event đi theo logic hiện tại; Timeshift không can thiệp rule chọn next event.
+7. Khi playback trong TS DVR chạy tới endtime, BE handle end-of-stream signal — client nhận signal và hiện End State/Backdrop; không tự replay loop.
+8. Khi user bấm **Trở về đang phát** hoặc **Back** trong lúc đang xem TS DVR, client xử lý ngay phía mình — dựng backdrop lên mà không cần đợi stream signal.
+9. Next Event/Auto Next Event đi theo logic hiện tại; Timeshift không can thiệp rule chọn next event.
+
+### 6.4 Cast / Screen Mirroring
+
+1. Timeshift Seek **không hỗ trợ cast pairing** (Chromecast, AirPlay, v.v.) trong sự kiện.
+2. Khi user đang cast, hệ thống ẩn/disable thanh tua Timeshift Seek; user chỉ xem live stream bình thường.
+3. Chi tiết cơ chế disable cast khi TS active — hoặc disable TS khi cast active — do FE/platform xác nhận.
 
 ---
 
