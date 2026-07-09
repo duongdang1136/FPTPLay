@@ -531,21 +531,51 @@ flowchart LR
 
 ## 12. Analytics & Logging
 
-> Log phân biệt mode `live` vs `timeshift` trong event player. Log IDs đã được define — mục này gắn link và mô tả scope áp dụng cho Timeshift Seek.
+> Template log theo chuẩn FPTPlay. Log IDs thực tế do BE/FE xác nhận — mục này định nghĩa scope + đề xuất event name.
 
-| Log ID | Event name | Params liên quan | Khi nào gửi | Ghi chú |
-|---|---|---|---|---|
-| LOG-700 | _(xem log definition)_ | `mode: live \| timeshift` | Load player / khởi tạo stream | Phân biệt user đang xem live hay TS DVR |
-| LOG-701 | _(xem log definition)_ | `mode: live \| timeshift`, `seek_position` | User seek trên DVR seekbar | Ghi nhận hành động tua |
-| LOG-702 | _(xem log definition)_ | `mode: timeshift`, `action: pause \| resume` | User pause/resume trong TS DVR | Chỉ log khi đang trong TS mode |
-| LOG-703 | _(xem log definition)_ | `mode: live \| timeshift`, `event_status: ended` | Event kết thúc trong session | Ghi nhận state chuyển từ live → ended |
+### 12.1 Log Timeshift Seek (Start / Stop)
 
-> 📎 **Log definition chi tiết:** _(sếp paste link tài liệu log 700–703 vào đây)_
+Chỉ ghi **1 log với 2 status** (`start` / `stop`) — không tách thành nhiều log riêng.
 
-**Scope áp dụng cho Timeshift Seek:**
-- Field `mode` phải có giá trị `timeshift` khi user đang xem trong TS DVR, và `live` khi đang ở live edge.
-- Không log TS event khi Timeshift Seek disabled hoặc user không đủ điều kiện.
-- Log gửi từ client (FE/mobile); BE không cần log riêng cho TS state trừ khi có yêu cầu riêng.
+**Trigger:**
+- **Status `start`:** Khi user thả seek tại mốc TS window thành công (seek vào TS DVR).
+- **Status `stop`:** Khi user chuyển luồng — seek sang mốc TS khác, hoặc seek về Live, hoặc nhấn **Trở về đang phát** / **Back**.
+
+**Ví dụ luồng:**
+```
+User play Live
+  → Seek về TS A  → log: Start A
+  → Seek về TS B  → log: Stop A → Start B
+  → Seek về Live → log: Stop B
+```
+
+| Event | Status | Khi nào | Key properties |
+|---|---|---|---|
+| `ts_seek` | `start` | User thả seek tại mốc TS thành công | `content_id`, `event_id`, `seek_position`, `status: start` |
+| `ts_seek` | `stop` | User seek sang mốc khác hoặc quay về Live | `content_id`, `event_id`, `seek_position`, `status: stop`, `reason: seek_new|go_live|back` |
+
+**Scope:**
+- Chỉ log khi user đang trong TS DVR window hợp lệ.
+- Không log khi user đang ở live edge.
+- Log gửi từ client (FE/mobile) sau khi thao tác tua hoàn tất.
+
+### 12.2 Log Play trực tiếp (Live)
+
+| Event | Status | Khi nào | Key properties |
+|---|---|---|---|
+| `live_playback` | `start` | User vào player, bắt đầu xem live | `content_id`, `event_id`, `status: start`, `mode: live` |
+| `live_playback` | `stop` | User thoát player hoặc chuyển sang TS | `content_id`, `event_id`, `status: stop`, `mode: live` |
+
+### 12.3 PingLog 111 — Bổ sung case Timeshift
+
+> Log 111 hiện đã có định nghĩa cho event trực tiếp. Cần bổ sung field phân biệt mode TS.
+
+| Field bổ sung | Giá trị | Ý nghĩa |
+|---|---|---|
+| `mode` | `live` \| `timeshift` | Phân biệt user đang xem live hay TS DVR |
+| `ts_position` | timestamp (ms) | Vị trí hiện tại trong DVR window — chỉ có khi `mode: timeshift` |
+
+> 📋 **Log 111 definition đầy đủ:** _(anh Dương paste link vào đây sau khi update)_
 
 ---
 
