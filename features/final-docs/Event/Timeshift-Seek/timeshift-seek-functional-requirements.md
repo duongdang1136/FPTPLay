@@ -514,7 +514,7 @@ flowchart LR
 | Basic Path | 1. Server gửi push event-ended.<br>2. Hệ thống kiểm tra user có đang xem TS DVR không.<br>3. Nếu có, giữ TS stream chạy bình thường; không hiện backdrop ngay.<br>4. Khi TS stream tự kết thúc, hệ thống hiện End State/Backdrop. |
 | Post-condition | User xem được hết nội dung TS đã tua; end state hiện sau khi stream kết thúc tự nhiên. |
 | Alternative Path | Nếu user không đang trong TS DVR khi nhận push end — hiện backdrop/end state theo logic hiện tại. |
-| Exception Handling | Nếu TS stream bị lỗi sau push end, hệ thống fallback về end state an toàn; không tự jump sang next event. |
+| Exception Handling | Nếu TS stream bị lỗi sau push end, hệ thống hiện màn hình lỗi (error state); không tự jump sang next event. |
 
 ## 9. Error Handling & User-Facing Messages
 
