@@ -124,7 +124,7 @@ User flow hiện tại gồm 4 UC chính. Các nhánh như Timeshift Seek không
 2. Nếu thiếu bất kỳ điều kiện nào, hệ thống chạy live playback bình thường và không hiện thanh tua Timeshift Seek.
 3. Hệ thống chỉ hiển thị thanh tua Timeshift Seek khi hệ thống xác nhận event này được phép tua lại.
 4. Khi Timeshift Seek enabled, **ẩn AR-WC** trong player. AR-WC hiển thị trở lại khi Timeshift Seek disabled hoặc không khả dụng.
-5. **Getlink Timeshift:** Khi user đủ điều kiện, BE trả về field + secure link m3u8 cho TS stream. Client dùng link đó để play TS — không tự tạo link. Nếu BE không trả link hoặc link không hợp lệ, hệ thống fallback về live stream bình thường và không hiện thanh tua Timeshift Seek.
+5. **Getlink Timeshift:** Khi user đủ điều kiện, BE trả về field + secure stream link cho TS stream (HLS `.m3u8` hoặc DASH `.mpd` tùy platform). Client dùng link đó để play TS — không tự tạo link. Nếu BE không trả link hoặc link không hợp lệ, hệ thống fallback về live stream bình thường và không hiện thanh tua Timeshift Seek.
 
 ### 6.2 Cách tua DVR
 
