@@ -549,6 +549,11 @@ flowchart LR
 | `SkipForward` | Nhấn tua tới 10s (tất cả các loại hành vi) | — |
 | `SkipBack` | Nhấn tua lùi 10s (tất cả các loại hành vi) | — |
 | `Seek` | Kéo trên thanh slider của player | Mobile: ghi log ngay khi thực hiện Seek, không cần xác nhận thành công hay không |
+| `BackToLive` | Nhấn nút GO LIVE để quay về live edge | Ghi log khi user chủ động rời TS DVR về live |
+
+| Field bổ sung | Kiểu | Ý nghĩa |
+|---|---|---|
+| `ContentPosition` | int (giây) | Vị trí tua tính từ đầu event tại thời điểm thực hiện thao tác. Dùng để phân tích heatmap vị trí tua. |
 
 > 📋 **Link definition chi tiết Log 192:** _(sếp paste link vào đây)_
 
@@ -562,6 +567,26 @@ flowchart LR
 | `ts_position` | timestamp (ms) | Vị trí hiện tại trong DVR window — chỉ có khi `mode: timeshift` |
 
 > 📋 **Log 111 definition đầy đủ:** _(anh Dương paste link vào đây sau khi update)_
+
+### 12.3 Metrics & Công thức lấy data
+
+#### ✅ Tính được với log hiện tại
+
+| Metric | Công thức | Nguồn log |
+|---|---|---|
+| Số user unique dùng Timeshift | `COUNT(DISTINCT userID)` | Log 192 |
+| Phân bố hành vi tua | `COUNT per event` (SkipForward / SkipBack / Seek) | Log 192 |
+| Avg số lần tua per session | `COUNT(Log 192 actions) / COUNT(DISTINCT sessionID)` | Log 192 |
+| Thời lượng xem TS per user | `COUNT(ping WHERE mode=timeshift) × ping_interval` | Log 111 |
+| Avg thời lượng xem TS | `Sum(duration) / COUNT(DISTINCT userID)` | Log 111 |
+
+#### 🔧 Tính được sau khi bổ sung log (xem 12.1)
+
+| Metric | Công thức | Cần bổ sung |
+|---|---|---|
+| Heatmap vị trí tua | Phân bố `ContentPosition` theo event type | `ContentPosition` trong Log 192 |
+| Return-to-Live rate | `COUNT(BackToLive) / COUNT(session có TS action)` | Event `BackToLive` trong Log 192 |
+| % user tua rồi thoát (không return live) | Session có TS action nhưng không có `BackToLive` | `BackToLive` + session boundary từ Log 111 |
 
 ---
 
