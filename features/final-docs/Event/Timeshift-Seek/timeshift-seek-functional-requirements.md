@@ -570,23 +570,16 @@ flowchart LR
 
 ### 12.3 Metrics & Công thức lấy data
 
-#### ✅ Tính được với log hiện tại
-
 | Metric | Công thức | Nguồn log |
 |---|---|---|
 | Số user unique dùng Timeshift | `COUNT(DISTINCT userID)` | Log 192 |
-| Phân bố hành vi tua | `COUNT per event` (SkipForward / SkipBack / Seek) | Log 192 |
+| Phân bố hành vi tua | `COUNT per event` (SkipForward / SkipBack / Seek / BackToLive) | Log 192 |
 | Avg số lần tua per session | `COUNT(Log 192 actions) / COUNT(DISTINCT sessionID)` | Log 192 |
 | Thời lượng xem TS per user | `COUNT(ping WHERE mode=timeshift) × ping_interval` | Log 111 |
 | Avg thời lượng xem TS | `Sum(duration) / COUNT(DISTINCT userID)` | Log 111 |
-
-#### 🔧 Tính được sau khi bổ sung log (xem 12.1)
-
-| Metric | Công thức | Cần bổ sung |
-|---|---|---|
-| Heatmap vị trí tua | Phân bố `ContentPosition` theo event type | `ContentPosition` trong Log 192 |
-| Return-to-Live rate | `COUNT(BackToLive) / COUNT(session có TS action)` | Event `BackToLive` trong Log 192 |
-| % user tua rồi thoát (không return live) | Session có TS action nhưng không có `BackToLive` | `BackToLive` + session boundary từ Log 111 |
+| Heatmap vị trí tua | Phân bố `ContentPosition` theo event type | Log 192 (`ContentPosition`) |
+| Return-to-Live rate | `COUNT(BackToLive) / COUNT(session có TS action)` | Log 192 (`BackToLive`) |
+| % user tua rồi thoát (không return live) | Session có TS action nhưng không có `BackToLive` | Log 192 + Log 111 |
 
 ---
 
