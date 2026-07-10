@@ -129,8 +129,8 @@ User flow hiện tại gồm 5 UC chính. Các nhánh như Timeshift Seek không
 
 ### 6.2 Cách tua DVR
 
-1. User chỉ tua lại được trong phần nội dung đã phát, tối đa **8 giờ gần nhất**.
-2. Nếu event mới live chưa đủ 8 giờ, user có thể tua về từ đầu event.
+1. User chỉ tua lại được trong phần nội dung đã phát kể từ khi event bắt đầu — server bắt đầu ghi nhận (record) ngay từ lúc event start.
+2. Buffer tối đa phụ thuộc vào thời lượng thực tế của event (server đáp ứng tối đa ~8 giờ, nhưng hầu hết event không quá 3 giờ). Nếu event chưa kết thúc, user có thể tua về từ đầu event.
 3. User không được seek trước phần DVR cho phép hoặc sau live edge.
 4. Seek không có thumbnail. Tooltip chỉ cần hiển thị timestamp nếu cần.
 5. Khi user đang ở live edge, GO LIVE ẩn.
