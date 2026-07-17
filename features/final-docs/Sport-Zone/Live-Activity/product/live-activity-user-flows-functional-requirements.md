@@ -69,6 +69,7 @@ User chỉ cần bấm **Đặt Lịch**. App lưu trận đó. Nếu device/OS 
 | v4.6 | 2026-06-09 | Dylan | Drift audit cleanup: aligned Đặt Lịch wording and clarified Upcoming only saves follow, Live starts outside-app surface. | Pending |
 | v4.7 | 2026-06-09 | Dylan | Replaced route/match context wording with direct match_id routing to reduce ambiguity. | Pending |
 | v4.8 | 2026-06-09 | Dylan | Changed route fallback destination from Followed Matches / Live Matches to Sport Zone match card. | Pending |
+| v4.9 | 2026-07-17 | Dylan | Updated Dynamic Island Expanded: added latest_event row (full event type priority list, rescinded handling), expanded match clock/period states to include extra_time/penalties (ET, PSO), added shootout score display rule. Updated Lock Screen Expanded: expanded match clock/period states, replaced generic latest_event with full event type label mapping (goal/own_goal/penalty/missed_penalty/yellow_card/red_card/yellow_red_card/var/pen_shootout_goal/pen_shootout_miss/rescinded), added shootout score display rule. substitution excluded from both surfaces. | Pending |
 
 ---
 
@@ -500,11 +501,12 @@ Sport Zone
 |---:|---|---|---|---|
 | 1 | Home team logo | default, missing | Small icon | Logo missing thì ẩn icon. Không dùng placeholder to. |
 | 2 | Home team short name | default, truncated | `HOME_SHORT` | 1 dòng. Tên dài thì truncate. |
-| 3 | Score | default, updating, switched | `home_score - away_score` | Main visual ở giữa. Dùng tabular/monospace digits nếu support. |
+| 3 | Score | default, updating, switched | `home_score - away_score` | Main visual ở giữa. Dùng tabular/monospace digits nếu support. Khi `periodType=penalties`: hiện `FT: X-Y` ở dòng phụ nhỏ bên dưới, score chính đổi sang shootout score lấy từ `scores[].type="penalties"`. |
 | 4 | Away team short name | default, truncated | `AWAY_SHORT` | 1 dòng. Tên dài thì truncate. |
 | 5 | Away team logo | default, missing | Small icon | Logo missing thì ẩn icon. Không dùng placeholder to. |
-| 6 | Match clock/period | live, half-time, ended | `12'`, `HT`, `FT` | Ngắn. Không ghi dài. Unknown thì ẩn, không tự đoán. |
-| 7 | Tap area | default | Tap target | Tap expanded UI mở selected match. |
+| 6 | Match clock/period | live, half-time, extra-time, penalties, ended | `12'`, `45+2'`, `HT`, `ET 95'`, `PSO`, `FT` | Render theo `periodType`: `1st_half`/`2nd_half` → `{minute}'` hoặc `{minute}+{extraMinute}'`; `extra_time` → `ET {minute}'`; `penalties` → `PSO`; giữa 2 hiệp (inferred) → `HT`; `status=final` → `FT`. Unknown thì ẩn, không tự đoán. |
+| 7 | Latest key event | optional, rescinded | 1 dòng ngắn | Chỉ hiện khi có event mới quan trọng. Ưu tiên: `goal` > `own_goal` > `penalty` > `missed_penalty` > `red_card` > `yellow_red_card` > `yellow_card` > `var` > `pen_shootout_goal` > `pen_shootout_miss`. Không hiện `substitution`. Khi `rescinded=true`: đổi sang label VAR (vd `VAR - Goal Disallowed`). Max 1 event. Truncate nếu dài. |
+| 8 | Tap area | default | Tap target | Tap expanded UI mở selected match. |
 
 #### Lock Screen Expanded
 
@@ -512,9 +514,9 @@ Sport Zone
 |---:|---|---|---|---|
 | 1 | Brand/header | default | `FPT Play · Sport Zone` | Dùng text brand nhỏ. Không dùng icon/logo lớn trong card body. |
 | 2 | Match title | default, truncated, switched | `{home_team} vs {away_team}` | Context chính. Tên dài thì truncate. Logo missing thì placeholder nhỏ hoặc ẩn. |
-| 3 | Score | default, updating | `home_score - away_score` | Main visual. To/rõ hơn brand. |
-| 4 | Match status | live, half-time, ended, unavailable | `Đang diễn ra`, `Hiệp 1`, `Kết thúc` | Có text/token. Không chỉ dùng màu. Unknown thì ẩn, không tự đoán. |
-| 5 | Latest key event | optional | 1 dòng ngắn | Chỉ show nếu hữu ích. Max 1 event. Dài thì truncate. |
+| 3 | Score | default, updating, penalties | `home_score - away_score` | Main visual. To/rõ hơn brand. Khi `periodType=penalties`: hiện score thường ở dòng phụ (`FT: X-Y`), score chính đổi sang shootout score từ `scores[].type="penalties"`. |
+| 4 | Match clock/period | live, half-time, extra-time, penalties, ended, unavailable | `12'`, `45+2'`, `HT`, `ET 95'`, `PSO`, `FT`, `—` | Render theo `periodType`: `1st_half`/`2nd_half` → `{minute}'` hoặc `{minute}+{extraMinute}'`; `extra_time` → `ET {minute}'`; `penalties` → `PSO`; giữa 2 hiệp (inferred) → `HT`; `status=final` → `FT`; unavailable → `—`. Unknown thì ẩn, không tự đoán. |
+| 5 | Latest key event | optional, rescinded | 1 dòng ngắn | Chỉ show khi có event quan trọng mới. Event types và label hiển thị: `goal` → `⚽ Bàn thắng · {playerName} {result}`; `own_goal` → `⚽ Phản lưới · {playerName} {result}`; `penalty` → `⚽ Penalty · {playerName} {result}`; `missed_penalty` → `Hỏng penalty · {playerName}`; `yellow_card` → `Thẻ vàng · {playerName}`; `red_card` → `Thẻ đỏ · {playerName}`; `yellow_red_card` → `Thẻ vàng/đỏ · {playerName}`; `var` → `VAR · {addition}`; `pen_shootout_goal` → `⚽ {result}`; `pen_shootout_miss` → `Hỏng luân lưu · {result}`; `goal` với `rescinded=true` → `VAR - Goal Disallowed`. Không hiện `substitution`. Ưu tiên khi nhiều event cùng lúc: `goal` > `own_goal` > `penalty` > `missed_penalty` > `red_card` > `yellow_red_card` > `yellow_card` > `var` > `pen_shootout_goal` > `pen_shootout_miss`. Max 1 event. Truncate nếu dài. |
 | 6 | Tap target | default | Tap target | Tap mở đúng match của card. |
 
 #### Android ongoing notification
