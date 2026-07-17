@@ -6,7 +6,7 @@
 > API prefix: `/api/v1/internal/sport-zone/live-activities`
 > Provider note: iOS remote Live Activity updates use Apple Push Notification service / ActivityKit path. Android does not use APN/APNS.
 > Status: Implementation-ready contract
-> Last updated: 2026-06-03
+> Last updated: 2026-07-17
 > Source-of-truth note: no dev-owned code-backed API doc exists under `features/api-docs/**` yet. Reconcile with backend/iOS implementation once published.
 
 ## 0. Document Status
@@ -96,11 +96,15 @@ type SportLiveActivityContentStateDto = {
   updated_at: string;
 };
 
+type LiveActivityFollowSource = 'match' | 'team' | 'season';
+
 type FollowedMatchLiveActivitySubscriptionDto = {
   subscription_id: string;
   user_id: string;
   device_id: string;
   match_id: string;
+  follow_source: LiveActivityFollowSource;   // 'match' = content_event_match, 'team' = sport_team, 'season' = sport_league
+  source_entity_id: string;                  // match_id | team_id | league_id depending on follow_source
   follow_status: 'followed' | 'unfollowed';
   platform: 'ios' | 'android';
   os_provider?: 'apns_activitykit' | 'android_oem_custom' | 'none';
@@ -132,13 +136,15 @@ type LiveActivityRegisterFollowRequest = {
   event_id: string;
   user_id: string;
   device_id: string;
-  match_id: string;
+  follow_source: LiveActivityFollowSource;   // 'match' | 'team' | 'season'
+  source_entity_id: string;                  // match_id | team_id | league_id
+  match_id?: string;                         // required when follow_source = 'match'; for team/season, resolved by backend
   action: 'follow' | 'unfollow';
   platform: 'ios' | 'android';
   os_provider?: 'apns_activitykit' | 'android_oem_custom' | 'none';
   activity_token?: string;
   device_supported: boolean;
-  source: 'match_card' | 'match_detail' | 'player' | 'notification' | 'other';
+  source: 'match_card' | 'match_detail' | 'team_page' | 'season_page' | 'player' | 'notification' | 'other';
   occurred_at: string;
 };
 
@@ -387,15 +393,15 @@ Success response:
 
 ## 6. Priority Selection Contract
 
-When multiple followed matches are eligible, backend/iOS orchestration must select one match using this order:
+When multiple followed matches are eligible (from any follow source combination), backend/iOS orchestration must select one match using this order:
 
-1. First followed match as the default visible match.
-2. Followed match that is still live/eligible over non-live/ineligible matches.
-3. Match with latest key event requiring attention: goal, red card, penalty, VAR decision, half-time/full-time.
+1. Still live/eligible match over non-live/ineligible matches.
+2. Match with latest key event requiring attention: goal, own_goal, red_card, yellow_red_card, penalty, missed_penalty, pen_shootout_goal, pen_shootout_miss, var.
+3. Nearest kickoff time — used as primary tie-breaker when multiple matches come from team/season follow resolution.
 4. Most recently followed or most recently opened match.
-5. Deterministic tie-breaker, e.g. nearest kickoff or lexical `match_id`, to avoid flapping.
+5. Deterministic tie-breaker (lexical `match_id`) to avoid flapping.
 
-The selected match must remain stable unless a higher-priority event occurs, user follows/unfollows, or selected match ends/unavailable.
+Note: for `sport_team` and `sport_league` follow sources, backend must resolve the current live match list for that team/season before entering the priority pipeline. Explicit per-match follow (`content_event_match`) entries are not affected by unfollow of team or season source.
 
 ## 7. Client State Contract
 

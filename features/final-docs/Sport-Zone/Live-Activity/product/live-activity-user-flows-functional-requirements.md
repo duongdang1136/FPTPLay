@@ -15,14 +15,20 @@
 
 Live Activity giúp user theo dõi trận đang live ngay trên **iOS Lock Screen**, **iOS Dynamic Island** và **Android ongoing notification**.
 
-User chỉ cần bấm **Đặt Lịch**. App lưu trận đó. Nếu device/OS hỗ trợ, iOS Live Activity hoặc Android ongoing notification bật và cập nhật score/status theo trận.
+User có thể kích hoạt Live Activity qua **3 nguồn follow**:
+- **Đặt Lịch** (`content_event_match`): follow trực tiếp 1 trận cụ thể.
+- **Theo dõi Đội bóng** (`sport_team`): follow đội bóng; hệ thống resolve tất cả trận đang live của đội đó.
+- **Theo dõi Mùa giải** (`sport_league`): follow mùa giải; hệ thống resolve tất cả trận đang live trong mùa giải đó.
+
+Cả 3 nguồn đều tạo ra match subscriptions và đưa vào cùng 1 priority pipeline. Live Activity chỉ bật khi có trận đang live — không bật ngay lúc follow nếu chưa có trận live.
 
 - Epic: Sport Zone
 - Feature: Live Activity
 - Main user: Logged-in User
 - Main platform: Mobile iOS, Mobile Android
 - Main surfaces: iOS Dynamic Island, iOS Lock Screen Live Activity, Android ongoing notification
-- Main intent: Đặt Lịch trận để xem live score/status nhanh khi trận đang Live
+- Main intent: Follow trận/đội/mùa giải để xem live score/status nhanh khi trận đang Live
+- Follow sources: Đặt Lịch (per-match), Theo dõi Đội bóng (team), Theo dõi Mùa giải (season)
 
 ---
 
@@ -71,6 +77,7 @@ User chỉ cần bấm **Đặt Lịch**. App lưu trận đó. Nếu device/OS 
 | v4.8 | 2026-06-09 | Dylan | Changed route fallback destination from Followed Matches / Live Matches to Sport Zone match card. | Pending |
 | v4.9 | 2026-07-17 | Dylan | Updated Dynamic Island Expanded: added latest_event row (full event type priority list, rescinded handling), expanded match clock/period states to include extra_time/penalties (ET, PSO), added shootout score display rule. Updated Lock Screen Expanded: expanded match clock/period states, replaced generic latest_event with full event type label mapping (goal/own_goal/penalty/missed_penalty/yellow_card/red_card/yellow_red_card/var/pen_shootout_goal/pen_shootout_miss/rescinded), added shootout score display rule. substitution excluded from both surfaces. | Pending |
 | v5.0 | 2026-07-17 | Dylan | Added substitution event to both DI Expanded and Lock Screen Expanded latest_event display. Label: `🔄 Thay người · {relatedPlayerName} ▶ {playerName}`. Priority: lowest (after all other event types). | Pending |
+| v5.1 | 2026-07-17 | Dylan | Expanded follow trigger sources: added Theo dõi Đội bóng (`sport_team`) and Theo dõi Mùa giải (`sport_league`) as valid Live Activity triggers alongside Đặt Lịch (`content_event_match`). Updated Description, Overview, User scope, In scope, Entry Points, UC-001, Business Rules (follow sources, eligibility, unfollow isolation rules). | Pending |
 
 ---
 
@@ -107,17 +114,21 @@ User Đặt Lịch trận. Nếu trận đang Live, App hiển thị live score/
 | Logged-in User | In scope | Main actor. |
 | Guest | Limited | Phải login trước khi Đặt Lịch. |
 | User Đặt Lịch 1 trận | In scope | Nếu trận đang Live, iOS Dynamic Island hiển thị selected match đó nếu device hỗ trợ. Android hiển thị qua ongoing notification. Notification có thể hiện trên Lock Screen nếu OS/user settings cho. |
-| User Đặt Lịch nhiều trận | In scope | iOS Dynamic Island chọn 1 selected match đang Live; Lock Screen có thể hiện nhiều trận đang Live nếu OS cho. Android dùng ongoing notification. Notification có thể hiện trên Lock Screen nếu OS/user settings cho. |
+| User Theo dõi Đội bóng | In scope | Hệ thống resolve tất cả trận live của đội đó thành implicit match subscriptions. Feeds vào priority pipeline. |
+| User Theo dõi Mùa giải | In scope | Hệ thống resolve tất cả trận live trong mùa giải đó thành implicit match subscriptions. Feeds vào priority pipeline. |
+| User Đặt Lịch nhiều trận / follow nhiều nguồn | In scope | iOS Dynamic Island chọn 1 selected match đang Live theo priority rule; Lock Screen có thể hiện nhiều trận đang Live nếu OS cho. Android dùng ongoing notification. |
 | Admin/CMS user | Out of scope | Không thuộc feature này. |
 
 ### 3.5 In scope
 
-- Đặt Lịch / Hủy Đặt Lịch match.
+- Đặt Lịch / Hủy Đặt Lịch match (per-match follow).
+- Theo dõi Đội bóng / Hủy Theo dõi Đội bóng (team follow → implicit match subscriptions).
+- Theo dõi Mùa giải / Hủy Theo dõi Mùa giải (season follow → implicit match subscriptions).
 - Hiển thị score/status ngoài app trên iOS Live Activity hoặc Android ongoing notification.
-- Update score/status cho match user đã Đặt Lịch và đang Live.
+- Update score/status cho match được resolve từ bất kỳ follow source nào đang Live.
 - Tap để mở đúng Match Detail.
 - Hold iOS Dynamic Island để xem expanded view.
-- Match End/Unfollow thì switch hoặc end.
+- Match End/Unfollow (any source) thì switch hoặc end.
 - PiP có thể chạy song song nếu OS cho phép.
 
 ### 3.6 Out of scope
@@ -142,20 +153,20 @@ User Đặt Lịch trận. Nếu trận đang Live, App hiển thị live score/
 
 ---
 
-## 4. Entry Points
-
 | # | Entry Point | User action / System trigger | Surface | Expected result |
 |---:|---|---|---|---|
-| 1 | Sport Zone match card | User bấm **Đặt Lịch** | In-app | App check login/eligibility, lưu followed match. Nếu match đang Live thì bật Live Activity / notification nếu có thể. |
-| 2 | Match Detail | User bấm **Đặt Lịch** | In-app | App check login/eligibility, lưu followed match. Nếu match đang Live thì bật Live Activity / notification nếu có thể. |
-| 3 | Following button | User bấm **Hủy Đặt Lịch** | In-app | App lưu unfollow, remove/switch/end Live Activity theo trạng thái còn lại. |
-| 4 | Live score/status feed | Server nhận score/status/event mới | Server/App/OS | Server gửi update cho followed matches đang Live còn eligible. |
-| 5 | iOS Dynamic Island compact | User tap | Dynamic Island | Mở Match Detail của selected match. |
-| 6 | iOS Dynamic Island compact | User hold/long press | Dynamic Island | OS mở expanded Live Activity. Không deeplink ngay. |
-| 7 | iOS Dynamic Island expanded | User tap | Dynamic Island expanded | Mở Match Detail của selected match nếu platform cho tap target. |
-| 8 | iOS Lock Screen card | User tap card | Lock Screen | Mở Match Detail của match trên card đó. |
-| 9 | Android ongoing notification | User tap notification | Android Lock Screen / Notification Shade | Mở Match Detail của match trên notification đó. |
-| 10 | OS Settings permission | User bật lại permission | OS Settings / App resume | App sync permission. Nếu còn followed match đang Live/eligible thì bật lại Live Activity / notification. |
+| 1 | Sport Zone match card | User bấm **Đặt Lịch** | In-app | App check login/eligibility, lưu explicit per-match follow (`content_event_match`). Nếu match đang Live thì bật Live Activity / notification nếu có thể. |
+| 2 | Match Detail | User bấm **Đặt Lịch** hoặc **Theo dõi Đội bóng** | In-app | **Đặt Lịch**: lưu per-match follow. **Theo dõi Đội bóng**: lưu team follow (`sport_team`); resolve live matches của team. Nếu có match Live thì bật Live Activity / notification nếu có thể. |
+| 3 | Team page | User bấm **Theo dõi Đội bóng** | In-app | Lưu team follow (`sport_team`); resolve live matches của team. Nếu có match Live thì bật Live Activity / notification nếu có thể. |
+| 4 | Season/League page | User bấm **Theo dõi Mùa giải** | In-app | Lưu season follow (`sport_league`); resolve live matches trong mùa giải. Nếu có match Live thì bật Live Activity / notification nếu có thể. |
+| 5 | Following button (any source) | User bấm **Hủy Đặt Lịch / Hủy Theo dõi** | In-app | App lưu unfollow, invalidate subscriptions từ source đó. Re-evaluate remaining eligible matches. Switch hoặc end Live Activity theo trạng thái còn lại. |
+| 6 | Live score/status feed | Server nhận score/status/event mới | Server/App/OS | Server gửi update cho followed matches đang Live còn eligible. |
+| 7 | iOS Dynamic Island compact | User tap | Dynamic Island | Mở Match Detail của selected match. |
+| 8 | iOS Dynamic Island compact | User hold/long press | Dynamic Island | OS mở expanded Live Activity. Không deeplink ngay. |
+| 9 | iOS Dynamic Island expanded | User tap | Dynamic Island expanded | Mở Match Detail của selected match nếu platform cho tap target. |
+| 10 | iOS Lock Screen card | User tap card | Lock Screen | Mở Match Detail của match trên card đó. |
+| 11 | Android ongoing notification | User tap notification | Android Lock Screen / Notification Shade | Mở Match Detail của match trên notification đó. |
+| 12 | OS Settings permission | User bật lại permission | OS Settings / App resume | App sync permission. Nếu còn followed match đang Live/eligible thì bật lại Live Activity / notification. |
 
 ---
 
@@ -163,7 +174,7 @@ User Đặt Lịch trận. Nếu trận đang Live, App hiển thị live score/
 
 | Use Case ID | Use Case | Primary Actor | Trigger | Outcome |
 |---|---|---|---|---|
-| LA-UC-001 | Đặt Lịch → Save Follow / Start Live Activity when Live | Logged-in User | User bấm **Đặt Lịch** | Match được lưu vào followed matches. Nếu match đang Live, Live Activity / notification bật nếu permission và OS support. |
+| LA-UC-001 | Đặt Lịch / Theo dõi Đội bóng / Theo dõi Mùa giải → Save Follow / Start Live Activity when Live | Logged-in User | User bấm **Đặt Lịch**, **Theo dõi Đội bóng**, hoặc **Theo dõi Mùa giải** | Follow được lưu. Nếu có match đang Live từ nguồn đó, Live Activity / notification bật nếu permission và OS support. |
 | LA-UC-002 | Live Score Event → Update Live Activity | Server, App | Score/status/event mới | Live Activity / notification hiển thị thông tin mới nhất nếu update OK và OS cho hiện. |
 | LA-UC-003 | Match End / Unfollow → Switch or End Live Activity | Logged-in User, Server | Match End hoặc user bấm **Hủy Đặt Lịch** | Activity của trận đó bị remove/end. iOS Dynamic Island switch sang trận khác nếu còn eligible. |
 | LA-UC-004 | Interact with Live Activity → Expand or Deeplink | Logged-in User | User tap/hold Live Activity | User thấy expanded view hoặc vào đúng Match Detail; fallback chỉ dùng khi route/data lỗi. |
@@ -176,9 +187,11 @@ User Đặt Lịch trận. Nếu trận đang Live, App hiển thị live score/
 
 #### Live Activity display rules
 
-1. User phải chủ động bấm **Đặt Lịch** thì App mới lưu followed match hoặc bật Live Activity / notification.
-2. User có thể Đặt Lịch 1 hoặc nhiều trận.
-3. iOS Dynamic Island chỉ hiện 1 selected followed match.
+1. User phải chủ động bấm **Đặt Lịch**, **Theo dõi Đội bóng**, hoặc **Theo dõi Mùa giải** thì App mới lưu follow subscription hoặc bật Live Activity / notification.
+2. Cả 3 nguồn follow đều hợp lệ để kích hoạt Live Activity: `content_event_match` (per-match), `sport_team` (team), `sport_league` (season).
+3. Team/Season follow tạo implicit match subscriptions cho tất cả trận đang live của team/season đó; explicit per-match follow tạo direct subscription.
+4. Live Activity chỉ bật khi có trận đang live — không bật ngay lúc follow nếu chưa có trận live.
+5. iOS Dynamic Island chỉ hiện 1 selected followed match.
 4. Lock Screen có thể hiện nhiều followed matches đang Live nếu OS cho.
 5. Server update các followed matches đang Live còn eligible.
 6. App/Product quyết định nội dung hiển thị cho từng match.
@@ -206,6 +219,8 @@ User Đặt Lịch trận. Nếu trận đang Live, App hiển thị live score/
 3. **End / kết thúc** → disable **Đặt Lịch**. Không tạo follow mới. Nếu user từng Đặt Lịch trước đó, App giữ history.
 4. **Cancelled / Postponed / Unavailable** → disable **Đặt Lịch**, trừ khi Product có rule riêng cho đặt trước.
 5. Permission/device/OS support không phải điều kiện để enable **Đặt Lịch**. Đây chỉ là điều kiện để hiện ngoài app.
+6. **Unfollow bất kỳ nguồn nào**: invalidate subscriptions từ nguồn đó. Re-evaluate remaining eligible matches từ tất cả nguồn còn lại. Nếu còn eligible match → switch. Không còn → end Live Activity.
+7. **Unfollow Team** không ảnh hưởng explicit per-match follow (`content_event_match`) và ngược lại.
 
 #### Permission rules
 

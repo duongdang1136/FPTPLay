@@ -1,18 +1,18 @@
-# Functional Specification — Sport Zone / Live Activity
+# Functional Specification - Sport Zone / Live Activity
 
 > Project: FPTPlay
 > Large feature: Sport Zone
 > Sub-feature: Live Activity
 > Audience: Product, FE, BE, QA, iOS
 > Status: Implementation-ready contract
-> Last updated: 2026-06-03
+> Last updated: 2026-07-17
 
 ## 0. Document Status
 
 | Field | Value |
 |---|---|
 | Maturity | Implementation-ready |
-| Source of truth | User correction 2026-06-03: UniScore-style followed-match based Live Activity + accepted Option A MVP |
+| Source of truth | User correction 2026-06-03: UniScore-style followed-match based Live Activity + accepted Option A MVP. Updated 2026-07-17: expanded follow trigger sources (Follow Team / Follow Season) + full event type schema from Livefeed. |
 | Critical open questions | None for final docs |
 | Last reviewed by | Product / FE / BE / QA / iOS pending |
 
@@ -20,11 +20,18 @@
 
 ### 1.1 Goal
 
-Provide a persistent Live Activity-style experience for the user’s **followed Sport Zone match(es)**, combining notification delivery with constrained widget-like system UI so users can monitor score/status from Dynamic Island or lock screen without needing to stay in Match Detail/Player screen.
+Provide a persistent Live Activity-style experience for the user's **followed Sport Zone match(es)**, combining notification delivery with constrained widget-like system UI so users can monitor score/status from Dynamic Island or lock screen without needing to stay in Match Detail/Player screen.
 
 ### 1.2 Product context
 
-Live Activity complements the Notifications & Alert feature but has a separate lifecycle. It behaves like a **Notification + Widget** hybrid: server-side match events are delivered through iOS APNS/Live Activity update mechanisms, while the UI is rendered inside OS-constrained Dynamic Island/lock-screen templates. The user’s explicit **Follow Match** action is the Live Activity intent source. A user may follow one match or multiple matches. For MVP, Dynamic Island displays one selected followed match at a time; Lock Screen may display multiple followed live match activities if OS allows.
+Live Activity complements the Notifications & Alert feature but has a separate lifecycle. It behaves like a **Notification + Widget** hybrid: server-side match events are delivered through iOS APNS/Live Activity update mechanisms, while the UI is rendered inside OS-constrained Dynamic Island/lock-screen templates.
+
+Live Activity is triggered by any of three explicit user follow actions:
+- **Đặt Lịch** (`content_event_match`): follow a specific match directly.
+- **Theo dõi Đội bóng** (`sport_team`): follow a team; system resolves all live matches of that team as implicit match subscriptions.
+- **Theo dõi Mùa giải** (`sport_league`): follow a season/league; system resolves all live matches in that season as implicit match subscriptions.
+
+All three sources produce match subscriptions that feed into the same Live Activity priority pipeline. A user may follow one match or multiple matches from any combination of sources. For MVP, Dynamic Island displays one selected followed match at a time; Lock Screen may display multiple followed live match activities if OS allows.
 
 ### 1.3 Success signals
 
@@ -40,9 +47,9 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 
 ### 2.1 In scope
 
-- iOS Live Activity for authenticated users who explicitly follow Sport Zone match(es).
+- iOS Live Activity for authenticated users who trigger follow via any of: Đặt Lịch (per-match), Theo dõi Đội bóng (team follow), or Theo dõi Mùa giải (season/league follow).
 - Notification + Widget hybrid behavior: remote match updates delivered via iOS APNS/Live Activity update path and rendered in OS-constrained surfaces.
-- Followed-match based start/update/end eligibility.
+- Followed-match based start/update/end eligibility; team/season follow resolves to implicit match subscriptions.
 - Option A MVP for Dynamic Island: one visible selected followed match at a time.
 - Dynamic Island compact state on supported iOS devices.
 - Dynamic Island expanded state after long press/hold on compact Live Activity.
@@ -71,15 +78,18 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 - Interactive Live Activity actions if platform/product supports later.
 - Android OEM-specific Dynamic Island/persistent widget equivalents, starting with Samsung if feasibility is confirmed, then Xiaomi/other OEMs later.
 - Sport-specific expanded layouts.
-- Team/league follow auto-subscription, only if product explicitly defines it later.
+- Match TimeLine event type handling (to be defined by product separately).
 
 ## 3. Definitions
 
 | Term | Meaning |
 |---|---|
 | Live Activity | iOS persistent system surface that shows real-time match state. |
-| Followed match | A match explicitly followed by the user. This is the primary Live Activity intent source. |
-| Selected Live Activity match | The one followed match currently represented on Dynamic Island under Option A. Default selection starts from the first followed match, then re-checks live/eligible followed matches by priority. |
+| Follow source | The user action that creates a Live Activity subscription: Đặt Lịch (`content_event_match`), Theo dõi Đội bóng (`sport_team`), or Theo dõi Mùa giải (`sport_league`). |
+| Explicit match follow | Direct per-match follow via Đặt Lịch (`content_event_match`). |
+| Implicit match follow | Matches resolved from a team or season follow subscription. System derives match list from `sport_team` or `sport_league` follow state. |
+| Followed match | A match subscription active for the user, from any follow source. This is the Live Activity eligibility unit. |
+| Selected Live Activity match | The one followed match currently represented on Dynamic Island under Option A. Default selection starts from the earliest-resolved eligible match, then re-checks live/eligible followed matches by priority. |
 | Priority rule | Deterministic rule that selects one match when user follows multiple eligible matches. |
 | Dynamic Island compact | Small Dynamic Island representation shown on supported iOS devices; severe UI constraint, one selected match only. |
 | Dynamic Island expanded | Larger view shown after compact Live Activity is long-pressed/held. |
@@ -102,22 +112,24 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 
 | Entry | Behavior |
 |---|---|
-| User follows match | Create/update followed-match subscription and register Live Activity eligibility. |
-| Followed match starts/is live | Start Live Activity if selected match is eligible. |
-| User follows multiple matches | Apply Option A priority rule for Dynamic Island; register/update eligible followed matches for Lock Screen where OS allows. |
+| User bấm Đặt Lịch (`content_event_match`) | Create/update explicit per-match subscription. If match is live, start/update Live Activity. |
+| User bấm Theo dõi Đội bóng (`sport_team`) | Create team follow subscription. System resolves all live matches of that team as implicit match subscriptions and feeds into priority pipeline. |
+| User bấm Theo dõi Mùa giải (`sport_league`) | Create season follow subscription. System resolves all live matches in that season as implicit match subscriptions and feeds into priority pipeline. |
+| Followed match starts/is live | Re-evaluate eligible match list; start/update Live Activity for selected match. |
+| User follows multiple matches (any source) | Apply Option A priority rule for Dynamic Island; register/update eligible followed matches for Lock Screen where OS allows. |
 | Match update/key event | Update Live Activity and re-evaluate whether another followed match is live/eligible or has higher priority. |
-| User unfollows selected match | Switch to next eligible followed match or end Live Activity. |
+| User unfollows (any source) | Invalidate subscriptions from that source; re-evaluate remaining eligible matches; switch or end Live Activity. |
 | Dynamic Island compact tap | Open selected match via deeplink. |
 | Dynamic Island compact long press/hold | Expand Live Activity. |
 | Expanded Dynamic Island / lock-screen tap | Open selected match for Dynamic Island, or the specific tapped match card on Lock Screen. |
-| Match end/cancel/unavailable | Show final state briefly or end; switch/end based on remaining followed matches. |
+| Match end/cancel/unavailable | Show final state briefly or end; switch/end based on remaining followed matches across all sources. |
 
 ## 6. Use Case Summary
 
 | UC | Actor | Goal | Main path | Alternate / error paths |
 |---|---|---|---|---|
-| UC-001 | Match follower | Follow one match and monitor it from Live Activity. | Follow match → match starts/live → Live Activity starts → score/status update. | Unsupported device: suppress Live Activity; normal notifications remain separate. |
-| UC-002 | Match follower | Follow multiple matches while Dynamic Island stays focused. | Follow A/B/C → priority rule selects one Dynamic Island match → Lock Screen may show multiple eligible activities if OS allows. | Priority changes: update Dynamic Island selected match; Lock Screen keeps valid per-match activities. |
+| UC-001 | Match follower | Follow one match (any source) and monitor it from Live Activity. | Đặt Lịch / Theo dõi Đội bóng / Theo dõi Mùa giải → match live → Live Activity starts → score/status update. | Unsupported device: suppress Live Activity; normal notifications remain separate. |
+| UC-002 | Match follower | Follow multiple matches (any source combination) while Dynamic Island stays focused. | Follow via any source → implicit/explicit subscriptions resolved → priority rule selects one Dynamic Island match → Lock Screen may show multiple eligible activities if OS allows. | Priority changes: update Dynamic Island selected match; Lock Screen keeps valid per-match activities. |
 | UC-003 | Dynamic Island user | Open selected match from compact Live Activity. | Compact visible → tap → app opens selected match deeplink. | Target unavailable → fallback route. |
 | UC-004 | Dynamic Island user | Expand compact state. | Long press/hold → expanded Live Activity appears → tap opens selected match. | Expansion unavailable: compact tap still works. |
 | UC-005 | Lock-screen user | Monitor followed live match(es) on lock screen. | Lock screen visible → OS may show one or multiple eligible followed match activities. | Start/update fails: retry/log; no custom lock-screen error. |
@@ -127,9 +139,11 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 
 | ID | Rule | Applies to |
 |---|---|---|
-| BR-001 | Live Activity eligibility is based on explicit user Follow Match subscription plus iOS/device/platform eligibility. | Product/API |
+| BR-001 | Live Activity eligibility is based on user follow action from any of three sources — Đặt Lịch (`content_event_match`), Theo dõi Đội bóng (`sport_team`), Theo dõi Mùa giải (`sport_league`) — plus iOS/device/platform eligibility. | Product/API |
+| BR-001a | Team follow (`sport_team`) resolves to implicit match subscriptions for all live matches of that team. Season follow (`sport_league`) resolves to implicit match subscriptions for all live matches in that season. Explicit match follow (`content_event_match`) creates a direct per-match subscription. All three feed into the same priority pipeline. | Product/API |
+| BR-001b | Live Activity is triggered when a followed match becomes live, not at the moment of follow. If no live match exists at follow time, system waits and triggers when a followed match starts. | Product/API |
 | BR-002 | Match Detail/Player screen presence is optional context and must not be required as a Live Activity start gate. | Product/API |
-| BR-003 | Follow/subscription state is required for Live Activity eligibility. | Product/API |
+| BR-003 | Follow/subscription state from any source is required for Live Activity eligibility. | Product/API |
 | BR-004 | Option A MVP shows only one selected followed match on Dynamic Island, even if the user follows multiple matches. | Product/API/Design |
 | BR-005 | Default selected match is the first followed match; if it ends or user unfollows it, system selects the next followed match that is currently live/eligible, then deterministic tie-breaker. | Product/API |
 | BR-006 | Dynamic Island-capable devices show compact Live Activity initially. | Product/Design |
@@ -141,7 +155,7 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 | BR-012 | Deeplink fallback route order: Match Detail by valid matchId → Followed Matches / Live Matches when missing/invalid/unavailable. | Product/Design/API |
 | BR-013 | Normal notification and Live Activity may display in parallel but are owned by separate rules. | Product/Design |
 | BR-014 | If user manually dismisses Live Activity, system must not recreate it immediately without renewed follow/action or priority-changing match event. | Product/API |
-| BR-015 | If the user unfollows selected match, switch to next eligible followed match; if none exists, end Live Activity. | Product/API |
+| BR-015 | If the user unfollows (any source), invalidate subscriptions from that source only. Re-evaluate remaining eligible matches from all sources. If another eligible match exists, switch; if none exists, end Live Activity. An explicit match follow (`content_event_match`) is not affected by unfollow of team or season. | Product/API |
 | BR-016 | Server may update multiple valid followed-match Live Activity subscriptions for Lock Screen; Dynamic Island still displays one selected match. | Product/API/Design |
 | BR-017 | App-controlled multi-match list/`+N` aggregation is out of scope for MVP; lock-screen OS multi-activity behavior is platform-handled. | Product/Design |
 | BR-018 | iOS remote Live Activity update feasibility depends on APNS/ActivityKit confirmation by iOS/backend. | API/iOS |
@@ -151,31 +165,42 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 
 ## 8. Functional Requirements
 
-### F-001 — Register followed-match Live Activity eligibility
+### F-001 — Register follow subscription and resolve match eligibility
 
-**Description:** When user follows a match, register the user/device/match as eligible for Live Activity updates.
+**Description:** When user triggers any follow action, register the subscription and resolve eligible match list for Live Activity.
 
-**Input:** Follow Match action, `user_id`, `device_id`, `match_id`, iOS/device eligibility, activity push token if available.
+**Input:** Follow action source (`content_event_match` | `sport_team` | `sport_league`), source entity id (`match_id` | `team_id` | `league_id`), `user_id`, `device_id`, iOS/device eligibility, activity push token if available.
 
-**System behavior:** Create/update followed-match subscription. If match is live and selected by priority, start/update Live Activity.
+**System behavior:**
+- `content_event_match`: create/update explicit per-match subscription for the given `match_id`.
+- `sport_team`: create team follow subscription; resolve all live matches of that team as implicit match subscriptions.
+- `sport_league`: create season follow subscription; resolve all live matches in that season as implicit match subscriptions.
+- If resolved match(es) are live and priority-selected, start/update Live Activity.
+- If no live match at follow time, store subscription and trigger when a match from that source becomes live.
 
-**Output:** Followed-match subscription active; Live Activity started/updated/suppressed with reason.
+**Output:** Subscription active; resolved match list; Live Activity started/updated/suppressed with reason.
 
-**Errors:** Invalid match returns validation error; unsupported device suppresses Live Activity but does not block follow.
+**Errors:** Invalid entity id returns validation error; unsupported device suppresses Live Activity but does not block follow.
 
 ### F-002 — Select one followed match for Option A
 
-**Description:** When user follows multiple eligible matches, select exactly one match for Dynamic Island while allowing Lock Screen to receive/update eligible per-match activities where OS allows.
+**Description:** When the user has multiple eligible matches from any follow source combination, select exactly one match for Dynamic Island while allowing Lock Screen to receive/update eligible per-match activities where OS allows.
 
-**Input:** Followed match list, first-follow order, match statuses, key events, recency data.
+**Input:** Resolved match list from all active follow sources, match statuses, key events, recency/kickoff data.
 
-**System behavior:** Default to the first followed match. Keep it selected until it ends or user unfollows it. Then select the next followed match that is currently live/eligible; use deterministic tie-breaker if multiple candidates remain.
+**System behavior:** Apply priority rule in order:
+1. Still live/eligible match.
+2. Match with latest key event (goal, red card, penalty, VAR, etc.).
+3. Nearest kickoff time (for tie-breaking multiple matches from team/season follow).
+4. Deterministic tie-breaker (lexical `match_id`) to avoid flapping.
+
+Keep selected match stable until it ends, user unfollows its source, or a higher-priority event occurs.
 
 **Output:** Selected Dynamic Island match and eligible Lock Screen Live Activity subscriptions.
 
-**Errors:** If no eligible match exists, end/suppress Live Activity.
+**Errors:** If no eligible match exists across all sources, end/suppress Live Activity.
 
-### F-003 — Render Dynamic Island compact state
+### F-003 - Render Dynamic Island compact state
 
 **Description:** Show compact Live Activity on Dynamic Island-capable devices for the selected match.
 
@@ -187,7 +212,7 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 
 **Errors:** If compact cannot render, do not affect normal notification delivery.
 
-### F-004 — Expand Dynamic Island Live Activity
+### F-004 - Expand Dynamic Island Live Activity
 
 **Description:** Expand compact Dynamic Island Live Activity on user long press/hold.
 
@@ -199,7 +224,7 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 
 **Errors:** If expansion unavailable, compact tap still opens deeplink.
 
-### F-005 — Deeplink from Live Activity
+### F-005 - Deeplink from Live Activity
 
 **Description:** Open app from compact/expanded Dynamic Island or a lock-screen Live Activity card.
 
@@ -211,7 +236,7 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 
 **Errors:** Invalid deeplink uses fallback route.
 
-### F-006 — Render lock-screen expanded Live Activity
+### F-006 - Render lock-screen expanded Live Activity
 
 **Description:** Show lock-screen Live Activity for eligible followed live match(es), subject to OS capability.
 
@@ -223,7 +248,7 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 
 **Errors:** If Live Activity fails, normal notification remains independent.
 
-### F-007 — Update Live Activity throughout selected match
+### F-007 - Update Live Activity throughout selected match
 
 **Description:** Keep score/status/time current while followed live match activity is ongoing.
 
@@ -235,7 +260,7 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 
 **Errors:** Failed updates are retried/logged; stale content must not persist beyond end.
 
-### F-008 — End or switch Live Activity
+### F-008 - End or switch Live Activity
 
 **Description:** End Live Activity or switch selected match when the current selected match ends/cancels/unavailable/unfollowed.
 
@@ -248,7 +273,7 @@ Live Activity complements the Notifications & Alert feature but has a separate l
 **Errors:** Duplicate end request is idempotent.
 
 
-### F-009 — Track analytics and performance
+### F-009 - Track analytics and performance
 
 **Description:** Capture analytics/performance events across Live Activity lifecycle.
 
