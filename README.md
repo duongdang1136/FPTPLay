@@ -116,9 +116,17 @@ Final docs:
 features/final-docs/Pre-Waiting-Room/Pre-Live-Waiting-Room/
 ```
 
-## SDLC skill configuration
+## Agent kit / SDLC skill configuration
 
-This repo is configured to use the focused SDLC documentation skill chain for FPTPlay feature tasks:
+This repo includes `agent-kit/` as a git submodule pointing to:
+
+```text
+https://github.com/duongdang1136/pulse-agent-kit
+```
+
+Use `agent-kit/PULSE.md` when an AI/session needs the full Pulse repository protocol, workflow manifests, agent packages, CLI guidance, or project knowledge/RAG tooling.
+
+For normal FPTPlay feature docs, this repo remains configured to use the focused local SDLC documentation skill chain:
 
 ```text
 skills/sdlc/01-researcher/skill.md

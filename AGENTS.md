@@ -14,6 +14,7 @@ features/final-docs/**    # implementation-ready handoff contracts
 skills/sdlc/01-researcher/**       # research + architecture context skill
 skills/sdlc/02-ba-requirement/**   # BA requirement clarification skill
 skills/sdlc/03-document-writer/**  # final contract writing skill
+agent-kit/**              # Pulse Agent Kit protocol submodule; read PULSE.md for full workflow/agent protocol when needed
 ```
 
 ## FPTPlay SDLC Skill Workflow
@@ -90,5 +91,6 @@ features/final-docs/<Large-Feature>/<Sub-Feature>/
 - Promote to final docs only after assumptions/open questions are accepted or safely defaulted.
 - Treat `docs-sdlc-framework.md` as the canonical FPTPlay SDLC docs framework.
 - Do not commit `SOUL.md`, `USER.md`, `wiki/`, local memory, secrets, or unrelated agent runtime files.
+- `agent-kit/` is a git submodule to `https://github.com/duongdang1136/pulse-agent-kit`; update it with normal git submodule commands when the protocol should move forward.
 - Optional runtime-only helpers such as global researcher playbooks or `Tech-Skills/**` may be used from the active agent workspace, but they are not committed to this repo.
 - For external writes such as push, use the repository remote configured by the owner.

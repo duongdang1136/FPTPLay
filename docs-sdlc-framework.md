@@ -2,7 +2,9 @@
 
 > Canonical framework config for FPTPlay feature documentation.
 
-This repository is configured to reuse a compact SDLC docs chain for FPTPlay feature work:
+This repository includes `agent-kit/` as a git submodule to `https://github.com/duongdang1136/pulse-agent-kit` for the full Pulse protocol, workflow manifests, agent packages, CLI guidance, and project knowledge/RAG tooling. Read `agent-kit/PULSE.md` when the full repository protocol is needed.
+
+For day-to-day FPTPlay feature documentation, this repository is configured to reuse a compact local SDLC docs chain:
 
 ```text
 01 Researcher + 02 BA Requirement  → features/lightweight/**
@@ -143,7 +145,8 @@ Before promoting lightweight docs to final docs:
 
 ## 6. Operating Rules
 
-- Use all three active skills for new FPTPlay feature tasks unless the user explicitly narrows the task.
+- Use `agent-kit/PULSE.md` when a task explicitly asks for the full Pulse workflow/protocol, project knowledge tooling, or agent package behavior.
+- Use all three active local skills for new FPTPlay feature tasks unless the user explicitly narrows the task.
 - For research-only requests, use `01-researcher` and update lightweight research docs.
 - For BA/requirement requests, use `01-researcher` lightly if context is missing, then `02-ba-requirement`.
 - For final/dev handoff requests, use `03-document-writer` and promote accepted lightweight docs into final docs.
