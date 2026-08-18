@@ -4,8 +4,8 @@
 > Large feature: Sport Zone
 > Sub-feature: Notifications & Alert
 > Stage: Final implementation handoff
-> Source: Notion `Notifications & Alert`, version 1.0
-> Last updated: 2026-06-02
+> Source: Confluence `Notifications & Alert` export (`Notifications+&+Alert.doc`)
+> Last updated: 2026-08-18
 
 ## Purpose
 
@@ -22,10 +22,13 @@ Live Activity is a parallel persistent surface triggered with match-start notifi
 ## Artifacts
 
 ```text
-product/functional-specification.md
-api/technical-contract.md
-design/design-contract.md
+product/Notifications-&-Alert.md              # single source-of-truth spec (converted từ Confluence doc, giữ nguyên template gốc)
+product/Content-Mapping-Notification-Sport.md # content mapping title/description (môn Bóng đá), converted từ Confluence doc
+product/Notifications+&+Alert.doc             # Confluence export gốc (read-only reference)
+product/Content+Mapping+cho+Notification+Sport+(môn+Bóng+đá).doc  # Confluence export gốc của Content Mapping (read-only reference)
 ```
+
+Legacy split contracts (`product/functional-specification.md`, `api/technical-contract.md`, `design/design-contract.md`) đã bị loại bỏ — feature này dùng một file spec duy nhất làm source of truth.
 
 ## Source lightweight docs
 

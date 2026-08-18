@@ -68,7 +68,7 @@ Use `skills/sdlc/03-document-writer/skill.md` to:
 Default output:
 
 ```text
-features/final-docs/<Large-Feature>/<Sub-Feature>/<feature-name>-functional-requirements.md
+features/final-docs/<Large-Feature>/<Sub-Feature>/product/<feature-name>.md
 ```
 
 ## 3. Repository Output Convention
@@ -103,12 +103,13 @@ Use final docs when the feature is ready for FE/BE/QA implementation handoff.
 
 ```text
 features/final-docs/<Large-Feature>/<Sub-Feature>/
-  <feature-name>-functional-requirements.md
+  README.md
+  product/<feature-name>.md
 ```
 
 Final docs must not be a raw copy of lightweight docs. They should collect accepted decisions and rewrite them into concise, implementation-ready contracts.
 
-`<feature-name>-functional-requirements.md` is the main handoff contract. It combines Product, UX, API/integration, state, error, and QA requirements.
+`product/<feature-name>.md` is the single source-of-truth handoff spec. It combines Product, UX, API/integration, state, error, and QA requirements, following the structure of the PD source doc when one exists. Do not create or maintain legacy split contracts (`product/functional-specification.md`, `api/technical-contract.md`, `design/design-contract.md`).
 
 Do not auto-create `<feature-name>-mockup.html`. Create a mockup/prototype only when the user explicitly asks.
 

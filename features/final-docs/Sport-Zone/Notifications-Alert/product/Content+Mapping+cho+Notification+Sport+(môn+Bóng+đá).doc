@@ -1,0 +1,2402 @@
+Date: Tue, 18 Aug 2026 15:13:56 +0000 (UTC)
+Message-ID: <2024147128.14842.1787066036556@0f5fcb0dce71>
+Subject: Exported From Confluence
+MIME-Version: 1.0
+Content-Type: multipart/related; 
+	boundary="----=_Part_14841_1001350644.1787066036555"
+
+------=_Part_14841_1001350644.1787066036555
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Content-Location: file:///C:/exported.html
+
+<html xmlns:o=3D'urn:schemas-microsoft-com:office:office'
+      xmlns:w=3D'urn:schemas-microsoft-com:office:word'
+      xmlns:v=3D'urn:schemas-microsoft-com:vml'
+      xmlns=3D'urn:w3-org-ns:HTML'>
+<head>
+    <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8=
+">
+    <title>Content Mapping cho Notification Sport (m=C3=B4n B=C3=B3ng =C4=
+=91=C3=A1)</title>
+    <!--[if gte mso 9]>
+    <xml>
+        <o:OfficeDocumentSettings>
+            <o:TargetScreenSize>1024x640</o:TargetScreenSize>
+            <o:PixelsPerInch>72</o:PixelsPerInch>
+            <o:AllowPNG/>
+        </o:OfficeDocumentSettings>
+        <w:WordDocument>
+            <w:View>Print</w:View>
+            <w:Zoom>90</w:Zoom>
+            <w:DoNotOptimizeForBrowser/>
+        </w:WordDocument>
+    </xml>
+    <![endif]-->
+    <style>
+                <!--
+        @page Section1 {
+            size: 8.5in 11.0in;
+            margin: 1.0in;
+            mso-header-margin: .5in;
+            mso-footer-margin: .5in;
+            mso-paper-source: 0;
+        }
+
+        table {
+            border: solid 1px;
+            border-collapse: collapse;
+        }
+
+        table td, table th {
+            border: solid 1px;
+            padding: 5px;
+        }
+
+        td {
+            page-break-inside: avoid;
+        }
+
+        tr {
+            page-break-after: avoid;
+        }
+
+        div.Section1 {
+            page: Section1;
+        }
+
+        /* Confluence print stylesheet. Common to all themes for print medi=
+a */
+/* Full of !important until we improve batching for print CSS */
+
+@media print {
+    #main {
+        padding-bottom: 1em !important; /* The default padding of 6em is to=
+o much for printouts */
+    }
+
+    body {
+        font-family: Arial, Helvetica, FreeSans, sans-serif;
+        font-size: 10pt;
+        line-height: 1.2;
+    }
+
+    body, #full-height-container, #main, #page, #content, .has-personal-sid=
+ebar #content {
+        background: #fff !important;
+        color: #000 !important;
+        border: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+    }
+
+    a, a:link, a:visited, a:focus, a:hover, a:active {
+        color: #000;
+    }
+
+    #content h1,
+    #content h2,
+    #content h3,
+    #content h4,
+    #content h5,
+    #content h6 {
+        font-family: Arial, Helvetica, FreeSans, sans-serif;
+        page-break-after: avoid;
+    }
+
+    pre {
+        font-family: Monaco, "Courier New", monospace;
+    }
+
+    #header,
+    .aui-header-inner,
+    #navigation,
+    #sidebar,
+    .sidebar,
+    #personal-info-sidebar,
+    .ia-fixed-sidebar,
+    .page-actions,
+    .navmenu,
+    .ajs-menu-bar,
+    .noprint,
+    .inline-control-link,
+    .inline-control-link a,
+    a.show-labels-editor,
+    .global-comment-actions,
+    .comment-actions,
+    .quick-comment-container,
+    #addcomment {
+        display: none !important;
+    }
+
+    /* CONF-28544 cannot print multiple pages in IE */
+    #splitter-content {
+        position: relative !important;
+    }
+
+    .comment .date::before {
+        content: none !important; /* remove middot for print view */
+    }
+
+    h1.pagetitle img {
+        height: auto;
+        width: auto;
+    }
+
+    .print-only {
+        display: block;
+    }
+
+    #footer {
+        position: relative !important; /* CONF-17506 Place the footer at en=
+d of the content */
+        margin: 0;
+        padding: 0;
+        background: none;
+        clear: both;
+    }
+
+    #poweredby {
+        border-top: none;
+        background: none;
+    }
+
+    #poweredby li.print-only {
+        display: list-item;
+        font-style: italic;
+    }
+
+    #poweredby li.noprint {
+        display: none;
+    }
+
+    /* no width controls in print */
+    .wiki-content .table-wrap,
+    .wiki-content p,
+    .panel .codeContent,
+    .panel .codeContent pre,
+    .image-wrap {
+        overflow: visible !important;
+    }
+
+    /* TODO - should this work? */
+    #children-section,
+    #comments-section .comment,
+    #comments-section .comment .comment-body,
+    #comments-section .comment .comment-content,
+    #comments-section .comment p {
+        page-break-inside: avoid;
+    }
+
+    #page-children a {
+        text-decoration: none;
+    }
+
+    /**
+     hide twixies
+
+     the specificity here is a hack because print styles
+     are getting loaded before the base styles. */
+    #comments-section.pageSection .section-header,
+    #comments-section.pageSection .section-title,
+    #children-section.pageSection .section-header,
+    #children-section.pageSection .section-title,
+    .children-show-hide {
+        padding-left: 0;
+        margin-left: 0;
+    }
+
+    .children-show-hide.icon {
+        display: none;
+    }
+
+    /* personal sidebar */
+    .has-personal-sidebar #content {
+        margin-right: 0px;
+    }
+
+    .has-personal-sidebar #content .pageSection {
+        margin-right: 0px;
+    }
+
+    .no-print, .no-print * {
+        display: none !important;
+    }
+}
+-->
+    </style>
+</head>
+<body>
+    <h1>Content Mapping cho Notification Sport (m=C3=B4n B=C3=B3ng =C4=91=
+=C3=A1)</h1>
+    <div class=3D"Section1">
+        <p>=C4=90=E1=BB=83 =C4=91=E1=BA=A3m b=E1=BA=A3o t=C3=ADnh =C4=91=E1=
+=BB=93ng nh=E1=BA=A5t v=C3=A0 tr=C3=A1nh tr=C3=B9ng l=E1=BA=B7p, t=C3=A0i l=
+i=E1=BB=87u n=C3=A0y k=E1=BA=BF th=E1=BB=ABa c=C3=A1c m=C3=B4 t=E1=BA=A3 t=
+=C3=ADnh n=C4=83ng t=E1=BB=AB c=C3=A1c ngu=E1=BB=93n li=C3=AAn quan sau:</p=
+>
+<ul>
+<li><p><strong>Thi=E1=BA=BFt k=E1=BA=BF:<span>&nbsp;<a href=3D"https://www.=
+figma.com/design/2vVoXYxr0Qz2wbpaCpwB5h/-Mobile----Sports-zone?node-id=3D65=
+25-125305&amp;t=3DtoBThVW1I374Fwfk-4" rel=3D"nofollow" class=3D"external-li=
+nk">https://www.figma.com/design/2vVoXYxr0Qz2wbpaCpwB5h/-Mobile----Sports-z=
+one?node-id=3D6525-125305&amp;t=3DtoBThVW1I374Fwfk-4</a></span></strong></p=
+></li>
+<li><p><strong>Jira Task:<span>&nbsp;<a href=3D"https://jira.fptplay.net/br=
+owse/FPTPLAY-4686" class=3D"external-link" rel=3D"nofollow">https://jira.fp=
+tplay.net/browse/FPTPLAY-4686</a></span></strong></p></li>
+<li><strong>T=C3=A0i li=E1=BB=87u li=C3=AAn quan:<span>&nbsp;</span><a href=
+=3D"https://wiki.fptplay.net/pages/viewpage.action?pageId=3D122116874" rel=
+=3D"nofollow">Notifications &amp; Alert</a></strong></li>
+<li><strong>Refferences:<span>&nbsp;</span><a href=3D"https://uniscore.com/=
+" class=3D"external-link" rel=3D"nofollow">https://uniscore.com/</a></stron=
+g></li>
+</ul>
+<p><strong>L=C6=B0u =C3=BD:</strong><span>&nbsp;</span>H=C3=ACnh =E1=BA=A3n=
+h minh h=E1=BB=8Da trong t=C3=A0i li=E1=BB=87u n=C3=A0y t=E1=BA=ADp trung t=
+h=E1=BB=83 hi=E1=BB=87n lu=E1=BB=93ng nghi=E1=BB=87p v=E1=BB=A5 (user flow)=
+ v=C3=A0 t=C6=B0=C6=A1ng t=C3=A1c (interaction). =C4=90=E1=BB=83 c=E1=BA=AD=
+p nh=E1=BA=ADt giao di=E1=BB=87n (UI) m=E1=BB=9Bi nh=E1=BA=A5t, vui l=C3=B2=
+ng tham kh=E1=BA=A3o tr=E1=BB=B1c ti=E1=BA=BFp t=E1=BA=A1i link thi=E1=BA=
+=BFt k=E1=BA=BF.</p>
+<hr>
+<h2 id=3D"ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=C3=A1)=
+-0.M=E1=BB=A5cl=E1=BB=A5c">0. M=E1=BB=A5c l=E1=BB=A5c</h2>
+<p><style type=3D"text/css">/*<![CDATA[*/
+div.rbtoc1787066036443 {padding: 0px;}
+div.rbtoc1787066036443 ul {margin-left: 0px;}
+div.rbtoc1787066036443 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style></p>
+<div class=3D"toc-macro rbtoc1787066036443">=20
+<ul class=3D"toc-indentation">=20
+<li><a href=3D"#ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=
+=C3=A1)-0.M=E1=BB=A5cl=E1=BB=A5c">0. M=E1=BB=A5c l=E1=BB=A5c</a></li>=20
+<li><a href=3D"#ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=
+=C3=A1)-1.M=C3=B4t=E1=BA=A3">1. M=C3=B4 t=E1=BA=A3</a></li>=20
+<li><a href=3D"#ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=
+=C3=A1)-2.DocumentHistory">2. Document History</a></li>=20
+<li><a href=3D"#ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=
+=C3=A1)-3.Placeholder(=C3=A1pd=E1=BB=A5ngchoto=C3=A0nb=E1=BB=99specb=C3=AAn=
+d=C6=B0=E1=BB=9Bi)">3. Placeholder (=C3=A1p d=E1=BB=A5ng cho to=C3=A0n b=E1=
+=BB=99 spec b=C3=AAn d=C6=B0=E1=BB=9Bi)</a>=20
+<ul class=3D"toc-indentation">=20
+<li><a href=3D"#ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=
+=C3=A1)-LU=E1=BB=92NG1:GI=E1=BA=A2ILEAGUE(competitionType=3Dleague)">LU=E1=
+=BB=92NG 1: GI=E1=BA=A2I LEAGUE (competitionType =3D league)</a></li>=20
+<li><a href=3D"#ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=
+=C3=A1)-LU=E1=BB=92NG2:GI=E1=BA=A2IC=C3=9AP(competitionType=3Dcup)">LU=E1=
+=BB=92NG 2: GI=E1=BA=A2I C=C3=9AP (competitionType =3D cup)</a></li>=20
+<li><a href=3D"#ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=
+=C3=A1)-1.Nh=C3=B3mV=C3=B2ngB=E1=BA=A3ng(stage_type=3Dgroup_stage)">1. Nh=
+=C3=B3m V=C3=B2ng B=E1=BA=A3ng (stage_type =3D group_stage)</a></li>=20
+<li><a href=3D"#ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=
+=C3=A1)-2.Nh=C3=B3mV=C3=B2ngLo=E1=BA=A1i/1/16/1/8(stage_type=3Dplayoff_knoc=
+kout)">2. Nh=C3=B3m V=C3=B2ng Lo=E1=BA=A1i / 1/16 / 1/8 (stage_type =3D pla=
+yoff_knockout)</a></li>=20
+<li><a href=3D"#ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=
+=C3=A1)-3.Nh=C3=B3mT=E1=BB=A9K=E1=BA=BFt(stage_type=3Dquarter_final)">3. Nh=
+=C3=B3m T=E1=BB=A9 K=E1=BA=BFt (stage_type =3D quarter_final)</a></li>=20
+<li><a href=3D"#ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=
+=C3=A1)-4.Nh=C3=B3mB=C3=A1nK=E1=BA=BFt(stage_type=3Dsemi_final)">4. Nh=C3=
+=B3m B=C3=A1n K=E1=BA=BFt (stage_type =3D semi_final)</a></li>=20
+<li><a href=3D"#ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=
+=C3=A1)-5.Nh=C3=B3mChungK=E1=BA=BFt(stage_type=3Dfinal)">5. Nh=C3=B3m Chung=
+ K=E1=BA=BFt (stage_type =3D final)</a></li>=20
+</ul> </li>=20
+<li><a href=3D"#ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=
+=C3=A1)-4.HISTORICALRULES(ch=E1=BB=89triggerkhiMatchStatus=3Dfinal&amp;stag=
+e_type=3Dfinal)">4. HISTORICAL RULES (ch=E1=BB=89 trigger khi Match Status =
+=3D final &amp; stage_type =3D final)</a></li>=20
+<li><a href=3D"#ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=
+=C3=A1)-5.EVENTDISPLAYMAPPING(s=E1=BB=B1ki=E1=BB=87nth=E1=BB=9Digianth=E1=
+=BB=B1ctrongtr=E1=BA=ADn)">5. EVENT DISPLAY MAPPING (s=E1=BB=B1 ki=E1=BB=87=
+n th=E1=BB=9Di gian th=E1=BB=B1c trong tr=E1=BA=ADn)</a></li>=20
+<li><a href=3D"#ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=
+=C3=A1)-6.Personalizeh=C3=B3atheo=C4=91=E1=BB=99iusertheod=C3=B5i(followed_=
+teams)">6. Personalize h=C3=B3a theo =C4=91=E1=BB=99i user theo d=C3=B5i (f=
+ollowed_teams)</a></li>=20
+</ul>=20
+</div>
+<p></p>
+<h2 id=3D"ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=C3=A1)=
+-1.M=C3=B4t=E1=BA=A3">1. M=C3=B4 t=E1=BA=A3</h2>
+<p>M=E1=BB=A5c ti=C3=AAu: M=C3=B4 t=E1=BA=A3 Notification Sport t=E1=BA=A1o=
+ c=E1=BA=A3m gi=C3=A1c FOMO =E2=80=94 user th=E1=BA=A5y l=C3=A0 mu=E1=BB=91=
+n b=E1=BA=A5m m=E1=BB=9F app ngay.</p>
+<p>Overview:</p>
+<p><span class=3D"confluence-embedded-file-wrapper confluence-embedded-manu=
+al-size"><img class=3D"confluence-embedded-image" draggable=3D"false" width=
+=3D"468" src=3D"f95ea5c091def0487214724e07d6c014" data-image-src=3D"/downlo=
+ad/attachments/155028454/Flowchart%20contentmapping.png?version=3D1&amp;mod=
+ificationDate=3D1786698788111&amp;api=3Dv2" data-unresolved-comment-count=
+=3D"0" data-linked-resource-id=3D"155028534" data-linked-resource-version=
+=3D"1" data-linked-resource-type=3D"attachment" data-linked-resource-defaul=
+t-alias=3D"Flowchart contentmapping.png" data-base-url=3D"https://wiki.fptp=
+lay.net" data-linked-resource-content-type=3D"image/png" data-linked-resour=
+ce-container-id=3D"155028454" data-linked-resource-container-version=3D"16"=
+ alt=3D"" height=3D"972"></span></p>
+<h2 id=3D"ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=C3=A1)=
+-2.DocumentHistory">2. Document History</h2>
+<div class=3D"table-wrap">
+<table class=3D"wrapped confluenceTable">
+<tbody class=3D"">
+<tr>
+<th style=3D"text-align: left;" class=3D"confluenceTh">Version</th>
+<th style=3D"text-align: left;" class=3D"confluenceTh">Date</th>
+<th style=3D"text-align: left;" class=3D"confluenceTh">Updated By</th>
+<th style=3D"text-align: left;" class=3D"confluenceTh">Notes</th>
+<th style=3D"text-align: left;" class=3D"confluenceTh">Approved By</th>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd">v1.0</td>
+<td style=3D"text-align: left;" class=3D"confluenceTd">2026-08-14</td>
+<td style=3D"text-align: left;" class=3D"confluenceTd">duongdt49</td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><br></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd">Pending</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id=3D"ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=C3=A1)=
+-3.Placeholder(=C3=A1pd=E1=BB=A5ngchoto=C3=A0nb=E1=BB=99specb=C3=AAnd=C6=B0=
+=E1=BB=9Bi)">3. Placeholder (=C3=A1p d=E1=BB=A5ng cho to=C3=A0n b=E1=BB=99 =
+spec b=C3=AAn d=C6=B0=E1=BB=9Bi)</h2>
+<div class=3D"table-wrap">
+<table class=3D"wrapped confluenceTable">
+<thead class=3D"">
+<tr class=3D"">
+<th class=3D"confluenceTh">Lo=E1=BA=A1i gi=C3=A1 tr=E1=BB=8B</th>
+<th class=3D"confluenceTh">C=C3=A1ch vi=E1=BA=BFt</th>
+<th class=3D"confluenceTh">V=C3=AD d=E1=BB=A5</th>
+</tr>
+</thead>
+<tbody class=3D"">
+<tr class=3D"">
+<td class=3D"confluenceTd">Gi=C3=A1 tr=E1=BB=8B =C4=91=E1=BB=99ng (=C4=91=
+=E1=BB=95i theo tr=E1=BA=ADn/data)</td>
+<td class=3D"confluenceTd"><code>{snake_case}</code></td>
+<td class=3D"confluenceTd"><code>{home}</code>, <code>{away}</code>, <code>=
+{result}</code>, <code>{winner}</code>, <code>{loser}</code>, <code>{stage_=
+name}</code>, <code>{round_label}</code></td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">Nh=C3=A3n v=C3=B2ng =C4=91=E1=BA=A5u c=E1=BB=91 =
+=C4=91=E1=BB=8Bnh (kh=C3=B4ng =C4=91=E1=BB=95i theo data)</td>
+<td class=3D"confluenceTd">Kh=C3=B4ng d=C3=B9ng placeholder</td>
+<td class=3D"confluenceTd"><code>[T=E1=BB=A9 K=E1=BA=BFt]</code>, <code>[B=
+=C3=A1n K=E1=BA=BFt]</code>, <code>[Chung K=E1=BA=BFt]</code></td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">Nh=C3=A3n v=C3=B2ng =C4=91=E1=BA=A5u =C4=91=E1=
+=BB=99ng (1/16, 1/8...)</td>
+<td class=3D"confluenceTd">Placeholder trong ngo=E1=BA=B7c vu=C3=B4ng</td>
+<td class=3D"confluenceTd"><code>[{round_label}] {home} vs {away}</code> =
+=E2=86=92 <code>[V=C3=B2ng 1/8] Tottenham vs Leeds</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><br></p>
+<hr>
+<h3 id=3D"ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=C3=A1)=
+-LU=E1=BB=92NG1:GI=E1=BA=A2ILEAGUE(competitionType=3Dleague)">LU=E1=BB=92NG=
+ 1: GI=E1=BA=A2I LEAGUE (competitionType =3D league)</h3>
+<p>Ch=E1=BB=89 5 tr=E1=BA=A1ng th=C3=A1i c=C6=A1 b=E1=BA=A3n. Kh=C3=B4ng ba=
+o gi=E1=BB=9D k=C3=ADch ho=E1=BA=A1t extra_time hay penalties.</p>
+<div class=3D"table-wrap">
+<table class=3D"relative-table wrapped confluenceTable" style=3D"width: 101=
+.589%;">
+<colgroup>
+<col style=3D"width: 7.71714%;">
+<col style=3D"width: 10.1456%;">
+<col style=3D"width: 20.2373%;">
+<col style=3D"width: 24.2847%;">
+<col style=3D"width: 21.8033%;">
+<col style=3D"width: 15.812%;">
+</colgroup>
+<thead class=3D"">
+<tr class=3D"">
+<th class=3D"confluenceTh">Match Status</th>
+<th class=3D"confluenceTh">Format Title</th>
+<th class=3D"confluenceTh">Format Description</th>
+<th class=3D"confluenceTh">Example</th>
+<th class=3D"confluenceTh">Fallback (khi thi=E1=BA=BFu data)</th>
+<th class=3D"confluenceTh">Image Display</th>
+</tr>
+</thead>
+<tbody class=3D"">
+<tr class=3D"">
+<td class=3D"confluenceTd">match_reminder</td>
+<td class=3D"confluenceTd"><code>{home} vs {away}</code></td>
+<td class=3D"confluenceTd">30p n=E1=BB=AFa b=C3=B3ng l=C4=83n! =C4=90=E1=BA=
+=A1i chi=E1=BA=BFn gi=C3=A0nh 3 =C4=91i=E1=BB=83m hot nh=E1=BA=A5t h=C3=B4m=
+ nay. M=E1=BB=9F app xem ngay</td>
+<td class=3D"confluenceTd">Tottenham vs Leeds / 30p n=E1=BB=AFa b=C3=B3ng l=
+=C4=83n! =C4=90=E1=BA=A1i chi=E1=BA=BFn gi=C3=A0nh 3 =C4=91i=E1=BB=83m hot =
+nh=E1=BA=A5t h=C3=B4m nay. M=E1=BB=9F app xem ngay</td>
+<td class=3D"confluenceTd">=E2=80=94 (kh=C3=B4ng ph=E1=BB=A5 thu=E1=BB=99c =
+data =C4=91=E1=BB=99ng)</td>
+<td class=3D"confluenceTd">Match logo</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">match_start / 1st_half</td>
+<td class=3D"confluenceTd"><code>{home} vs {away}</code></td>
+<td class=3D"confluenceTd">Tr=E1=BA=ADn =C4=91=E1=BA=A5u ch=C3=ADnh th=E1=
+=BB=A9c b=E1=BA=AFt =C4=91=E1=BA=A7u! Nh=E1=BA=A5n xem tr=E1=BB=B1c ti=E1=
+=BA=BFp ngay</td>
+<td class=3D"confluenceTd">Tottenham vs Leeds / Tr=E1=BA=ADn =C4=91=E1=BA=
+=A5u ch=C3=ADnh th=E1=BB=A9c b=E1=BA=AFt =C4=91=E1=BA=A7u! Nh=E1=BA=A5n xem=
+ tr=E1=BB=B1c ti=E1=BA=BFp ngay</td>
+<td class=3D"confluenceTd">=E2=80=94</td>
+<td class=3D"confluenceTd">Match logo</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">half_time</td>
+<td class=3D"confluenceTd"><code>{home} vs {away}</code></td>
+<td class=3D"confluenceTd">H=E1=BA=BFt hi=E1=BB=87p 1 (<code>{result}</code=
+>): Di=E1=BB=85n bi=E1=BA=BFn c=E1=BB=B1c c=C4=83ng! Xem ngay di=E1=BB=85n =
+bi=E1=BA=BFn H1</td>
+<td class=3D"confluenceTd">Tottenham vs Leeds / H=E1=BA=BFt hi=E1=BB=87p 1 =
+(4-3): Di=E1=BB=85n bi=E1=BA=BFn c=E1=BB=B1c c=C4=83ng!...</td>
+<td class=3D"confluenceTd">Thi=E1=BA=BFu <code>{result}</code> =E2=86=92 b=
+=E1=BB=8F c=E1=BB=A5m t=E1=BB=B7 s=E1=BB=91, c=C3=B2n: =E2=9A=A1 H=E1=BA=BF=
+t hi=E1=BB=87p 1! B=E1=BA=A5m =C4=91=E1=BB=83 xem t=E1=BB=B7 s=E1=BB=91 m=
+=E1=BB=9Bi nh=E1=BA=A5t &amp; di=E1=BB=85n bi=E1=BA=BFn n=E1=BB=95i b=E1=BA=
+=ADt.</td>
+<td class=3D"confluenceTd">Match logo</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">second_half_start</td>
+<td class=3D"confluenceTd"><code>{home} vs {away}</code></td>
+<td class=3D"confluenceTd">Hi=E1=BB=87p 2 b=E1=BA=AFt =C4=91=E1=BA=A7u! Li=
+=E1=BB=87u c=C3=B3 b=E1=BA=A5t ng=E1=BB=9D =E1=BB=9F 45 ph=C3=BAt c=C3=B2n =
+l=E1=BA=A1i? M=E1=BB=9F app xem ngay</td>
+<td class=3D"confluenceTd">Tottenham vs Leeds / Hi=E1=BB=87p 2 b=E1=BA=AFt =
+=C4=91=E1=BA=A7u!...</td>
+<td class=3D"confluenceTd">=E2=80=94</td>
+<td class=3D"confluenceTd">Match logo</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">final</td>
+<td class=3D"confluenceTd"><code>{home} vs {away}</code></td>
+<td class=3D"confluenceTd">H=E1=BA=BFt gi=E1=BB=9D! Tr=E1=BA=ADn =C4=91=E1=
+=BA=A5u k=E1=BA=BFt th=C3=BAc v=E1=BB=9Bi t=E1=BB=89 s=E1=BB=91 <code>{resu=
+lt}</code>.</td>
+<td class=3D"confluenceTd">Tottenham vs Leeds / H=E1=BA=BFt gi=E1=BB=9D! Tr=
+=E1=BA=ADn =C4=91=E1=BA=A5u k=E1=BA=BFt th=C3=BAc v=E1=BB=9Bi t=E1=BB=89 s=
+=E1=BB=91 4-3.</td>
+<td class=3D"confluenceTd">Thi=E1=BA=BFu <code>{result}</code> =E2=86=92 ch=
+=E1=BB=89 hi=E1=BB=87n Title, =E1=BA=A9n ph=E1=BA=A7n t=E1=BB=B7 s=E1=BB=91=
+ trong Desc</td>
+<td class=3D"confluenceTd">Match logo</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><br></p>
+<hr>
+<h3 id=3D"ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=C3=A1)=
+-LU=E1=BB=92NG2:GI=E1=BA=A2IC=C3=9AP(competitionType=3Dcup)">LU=E1=BB=92NG =
+2: GI=E1=BA=A2I C=C3=9AP (competitionType =3D cup)</h3>
+<p>Chia theo 5 <code>stage_type</code>. Khi <code>Match Status =3D final</c=
+ode> <strong>v=C3=A0</strong> <code>stage_type =3D final</code>, h=E1=BB=87=
+ th=E1=BB=91ng check Historical Rules tr=C6=B0=E1=BB=9Bc (M=E1=BB=A5c 4), m=
+atch rule n=C3=A0o th=C3=AC d=C3=B9ng wording rule =C4=91=C3=B3, override w=
+ording ti=C3=AAu chu=E1=BA=A9n b=C3=AAn d=C6=B0=E1=BB=9Bi.</p>
+<h3 id=3D"ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=C3=A1)=
+-1.Nh=C3=B3mV=C3=B2ngB=E1=BA=A3ng(stage_type=3Dgroup_stage)">1. Nh=C3=B3m V=
+=C3=B2ng B=E1=BA=A3ng (stage_type =3D group_stage)</h3>
+<div class=3D"table-wrap">
+<table class=3D"wrapped confluenceTable">
+<thead class=3D"">
+<tr class=3D"">
+<th class=3D"confluenceTh">Match Status</th>
+<th class=3D"confluenceTh">Title Format</th>
+<th class=3D"confluenceTh">Desc Format</th>
+<th class=3D"confluenceTh">Example (Title+Desc)</th>
+<th class=3D"confluenceTh">Fallback</th>
+<th class=3D"confluenceTh">Image Display</th>
+</tr>
+</thead>
+<tbody class=3D"">
+<tr class=3D"">
+<td class=3D"confluenceTd">match_reminder</td>
+<td class=3D"confluenceTd"><code>{home} vs {away}</code></td>
+<td class=3D"confluenceTd">30p n=E1=BB=AFa t=E1=BA=A1i <code>{stage_name}</=
+code>: =C4=90=E1=BA=A1i chi=E1=BA=BFn tranh v=C3=A9 qua V=C3=B2ng B=E1=BA=
+=A3ng! Xem ngay</td>
+<td class=3D"confluenceTd">Tottenham vs Leeds / 30p n=E1=BB=AFa t=E1=BA=A1i=
+ B=E1=BA=A3ng A: =C4=90=E1=BA=A1i chi=E1=BA=BFn tranh v=C3=A9 qua V=C3=B2ng=
+ B=E1=BA=A3ng! Xem ngay</td>
+<td class=3D"confluenceTd">&nbsp;30p n=E1=BB=AFa: Tr=E1=BA=ADn =C4=91=E1=BA=
+=A1i chi=E1=BA=BFn V=C3=B2ng B=E1=BA=A3ng chu=E1=BA=A9n b=E1=BB=8B di=E1=BB=
+=85n ra! V=C3=A0o xem ngay</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">match_start</td>
+<td class=3D"confluenceTd"><code>{home} vs {away}</code></td>
+<td class=3D"confluenceTd">B=E1=BA=AFt =C4=91=E1=BA=A7u <code>{stage_name}<=
+/code>! Ai s=E1=BA=BD gi=C3=A0nh 3 =C4=91i=E1=BB=83m quan tr=E1=BB=8Dng? Cl=
+ick xem live</td>
+<td class=3D"confluenceTd">Tottenham vs Leeds / B=E1=BA=AFt =C4=91=E1=BA=A7=
+u B=E1=BA=A3ng A!...</td>
+<td class=3D"confluenceTd">B=E1=BA=AFt =C4=91=E1=BA=A7u! Tr=E1=BA=ADn =C4=
+=91=E1=BA=A5u V=C3=B2ng B=E1=BA=A3ng ch=C3=ADnh th=E1=BB=A9c kh=E1=BB=9Fi t=
+ranh, xem ngay</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">half_time</td>
+<td class=3D"confluenceTd"><code>{home} vs {away}</code></td>
+<td class=3D"confluenceTd">H=E1=BA=BFt hi=E1=BB=87p 1 (<code>{result}</code=
+>): Di=E1=BB=85n bi=E1=BA=BFn B=E1=BA=A3ng =C4=91=E1=BA=A5u c=E1=BB=B1c c=
+=C4=83ng! Xem di=E1=BB=85n bi=E1=BA=BFn tr=E1=BA=ADn =C4=91=E1=BA=A5u ngay<=
+/td>
+<td class=3D"confluenceTd">Tottenham vs Leeds / H=E1=BA=BFt hi=E1=BB=87p 1 =
+(2-1)...</td>
+<td class=3D"confluenceTd">H=E1=BA=BFt hi=E1=BB=87p 1! B=E1=BA=A5m =C4=91=
+=E1=BB=83 xem t=E1=BB=B7 s=E1=BB=91 &amp; di=E1=BB=85n bi=E1=BA=BFn m=E1=BB=
+=9Bi nh=E1=BA=A5t</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">second_half_start</td>
+<td class=3D"confluenceTd"><code>{home} vs {away}</code></td>
+<td class=3D"confluenceTd">Hi=E1=BB=87p 2 b=E1=BA=AFt =C4=91=E1=BA=A7u! 45p=
+ quy=E1=BA=BFt =C4=91=E1=BB=8Bnh c=E1=BB=A5c di=E1=BB=87n B=E1=BA=A3ng =C4=
+=91=E1=BA=A5u, v=C3=A0o xem ngay</td>
+<td class=3D"confluenceTd">Tottenham vs Leeds / Hi=E1=BB=87p 2 b=E1=BA=AFt =
+=C4=91=E1=BA=A7u!...</td>
+<td class=3D"confluenceTd">Hi=E1=BB=87p 2 b=E1=BA=AFt =C4=91=E1=BA=A7u! M=
+=E1=BB=9F app xem di=E1=BB=85n bi=E1=BA=BFn ti=E1=BA=BFp theo ngay</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">final</td>
+<td class=3D"confluenceTd"><code>{home} vs {away}</code></td>
+<td class=3D"confluenceTd">H=E1=BA=BFt gi=E1=BB=9D! Tr=E1=BA=ADn =C4=91=E1=
+=BA=A5u k=E1=BA=BFt th=C3=BAc v=E1=BB=9Bi t=E1=BB=89 s=E1=BB=91 <code>{resu=
+lt}</code>.</td>
+<td class=3D"confluenceTd">Tottenham vs Leeds / Tr=E1=BA=ADn =C4=91=E1=BA=
+=A5u k=E1=BA=BFt th=C3=BAc v=E1=BB=9Bi t=E1=BB=89 s=E1=BB=91 <code>{result}=
+</code>. B=E1=BA=A5m =C4=91=E1=BB=83 xem di=E1=BB=85n bi=E1=BA=BFn tr=E1=BA=
+=ADn =C4=91=E1=BA=A5u.</td>
+<td class=3D"confluenceTd">Tr=E1=BA=ADn =C4=91=E1=BA=A5u k=E1=BA=BFt th=C3=
+=BAc! B=E1=BA=A5m =C4=91=E1=BB=83 xem di=E1=BB=85n bi=E1=BA=BFn tr=E1=BA=AD=
+n =C4=91=E1=BA=A5u.</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id=3D"ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=C3=A1)=
+-2.Nh=C3=B3mV=C3=B2ngLo=E1=BA=A1i/1/16/1/8(stage_type=3Dplayoff_knockout)">=
+2. Nh=C3=B3m V=C3=B2ng Lo=E1=BA=A1i / 1/16 / 1/8 (stage_type =3D playoff_kn=
+ockout)</h3>
+<div class=3D"table-wrap">
+<table class=3D"wrapped confluenceTable">
+<thead class=3D"">
+<tr class=3D"">
+<th class=3D"confluenceTh">Match Status</th>
+<th class=3D"confluenceTh">Title Format</th>
+<th class=3D"confluenceTh">Desc Format</th>
+<th class=3D"confluenceTh">Example (Title+Desc)</th>
+<th class=3D"confluenceTh">Fallback</th>
+<th class=3D"confluenceTh">Image Display</th>
+</tr>
+</thead>
+<tbody class=3D"">
+<tr class=3D"">
+<td class=3D"confluenceTd">match_reminder</td>
+<td class=3D"confluenceTd"><code>[{round_label}] {home} vs {away}</code></t=
+d>
+<td class=3D"confluenceTd">30p n=E1=BB=AFa: =C4=90=E1=BA=A1i chi=E1=BA=BFn =
+sinh t=E1=BB=AD V=C3=B2ng lo=E1=BA=A1i tr=E1=BB=B1c ti=E1=BA=BFp! V=C3=A0o =
+gi=E1=BB=AF ch=E1=BB=97 ngay</td>
+<td class=3D"confluenceTd">[V=C3=B2ng 1/8] Tottenham vs Leeds / 30p n=E1=BB=
+=AFa: =C4=90=E1=BA=A1i chi=E1=BA=BFn sinh t=E1=BB=AD...</td>
+<td class=3D"confluenceTd">30p n=E1=BB=AFa: =C4=90=E1=BA=A1i chi=E1=BA=BFn =
+V=C3=B2ng lo=E1=BA=A1i tr=E1=BB=B1c ti=E1=BA=BFp s=E1=BA=AFp di=E1=BB=85n r=
+a, xem ngay</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">match_start</td>
+<td class=3D"confluenceTd"><code>[{round_label}] {home} vs {away}</code></t=
+d>
+<td class=3D"confluenceTd">Tr=E1=BA=ADn =C4=91=E1=BA=A5u ch=C3=ADnh th=E1=
+=BB=A9c b=E1=BA=AFt =C4=91=E1=BA=A7u! Thua l=C3=A0 v=E1=BB=81 n=C6=B0=E1=BB=
+=9Bc, =C4=91=E1=BB=99i n=C3=A0o s=E1=BA=BD =C4=91i ti=E1=BA=BFp? Click xem =
+live ngay</td>
+<td class=3D"confluenceTd">[V=C3=B2ng 1/8] Tottenham vs Leeds / Tr=E1=BA=AD=
+n =C4=91=E1=BA=A5u ch=C3=ADnh th=E1=BB=A9c b=E1=BA=AFt =C4=91=E1=BA=A7u! Th=
+ua l=C3=A0 v=E1=BB=81 n=C6=B0=E1=BB=9Bc...</td>
+<td class=3D"confluenceTd">Tr=E1=BA=ADn =C4=91=E1=BA=A5u ch=C3=ADnh th=E1=
+=BB=A9c b=E1=BA=AFt =C4=91=E1=BA=A7u! M=E1=BB=9F app theo d=C3=B5i tr=E1=BA=
+=ADn chi=E1=BA=BFn sinh t=E1=BB=AD ngay</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">half_time</td>
+<td class=3D"confluenceTd"><code>[{round_label}] {home} vs {away}</code></t=
+d>
+<td class=3D"confluenceTd">H=E1=BA=BFt hi=E1=BB=87p 1 (<code>{result}</code=
+>): Cu=E1=BB=99c =C4=91ua ngh=E1=BA=B9t th=E1=BB=9F! Xem ngay di=E1=BB=85n =
+bi=E1=BA=BFn hi=E1=BB=87p 1</td>
+<td class=3D"confluenceTd">[V=C3=B2ng 1/8] Tottenham vs Leeds / H=E1=BA=BFt=
+ hi=E1=BB=87p 1 (1-0)...</td>
+<td class=3D"confluenceTd">H=E1=BA=BFt hi=E1=BB=87p 1! B=E1=BA=A5m =C4=91=
+=E1=BB=83 xem t=E1=BB=B7 s=E1=BB=91 &amp; di=E1=BB=85n bi=E1=BA=BFn m=E1=BB=
+=9Bi nh=E1=BA=A5t</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">second_half_start</td>
+<td class=3D"confluenceTd"><code>[{round_label}] {home} vs {away}</code></t=
+d>
+<td class=3D"confluenceTd">45p quy=E1=BA=BFt =C4=91=E1=BB=8Bnh! Xem ai s=E1=
+=BA=BD gi=C3=A0nh t=E1=BA=A5m v=C3=A9 =C4=91i ti=E1=BA=BFp ngay l=C3=BAc n=
+=C3=A0y</td>
+<td class=3D"confluenceTd">[V=C3=B2ng 1/8] Tottenham vs Leeds / 45p quy=E1=
+=BA=BFt =C4=91=E1=BB=8Bnh!...</td>
+<td class=3D"confluenceTd">Hi=E1=BB=87p 2 b=E1=BA=AFt =C4=91=E1=BA=A7u! 45 =
+ph=C3=BAt quy=E1=BA=BFt =C4=91=E1=BB=8Bnh t=E1=BA=A5m v=C3=A9 =C4=91i ti=E1=
+=BA=BFp, v=C3=A0o xem ngay</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">extra_time</td>
+<td class=3D"confluenceTd"><code>[{round_label}] {home} vs {away}</code></t=
+d>
+<td class=3D"confluenceTd">Hi=E1=BB=87p ph=E1=BB=A5 b=E1=BA=AFt =C4=91=E1=
+=BA=A7u! B=E1=BA=A5m v=C3=A0o xem tr=E1=BB=B1c ti=E1=BA=BFp ph=C3=A2n th=E1=
+=BA=AFng b=E1=BA=A1i ngay</td>
+<td class=3D"confluenceTd">[V=C3=B2ng 1/8] Tottenham vs Leeds / Hi=E1=BB=87=
+p ph=E1=BB=A5 b=E1=BA=AFt =C4=91=E1=BA=A7u!...</td>
+<td class=3D"confluenceTd">Hi=E1=BB=87p ph=E1=BB=A5 b=E1=BA=AFt =C4=91=E1=
+=BA=A7u! B=E1=BA=A5m v=C3=A0o xem ngay k=E1=BA=BBo l=E1=BB=A1</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">penalties</td>
+<td class=3D"confluenceTd"><code>[{round_label}] {home} vs {away}</code></t=
+d>
+<td class=3D"confluenceTd">=C4=90=E1=BA=A4U S=C3=9ANG 11M! Xem ai s=E1=BA=
+=BD b=E1=BA=A3n l=C4=A9nh b=C6=B0=E1=BB=9Bc v=C3=A0o T=E1=BB=A9 K=E1=BA=BFt=
+ ngay</td>
+<td class=3D"confluenceTd">[V=C3=B2ng 1/8] Tottenham vs Leeds / =C4=90=E1=
+=BA=A4U S=C3=9ANG 11M!...</td>
+<td class=3D"confluenceTd">C=C4=82N N=C3=83O TR=C3=8AN CH=E1=BA=A4M 11M! M=
+=E1=BB=9F app xem lo=E1=BA=A1t s=C3=BAt lu=C3=A2n l=C6=B0u ngh=E1=BA=B9t th=
+=E1=BB=9F</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">final</td>
+<td class=3D"confluenceTd"><code>[{round_label}] K=E1=BA=BFt qu=E1=BA=A3 {r=
+esult}</code></td>
+<td class=3D"confluenceTd">K=E1=BA=BFt th=C3=BAc tr=E1=BA=ADn =C4=91=E1=BA=
+=A5u! <code>{winner}</code> ch=C3=ADnh th=E1=BB=A9c gi=C3=A0nh v=C3=A9 =C4=
+=91i ti=E1=BA=BFp. Xem di=E1=BB=85n bi=E1=BA=BFn ngay</td>
+<td class=3D"confluenceTd">[V=C3=B2ng 1/8] K=E1=BA=BFt qu=E1=BA=A3 2-1 /&nb=
+sp; Tr=E1=BA=ADn =C4=91=E1=BA=A5u k=E1=BA=BFt th=C3=BAc! Tottenham ch=C3=AD=
+nh th=E1=BB=A9c gi=C3=A0nh v=C3=A9 =C4=91i ti=E1=BA=BFp...</td>
+<td class=3D"confluenceTd">Tr=E1=BA=ADn =C4=91=E1=BA=A5u k=E1=BA=BFt th=C3=
+=BAc! B=E1=BA=A5m xem =C4=91=E1=BB=99i =C4=91i ti=E1=BA=BFp.</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id=3D"ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=C3=A1)=
+-3.Nh=C3=B3mT=E1=BB=A9K=E1=BA=BFt(stage_type=3Dquarter_final)">3. Nh=C3=B3m=
+ T=E1=BB=A9 K=E1=BA=BFt (stage_type =3D quarter_final)</h3>
+<div class=3D"table-wrap">
+<table class=3D"wrapped confluenceTable">
+<thead class=3D"">
+<tr class=3D"">
+<th class=3D"confluenceTh">Match Status</th>
+<th class=3D"confluenceTh">Title Format</th>
+<th class=3D"confluenceTh">Desc Format</th>
+<th class=3D"confluenceTh">Example (Title+Desc)</th>
+<th class=3D"confluenceTh">Fallback</th>
+<th class=3D"confluenceTh">Image Display</th>
+</tr>
+</thead>
+<tbody class=3D"">
+<tr class=3D"">
+<td class=3D"confluenceTd">match_reminder</td>
+<td class=3D"confluenceTd"><code>[T=E1=BB=A9 K=E1=BA=BFt] {home} vs {away}<=
+/code></td>
+<td class=3D"confluenceTd">30p n=E1=BB=AFa T=E1=BB=A8 K=E1=BA=BET: Cu=E1=BB=
+=99c ch=E1=BA=A1m tr=C3=A1n c=E1=BB=A7a 8 =C4=91=E1=BB=99i m=E1=BA=A1nh nh=
+=E1=BA=A5t! V=C3=A0o xem ngay</td>
+<td class=3D"confluenceTd">[T=E1=BB=A9 K=E1=BA=BFt] Tottenham vs Leeds / 30=
+p n=E1=BB=AFa T=E1=BB=A8 K=E1=BA=BET:...</td>
+<td class=3D"confluenceTd">30p n=E1=BB=AFa T=E1=BB=A9 K=E1=BA=BFt: Tr=E1=BA=
+=ADn =C4=91=E1=BA=A1i chi=E1=BA=BFn T=E1=BB=A9 k=E1=BA=BFt s=E1=BA=AFp b=E1=
+=BA=AFt =C4=91=E1=BA=A7u. V=C3=A0o xem ngay</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">match_start</td>
+<td class=3D"confluenceTd"><code>[T=E1=BB=A9 K=E1=BA=BFt] {home} vs {away}<=
+/code></td>
+<td class=3D"confluenceTd">T=E1=BB=A8 K=E1=BA=BET B=E1=BA=AET =C4=90=E1=BA=
+=A6U! T=E1=BA=A5m v=C3=A9 v=C3=A0o B=C3=A1n k=E1=BA=BFt g=E1=BB=8Di t=C3=AA=
+n ai? B=E1=BA=A5m xem live</td>
+<td class=3D"confluenceTd">[T=E1=BB=A9 K=E1=BA=BFt] Tottenham vs Leeds / T=
+=E1=BB=A8 K=E1=BA=BET B=E1=BA=AET =C4=90=E1=BA=A6U!...</td>
+<td class=3D"confluenceTd">T=E1=BB=A8 K=E1=BA=BET B=E1=BA=AET =C4=90=E1=BA=
+=A6U! Nh=E1=BA=A5n xem tr=E1=BB=B1c ti=E1=BA=BFp cu=E1=BB=99c =C4=91=E1=BB=
+=91i =C4=91=E1=BA=A7u sinh t=E1=BB=AD</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">half_time</td>
+<td class=3D"confluenceTd"><code>[T=E1=BB=A9 K=E1=BA=BFt] {home} vs {away}<=
+/code></td>
+<td class=3D"confluenceTd">H=E1=BA=BFt hi=E1=BB=87p 1 (<code>{result}</code=
+>): Cu=E1=BB=99c =C4=91=E1=BA=A5u tr=C3=AD =C4=91=E1=BB=89nh cao! Click xem=
+ di=E1=BB=85n bi=E1=BA=BFn n=E1=BB=95i b=E1=BA=ADt</td>
+<td class=3D"confluenceTd">[T=E1=BB=A9 K=E1=BA=BFt] Tottenham vs Leeds / H=
+=E1=BA=BFt hi=E1=BB=87p 1 (0-0)...</td>
+<td class=3D"confluenceTd">H=E1=BA=BFt hi=E1=BB=87p 1 T=E1=BB=A9 k=E1=BA=BF=
+t! B=E1=BA=A5m =C4=91=E1=BB=83 xem t=E1=BB=B7 s=E1=BB=91 &amp; di=E1=BB=85n=
+ bi=E1=BA=BFn m=E1=BB=9Bi nh=E1=BA=A5t</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">second_half_start</td>
+<td class=3D"confluenceTd"><code>[T=E1=BB=A9 K=E1=BA=BFt] {home} vs {away}<=
+/code></td>
+<td class=3D"confluenceTd">45p sinh t=E1=BB=AD! Ai s=E1=BA=BD =C4=91=E1=BA=
+=B7t ch=C3=A2n v=C3=A0o B=C3=A1n k=E1=BA=BFt? M=E1=BB=9F app xem ngay</td>
+<td class=3D"confluenceTd">[T=E1=BB=A9 K=E1=BA=BFt] Tottenham vs Leeds / 45=
+p sinh t=E1=BB=AD!...</td>
+<td class=3D"confluenceTd">Hi=E1=BB=87p 2 T=E1=BB=A9 k=E1=BA=BFt! 45 ph=C3=
+=BAt quy=E1=BA=BFt =C4=91=E1=BB=8Bnh t=E1=BA=A5m v=C3=A9 v=C3=A0o B=C3=A1n =
+k=E1=BA=BFt, xem ngay</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">extra_time</td>
+<td class=3D"confluenceTd"><code>[T=E1=BB=A9 K=E1=BA=BFt] {home} vs {away}<=
+/code></td>
+<td class=3D"confluenceTd">HI=E1=BB=86P PH=E1=BB=A4 T=E1=BB=A8 K=E1=BA=BET!=
+ C=C4=83ng th=E1=BA=B3ng l=C3=AAn =C4=91=E1=BB=89nh =C4=91i=E1=BB=83m, v=C3=
+=A0o xem ngay k=E1=BA=BBo l=E1=BB=A1</td>
+<td class=3D"confluenceTd">[T=E1=BB=A9 K=E1=BA=BFt] Tottenham vs Leeds / HI=
+=E1=BB=86P PH=E1=BB=A4 T=E1=BB=A8 K=E1=BA=BET!...</td>
+<td class=3D"confluenceTd">HI=E1=BB=86P PH=E1=BB=A4 SINH T=E1=BB=AC! =C4=90=
+ang =C4=91=C3=A1 hi=E1=BB=87p ph=E1=BB=A5 T=E1=BB=A9 k=E1=BA=BFt, v=C3=A0o =
+xem ngay</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">penalties</td>
+<td class=3D"confluenceTd"><code>[T=E1=BB=A9 K=E1=BA=BFt] {home} vs {away}<=
+/code></td>
+<td class=3D"confluenceTd">11M NGH=E1=BA=B8T TH=E1=BB=9E! =C4=90=E1=BA=A5u =
+s=C3=BAng gi=C3=A0nh v=C3=A9 v=C3=A0o B=C3=A1n K=E1=BA=BFt, click xem ngay<=
+/td>
+<td class=3D"confluenceTd">[T=E1=BB=A9 K=E1=BA=BFt] Tottenham vs Leeds / 11=
+M NGH=E1=BA=B8T TH=E1=BB=9E!...</td>
+<td class=3D"confluenceTd">LO=E1=BA=A0T 11M T=E1=BB=A8 K=E1=BA=BET! V=C3=A0=
+o xem ai b=E1=BA=A3n l=C4=A9nh =C4=91i ti=E1=BA=BFp ngay l=C3=BAc n=C3=A0y<=
+/td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">final</td>
+<td class=3D"confluenceTd"><code>[T=E1=BB=A9 K=E1=BA=BFt] K=E1=BA=BFt qu=E1=
+=BA=A3 {result}</code></td>
+<td class=3D"confluenceTd">Tr=E1=BA=ADn =C4=91=E1=BA=A5u k=E1=BA=BFt th=C3=
+=BAc! <code>{winner}</code> ch=C3=ADnh th=E1=BB=A9c b=C6=B0=E1=BB=9Bc v=C3=
+=A0o B=C3=81N K=E1=BA=BET! Xem di=E1=BB=85n bi=E1=BA=BFn tr=E1=BA=ADn =C4=
+=91=E1=BA=A5u&nbsp;ngay</td>
+<td class=3D"confluenceTd">[T=E1=BB=A9 K=E1=BA=BFt] K=E1=BA=BFt qu=E1=BA=A3=
+ 3-2 / Tr=E1=BA=ADn =C4=91=E1=BA=A5u k=E1=BA=BFt th=C3=BAc! Tottenham ch=C3=
+=ADnh th=E1=BB=A9c b=C6=B0=E1=BB=9Bc v=C3=A0o B=C3=81N K=E1=BA=BET!...</td>
+<td class=3D"confluenceTd">T=E1=BB=A8 K=E1=BA=BET K=E1=BA=BET TH=C3=9AC! B=
+=E1=BA=A5m xem =C4=91=E1=BB=99i v=C3=A0o B=C3=A1n k=E1=BA=BFt</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id=3D"ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=C3=A1)=
+-4.Nh=C3=B3mB=C3=A1nK=E1=BA=BFt(stage_type=3Dsemi_final)">4. Nh=C3=B3m B=C3=
+=A1n K=E1=BA=BFt (stage_type =3D semi_final)</h3>
+<div class=3D"table-wrap">
+<table class=3D"wrapped confluenceTable">
+<thead class=3D"">
+<tr class=3D"">
+<th class=3D"confluenceTh">Match Status</th>
+<th class=3D"confluenceTh">Title Format</th>
+<th class=3D"confluenceTh">Desc Format</th>
+<th class=3D"confluenceTh">Example (Title+Desc)</th>
+<th class=3D"confluenceTh">Fallback</th>
+<th class=3D"confluenceTh">Image Display</th>
+</tr>
+</thead>
+<tbody class=3D"">
+<tr class=3D"">
+<td class=3D"confluenceTd">match_reminder</td>
+<td class=3D"confluenceTd"><code>[B=C3=A1n K=E1=BA=BFt] {home} vs {away}</c=
+ode></td>
+<td class=3D"confluenceTd">30p n=E1=BB=AFa [B=C3=A1n K=E1=BA=BFt]: =C4=90=
+=E1=BA=A1i chi=E1=BA=BFn gi=C3=A0nh t=E1=BA=A5m V=C3=89 V=C3=80NG v=C3=A0o =
+CHUNG K=E1=BA=BET! Xem ngay</td>
+<td class=3D"confluenceTd">[B=C3=A1n K=E1=BA=BFt] Tottenham vs Leeds / 30p =
+n=E1=BB=AFa B=C3=81N K=E1=BA=BET:...</td>
+<td class=3D"confluenceTd">30p n=E1=BB=AFa B=C3=A1n K=E1=BA=BFt: =C4=90=E1=
+=BA=A1i chi=E1=BA=BFn tranh v=C3=A9 v=C3=A0o Chung k=E1=BA=BFt! V=C3=A0o xe=
+m ngay</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">match_start</td>
+<td class=3D"confluenceTd"><code>[B=C3=A1n K=E1=BA=BFt] {home} vs {away}</c=
+ode></td>
+<td class=3D"confluenceTd">B=C3=81N K=E1=BA=BET B=E1=BA=AET =C4=90=E1=BA=A6=
+U! Ai s=E1=BA=BD ch=E1=BA=A1m m=E1=BB=99t tay v=C3=A0o chi=E1=BA=BFc C=C3=
+=BAp? B=E1=BA=A5m xem ngay</td>
+<td class=3D"confluenceTd">[B=C3=A1n K=E1=BA=BFt] Tottenham vs Leeds / B=C3=
+=81N K=E1=BA=BET B=E1=BA=AET =C4=90=E1=BA=A6U!...</td>
+<td class=3D"confluenceTd">B=C3=81N K=E1=BA=BET B=E1=BA=AET =C4=90=E1=BA=A6=
+U! M=E1=BB=9F app xem tr=E1=BB=B1c ti=E1=BA=BFp =C4=91=E1=BA=A1i chi=E1=BA=
+=BFn ngay</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">half_time</td>
+<td class=3D"confluenceTd"><code>[B=C3=A1n K=E1=BA=BFt] {home} vs {away}</c=
+ode></td>
+<td class=3D"confluenceTd">H=E1=BA=BFt hi=E1=BB=87p 1 (<code>{result}</code=
+>): H=C6=A1i n=C3=B3ng tr=E1=BA=ADn Chung k=E1=BA=BFt =C4=91=C3=A3 =E1=BB=
+=9F r=E1=BA=A5t g=E1=BA=A7n! Xem di=E1=BB=85n bi=E1=BA=BFn H1 ngay</td>
+<td class=3D"confluenceTd">[B=C3=A1n K=E1=BA=BFt] Tottenham vs Leeds / H=E1=
+=BA=BFt hi=E1=BB=87p 1 (1-1)...</td>
+<td class=3D"confluenceTd">H=E1=BA=BFt hi=E1=BB=87p 1 B=C3=A1n k=E1=BA=BFt!=
+ Click xem t=E1=BB=B7 s=E1=BB=91 &amp; di=E1=BB=85n bi=E1=BA=BFn c=E1=BB=B1=
+c n=C3=B3ng</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">second_half_start</td>
+<td class=3D"confluenceTd"><code>[B=C3=A1n K=E1=BA=BFt] {home} vs {away}</c=
+ode></td>
+<td class=3D"confluenceTd">45p s=E1=BB=91ng c=C3=B2n! T=E1=BA=A5m v=C3=A9 C=
+hung k=E1=BA=BFt l=E1=BB=8Bch s=E1=BB=AD g=E1=BB=8Di t=C3=AAn ai? V=C3=A0o =
+xem ngay</td>
+<td class=3D"confluenceTd">[B=C3=A1n K=E1=BA=BFt] Tottenham vs Leeds / 45p =
+s=E1=BB=91ng c=C3=B2n!...</td>
+<td class=3D"confluenceTd">Hi=E1=BB=87p 2 B=C3=A1n k=E1=BA=BFt! 45 ph=C3=BA=
+t quy=E1=BA=BFt =C4=91=E1=BB=8Bnh t=E1=BA=A5m v=C3=A9 v=C3=A0o Chung k=E1=
+=BA=BFt, xem ngay</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">extra_time</td>
+<td class=3D"confluenceTd"><code>[B=C3=A1n K=E1=BA=BFt] {home} vs {away}</c=
+ode></td>
+<td class=3D"confluenceTd">HI=E1=BB=86P PH=E1=BB=A4 B=C3=81N K=E1=BA=BET! C=
+=C4=83ng th=E1=BA=B3ng t=E1=BB=99t =C4=91=E1=BB=99, nh=E1=BA=A5n xem tr=E1=
+=BB=B1c ti=E1=BA=BFp ngay</td>
+<td class=3D"confluenceTd">[B=C3=A1n K=E1=BA=BFt] Tottenham vs Leeds / HI=
+=E1=BB=86P PH=E1=BB=A4 B=C3=81N K=E1=BA=BET!...</td>
+<td class=3D"confluenceTd">HI=E1=BB=86P PH=E1=BB=A4 B=C3=81N K=E1=BA=BET! =
+=C4=90ang =C4=91=C3=A1 hi=E1=BB=87p ph=E1=BB=A5 sinh t=E1=BB=AD, m=E1=BB=9F=
+ app xem ngay</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">penalties</td>
+<td class=3D"confluenceTd"><code>[B=C3=A1n K=E1=BA=BFt] {home} vs {away}</c=
+ode></td>
+<td class=3D"confluenceTd">LO=E1=BA=A0T 11M T=E1=BB=AC CHI=E1=BA=BEN! Ai s=
+=E1=BA=BD b=C6=B0=E1=BB=9Bc v=C3=A0o tr=E1=BA=ADn Chung k=E1=BA=BFt? Xem ng=
+ay</td>
+<td class=3D"confluenceTd">[B=C3=A1n K=E1=BA=BFt] Tottenham vs Leeds / LO=
+=E1=BA=A0T 11M T=E1=BB=AC CHI=E1=BA=BEN!...</td>
+<td class=3D"confluenceTd">LO=E1=BA=A0T 11M B=C3=81N K=E1=BA=BET! C=C4=83n =
+n=C3=A3o t=C3=ACm t=E1=BA=A5m v=C3=A9 Chung k=E1=BA=BFt, v=C3=A0o xem ngay<=
+/td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">final</td>
+<td class=3D"confluenceTd"><code>[B=C3=A1n K=E1=BA=BFt] K=E1=BA=BFt qu=E1=
+=BA=A3 {result}</code></td>
+<td class=3D"confluenceTd">K=E1=BA=BET TH=C3=9AC! <code>{winner}</code> ch=
+=C3=ADnh th=E1=BB=A9c GI=C3=80NH V=C3=89 V=C3=80O CHUNG K=E1=BA=BET! Xem l=
+=E1=BA=A1i ngay</td>
+<td class=3D"confluenceTd">[B=C3=A1n K=E1=BA=BFt] K=E1=BA=BFt qu=E1=BA=A3 2=
+-1 / K=E1=BA=BET TH=C3=9AC! Tottenham ch=C3=ADnh th=E1=BB=A9c GI=C3=80NH V=
+=C3=89 V=C3=80O CHUNG K=E1=BA=BET!...</td>
+<td class=3D"confluenceTd">B=C3=81N K=E1=BA=BET K=E1=BA=BET TH=C3=9AC! Clic=
+k xem =C4=91=E1=BB=99i b=C6=B0=E1=BB=9Bc v=C3=A0o Chung k=E1=BA=BFt.</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id=3D"ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=C3=A1)=
+-5.Nh=C3=B3mChungK=E1=BA=BFt(stage_type=3Dfinal)">5. Nh=C3=B3m Chung K=E1=
+=BA=BFt (stage_type =3D final)</h3>
+<blockquote>
+<p>Khi <code>Match Status =3D final</code>, =C6=B0u ti=C3=AAn check Histori=
+cal Rules (M=E1=BB=A5c 4) tr=C6=B0=E1=BB=9Bc wording b=C3=AAn d=C6=B0=E1=BB=
+=9Bi.</p>
+</blockquote>
+<div class=3D"table-wrap">
+<table class=3D"wrapped confluenceTable">
+<thead class=3D"">
+<tr class=3D"">
+<th class=3D"confluenceTh">Match Status</th>
+<th class=3D"confluenceTh">Title Format</th>
+<th class=3D"confluenceTh">Desc Format</th>
+<th class=3D"confluenceTh">Example (Title+Desc)</th>
+<th class=3D"confluenceTh">Fallback</th>
+<th class=3D"confluenceTh">Image Display</th>
+</tr>
+</thead>
+<tbody class=3D"">
+<tr class=3D"">
+<td class=3D"confluenceTd">match_reminder</td>
+<td class=3D"confluenceTd"><code>[Chung K=E1=BA=BFt] {home} vs {away}</code=
+></td>
+<td class=3D"confluenceTd">30p n=E1=BB=AFa [CHUNG K=E1=BA=BET]: Tr=E1=BA=AD=
+n tranh C=C3=9AP V=C3=80NG l=E1=BB=8Bch s=E1=BB=AD! V=C3=A0o gi=E1=BB=AF ch=
+=E1=BB=97 ngay</td>
+<td class=3D"confluenceTd">[Chung K=E1=BA=BFt] Tottenham vs Leeds / 30p n=
+=E1=BB=AFa CHUNG K=E1=BA=BET:...</td>
+<td class=3D"confluenceTd">30p n=E1=BB=AFa Chung K=E1=BA=BFt: Tr=E1=BA=ADn =
+tranh C=C3=BAp V=C3=A0ng l=E1=BB=8Bch s=E1=BB=AD! V=C3=A0o xem ngay</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">match_start</td>
+<td class=3D"confluenceTd"><code>[Chung K=E1=BA=BFt] {home} vs {away}</code=
+></td>
+<td class=3D"confluenceTd">CHUNG K=E1=BA=BET B=E1=BA=AET =C4=90=E1=BA=A6U! =
+Ng=C3=B4i V=C3=B4 =C4=90=E1=BB=8Bch s=E1=BA=BD thu=E1=BB=99c v=E1=BB=81 ai?=
+ Xem tr=E1=BB=B1c ti=E1=BA=BFp ngay</td>
+<td class=3D"confluenceTd">[Chung K=E1=BA=BFt] Tottenham vs Leeds / CHUNG K=
+=E1=BA=BET B=E1=BA=AET =C4=90=E1=BA=A6U!...</td>
+<td class=3D"confluenceTd">CHUNG K=E1=BA=BET B=E1=BA=AET =C4=90=E1=BA=A6U! =
+M=E1=BB=9F app xem tr=E1=BA=ADn tranh C=C3=BAp V=C3=A0ng ngay</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">half_time</td>
+<td class=3D"confluenceTd"><code>[Chung K=E1=BA=BFt] {home} vs {away}</code=
+></td>
+<td class=3D"confluenceTd">H=E1=BA=BFt hi=E1=BB=87p 1 (<code>{result}</code=
+>): Ai s=E1=BA=BD ch=E1=BA=A1m tay v=C3=A0o C=C3=BAp V=C3=A0ng? Xem di=E1=
+=BB=85n bi=E1=BA=BFn H1 ngay</td>
+<td class=3D"confluenceTd">[Chung K=E1=BA=BFt] Tottenham vs Leeds / H=E1=BA=
+=BFt hi=E1=BB=87p 1 (1-0)...</td>
+<td class=3D"confluenceTd">H=E1=BA=BFt hi=E1=BB=87p 1 Chung k=E1=BA=BFt! B=
+=E1=BA=A5m =C4=91=E1=BB=83 xem t=E1=BB=B7 s=E1=BB=91 &amp; di=E1=BB=85n bi=
+=E1=BA=BFn m=E1=BB=9Bi nh=E1=BA=A5t</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">second_half_start</td>
+<td class=3D"confluenceTd"><code>[Chung K=E1=BA=BFt] {home} vs {away}</code=
+></td>
+<td class=3D"confluenceTd">45p =C4=90=E1=BB=8ANH =C4=90O=E1=BA=A0T! Ai s=E1=
+=BA=BD ch=E1=BA=A1m tay v=C3=A0o C=C3=BAp V=C3=A0ng? M=E1=BB=9F app xem nga=
+y</td>
+<td class=3D"confluenceTd">[Chung K=E1=BA=BFt] Tottenham vs Leeds / 45p =C4=
+=90=E1=BB=8ANH =C4=90O=E1=BA=A0T!...</td>
+<td class=3D"confluenceTd">Hi=E1=BB=87p 2 Chung k=E1=BA=BFt! 45 ph=C3=BAt =
+=C4=91=E1=BB=8Bnh =C4=91o=E1=BA=A1t ng=C3=B4i V=C3=B4 =C4=91=E1=BB=8Bch, v=
+=C3=A0o xem ngay</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">extra_time</td>
+<td class=3D"confluenceTd"><code>[Chung K=E1=BA=BFt] {home} vs {away}</code=
+></td>
+<td class=3D"confluenceTd">HI=E1=BB=86P PH=E1=BB=A4 CHUNG K=E1=BA=BET! C=C3=
+=BAp V=C3=A0ng s=E1=BA=BD v=E1=BB=81 tay ai? Click xem live k=C3=A8o l=E1=
+=BB=A1</td>
+<td class=3D"confluenceTd">[Chung K=E1=BA=BFt] Tottenham vs Leeds / HI=E1=
+=BB=86P PH=E1=BB=A4 CHUNG K=E1=BA=BET!...</td>
+<td class=3D"confluenceTd">HI=E1=BB=86P PH=E1=BB=A4 CHUNG K=E1=BA=BET! =C4=
+=90ang =C4=91=C3=A1 hi=E1=BB=87p ph=E1=BB=A5 tranh C=C3=BAp, v=C3=A0o xem n=
+gay</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">penalties</td>
+<td class=3D"confluenceTd"><code>[Chung K=E1=BA=BFt] {home} vs {away}</code=
+></td>
+<td class=3D"confluenceTd">11M =C4=90=E1=BB=8ANH =C4=90O=E1=BA=A0T C=C3=9AP=
+ V=C3=80NG! Xem kho=E1=BA=A3nh kh=E1=BA=AFc V=C3=B4 =C4=90=E1=BB=8Bch ngay =
+l=C3=BAc n=C3=A0y</td>
+<td class=3D"confluenceTd">[Chung K=E1=BA=BFt] Tottenham vs Leeds / 11M =C4=
+=90=E1=BB=8ANH =C4=90O=E1=BA=A0T C=C3=9AP V=C3=80NG!...</td>
+<td class=3D"confluenceTd">11M CHUNG K=E1=BA=BET! M=E1=BB=9F app xem ai tr=
+=E1=BB=9F th=C3=A0nh Nh=C3=A0 V=C3=B4 =C4=90=E1=BB=8Bch</td>
+<td class=3D"confluenceTd">Banner Match Event</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">final</td>
+<td class=3D"confluenceTd"><code>{winner} V=C3=94 =C4=90=E1=BB=8ACH!</code>=
+</td>
+<td class=3D"confluenceTd">=F0=9F=8F=86 Chung k=E1=BA=BFt: <code>{result}</=
+code>. B=E1=BA=A5m =C4=91=E1=BB=83 xem L=E1=BB=85 trao C=C3=BAp &amp; Highl=
+ights b=C3=A0n th=E1=BA=AFng!</td>
+<td class=3D"confluenceTd">Tottenham V=C3=94 =C4=90=E1=BB=8ACH! / =F0=9F=8F=
+=86 Chung k=E1=BA=BFt: 4-3. B=E1=BA=A5m =C4=91=E1=BB=83 xem L=E1=BB=85 trao=
+ C=C3=BAp &amp; Highlights!</td>
+<td class=3D"confluenceTd">=F0=9F=8F=86 T=C3=82N V=C6=AF=C6=A0NG L=E1=BB=98=
+ DI=E1=BB=86N! B=E1=BA=A5m =C4=91=E1=BB=83 xem L=E1=BB=85 n=C3=A2ng C=C3=BA=
+p &amp; Highlights ngay</td>
+<td class=3D"confluenceTd">Team Logo =C4=91=E1=BB=99i th=E1=BA=AFng</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id=3D"ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=C3=A1)=
+-4.HISTORICALRULES(ch=E1=BB=89triggerkhiMatchStatus=3Dfinal&amp;stage_type=
+=3Dfinal)">4. HISTORICAL RULES (ch=E1=BB=89 trigger khi Match Status =3D fi=
+nal &amp; stage_type =3D final)</h2>
+<p>Check =C6=B0u ti=C3=AAn theo th=E1=BB=A9 t=E1=BB=B1 <strong>1 =E2=86=92 =
+5</strong>, match rule n=C3=A0o d=C3=B9ng rule =C4=91=C3=B3, d=E1=BB=ABng l=
+=E1=BA=A1i, kh=C3=B4ng check ti=E1=BA=BFp. Kh=C3=B4ng match rule n=C3=A0o =
+=E2=86=92 d=C3=B9ng wording ti=C3=AAu chu=E1=BA=A9n =E1=BB=9F Nh=C3=B3m 5 p=
+h=C3=ADa tr=C3=AAn.</p>
+<div class=3D"table-wrap">
+<table class=3D"wrapped confluenceTable">
+<thead class=3D"">
+<tr class=3D"">
+<th class=3D"confluenceTh">#</th>
+<th class=3D"confluenceTh">Rule</th>
+<th class=3D"confluenceTh">Trigger</th>
+<th class=3D"confluenceTh">Title</th>
+<th class=3D"confluenceTh">Desc Template</th>
+<th class=3D"confluenceTh">Example</th>
+</tr>
+</thead>
+<tbody class=3D"">
+<tr class=3D"">
+<td class=3D"confluenceTd">1</td>
+<td class=3D"confluenceTd">Qu=E1=BB=91c gia/CLB v=C3=B4 =C4=91=E1=BB=8Bch l=
+i=C3=AAn ti=E1=BA=BFp</td>
+<td class=3D"confluenceTd"><code>streak_count &gt;=3D 2</code> (=C4=91=E1=
+=BB=99i v=C3=B4 =C4=91=E1=BB=8Bch tr=C3=B9ng =C4=91=E1=BB=99i/qu=E1=BB=91c =
+gia m=C3=B9a tr=C6=B0=E1=BB=9Bc)</td>
+<td class=3D"confluenceTd">=F0=9F=91=91 <code>{winner}</code> V=C3=94 =C4=
+=90=E1=BB=8ACH <code>{competition_short}</code>!</td>
+<td class=3D"confluenceTd">=C4=90=C3=A1nh b=E1=BA=A1i <code>{loser}</code> =
+<code>{result}</code>, =C4=91=C3=A2y l=C3=A0 n=C4=83m th=E1=BB=A9 <code>{st=
+reak_count}</code> li=C3=AAn ti=E1=BA=BFp =C4=91=E1=BA=A1i di=E1=BB=87n <co=
+de>{winner_country}</code> l=C3=AAn ng=C3=B4i. =C4=90=E1=BB=8Dc ngay to=C3=
+=A0n b=E1=BB=99 di=E1=BB=85n bi=E1=BA=BFn!</td>
+<td class=3D"confluenceTd">=F0=9F=91=91 PSG V=C3=94 =C4=90=E1=BB=8ACH SI=C3=
+=8AU C=C3=9AP! / =C4=90=C3=A1nh b=E1=BA=A1i Aston Villa 2-1, =C4=91=C3=A2y =
+l=C3=A0 n=C4=83m th=E1=BB=A9 2 li=C3=AAn ti=E1=BA=BFp =C4=91=E1=BA=A1i di=
+=E1=BB=87n Ph=C3=A1p l=C3=AAn ng=C3=B4i. =C4=90=E1=BB=8Dc ngay to=C3=A0n b=
+=E1=BB=99 di=E1=BB=85n bi=E1=BA=BFn!</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">2</td>
+<td class=3D"confluenceTd">C=E1=BB=99t m=E1=BB=91c s=E1=BB=91 l=E1=BA=A7n v=
+=C3=B4 =C4=91=E1=BB=8Bch</td>
+<td class=3D"confluenceTd">T=E1=BB=95ng s=E1=BB=91 l=E1=BA=A7n v=C3=B4 =C4=
+=91=E1=BB=8Bch gi=E1=BA=A3i n=C3=A0y <code>N &gt;=3D 2</code></td>
+<td class=3D"confluenceTd">=F0=9F=91=91 <code>{winner}</code> C=C3=81N M=E1=
+=BB=90C <code>{total_titles}</code> L=E1=BA=A6N V=C3=94 =C4=90=E1=BB=8ACH!<=
+/td>
+<td class=3D"confluenceTd">Th=E1=BA=AFng k=E1=BB=8Bch t=C3=ADnh <code>{lose=
+r}</code> <code>{result}</code>, <code>{winner}</code> ch=C3=ADnh th=E1=BB=
+=A9c c=C3=B3 l=E1=BA=A7n th=E1=BB=A9 <code>{total_titles}</code> n=C3=A2ng =
+c=C3=BAp <code>{competition_short}</code>! Xem kho=E1=BA=A3nh kh=E1=BA=AFc =
+trao c=C3=BAp ngay.</td>
+<td class=3D"confluenceTd">=F0=9F=91=91 REAL MADRID C=C3=81N M=E1=BB=90C 15=
+ L=E1=BA=A6N V=C3=94 =C4=90=E1=BB=8ACH! / Th=E1=BA=AFng k=E1=BB=8Bch t=C3=
+=ADnh Dortmund 2-0, Real Madrid ch=C3=ADnh th=E1=BB=A9c c=C3=B3 l=E1=BA=A7n=
+ th=E1=BB=A9 15 n=C3=A2ng c=C3=BAp C1! Xem kho=E1=BA=A3nh kh=E1=BA=AFc trao=
+ c=C3=BAp ngay.</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">3</td>
+<td class=3D"confluenceTd">T=C3=A2n v=C6=B0=C6=A1ng l=E1=BA=A7n =C4=91=E1=
+=BA=A7u ti=C3=AAn (First-time Champion)</td>
+<td class=3D"confluenceTd">S=E1=BB=91 l=E1=BA=A7n v=C3=B4 =C4=91=E1=BB=8Bch=
+ gi=E1=BA=A3i n=C3=A0y c=E1=BB=A7a =C4=91=E1=BB=99i th=E1=BA=AFng =3D 0 tr=
+=C6=B0=E1=BB=9Bc tr=E1=BA=ADn</td>
+<td class=3D"confluenceTd">=F0=9F=9F=A3 L=E1=BB=8ACH S=E1=BB=AC G=E1=BB=8CI=
+ T=C3=8AN <code>{winner}</code>!</td>
+<td class=3D"confluenceTd">Qu=E1=BA=ADt ng=C3=A3 <code>{loser}</code> <code=
+>{result}</code>, <code>{winner}</code> c=C3=B3 l=E1=BA=A7n =C4=90=E1=BA=A6=
+U TI=C3=8AN thi=E1=BA=BFt l=E1=BA=ADp k=E1=BB=B7 nguy=C3=AAn v=C3=B4 =C4=91=
+=E1=BB=8Bch t=E1=BA=A1i <code>{competition_short}</code>. Click xem di=E1=
+=BB=85n bi=E1=BA=BFn ngay!</td>
+<td class=3D"confluenceTd">=F0=9F=9F=A3 L=E1=BB=8ACH S=E1=BB=AC G=E1=BB=8CI=
+ T=C3=8AN MAN CITY! / Qu=E1=BA=ADt ng=C3=A3 Inter 1-0, Man City c=C3=B3 l=
+=E1=BA=A7n =C4=90=E1=BA=A6U TI=C3=8AN thi=E1=BA=BFt l=E1=BA=ADp k=E1=BB=B7 =
+nguy=C3=AAn v=C3=B4 =C4=91=E1=BB=8Bch t=E1=BA=A1i C=C3=BAp C1. Click xem di=
+=E1=BB=85n bi=E1=BA=BFn!</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">4</td>
+<td class=3D"confluenceTd">Chu=E1=BB=97i b=E1=BA=A5t b=E1=BA=A1i/th=E1=BA=
+=AFng li=C3=AAn ti=E1=BA=BFp (=C3=A1p d=E1=BB=A5ng c=E1=BA=A3 League &amp; =
+Cup)</td>
+<td class=3D"confluenceTd"><code>streak_count &gt;=3D 5</code></td>
+<td class=3D"confluenceTd">=F0=9F=94=A5 <code>{winner}</code> KH=C3=94NG TH=
+=E1=BB=82 B=E1=BB=8A =C4=90=C3=81NH B=E1=BA=A0I!</td>
+<td class=3D"confluenceTd">H=E1=BA=A1 g=E1=BB=A5c <code>{loser}</code> <cod=
+e>{result}</code>, <code>{winner}</code> k=C3=A9o d=C3=A0i chu=E1=BB=97i b=
+=E1=BA=A5t b=E1=BA=A1i l=C3=AAn con s=E1=BB=91 <code>{streak_count}</code> =
+tr=E1=BA=ADn li=C3=AAn ti=E1=BA=BFp! Xem ngay th=E1=BB=91ng k=C3=AA.</td>
+<td class=3D"confluenceTd">=F0=9F=94=A5 LEVERKUSEN KH=C3=94NG TH=E1=BB=82 B=
+=E1=BB=8A =C4=90=C3=81NH B=E1=BA=A0I! / H=E1=BA=A1 g=E1=BB=A5c Roma 2-2, Le=
+verkusen k=C3=A9o d=C3=A0i chu=E1=BB=97i b=E1=BA=A5t b=E1=BA=A1i l=C3=AAn c=
+on s=E1=BB=91 49 tr=E1=BA=ADn li=C3=AAn ti=E1=BA=BFp! Xem ngay th=E1=BB=91n=
+g k=C3=AA.</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">5</td>
+<td class=3D"confluenceTd">L=C3=AAn =C4=91=E1=BB=89nh BXH =E2=80=94 ch=E1=
+=BB=89 =C3=A1p d=E1=BB=A5ng League</td>
+<td class=3D"confluenceTd">=C4=90=E1=BB=99i th=E1=BA=AFng v=C6=B0=C6=A1n l=
+=C3=AAn v=E1=BB=8B tr=C3=AD #1 tr=C3=AAn BXH sau tr=E1=BA=ADn</td>
+<td class=3D"confluenceTd">=F0=9F=A5=87 <code>{winner}</code> C=C6=AF=E1=BB=
+=9AP NG=C3=94I =C4=90=E1=BA=A6U B=E1=BA=A2NG!</td>
+<td class=3D"confluenceTd">Th=E1=BA=AFng <code>{loser}</code> <code>{result=
+}</code>, <code>{winner}</code> ch=C3=ADnh th=E1=BB=A9c v=C6=B0=C6=A1n l=C3=
+=AAn D=E1=BA=AAN =C4=90=E1=BA=A6U <code>{competition_short}</code>! B=E1=BA=
+=A5m =C4=91=E1=BB=83 xem ngay.</td>
+<td class=3D"confluenceTd">=F0=9F=A5=87 LIVERPOOL C=C6=AF=E1=BB=9AP NG=C3=
+=94I =C4=90=E1=BA=A6U B=E1=BA=A2NG! / Th=E1=BA=AFng Wolves 2-1, Liverpool c=
+h=C3=ADnh th=E1=BB=A9c v=C6=B0=C6=A1n l=C3=AAn D=E1=BA=AAN =C4=90=E1=BA=A6U=
+ Premier League! B=E1=BA=A5m =C4=91=E1=BB=83 xem ngay.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>Rule 5 ch=E1=BB=89 ch=E1=BA=A1y v=E1=BB=9Bi <code>competitionType =3D le=
+ague</code> (Cup kh=C3=B4ng c=C3=B3 BXH sau tr=E1=BA=ADn Chung k=E1=BA=BFt)=
+. Rule 1=E2=80=934 =C3=A1p d=E1=BB=A5ng c=E1=BA=A3 League l=E1=BA=ABn Cup t=
+=C3=B9y =C4=91i=E1=BB=81u ki=E1=BB=87n trigger.</p>
+</blockquote>
+<hr>
+<h2 id=3D"ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=C3=A1)=
+-5.EVENTDISPLAYMAPPING(s=E1=BB=B1ki=E1=BB=87nth=E1=BB=9Digianth=E1=BB=B1ctr=
+ongtr=E1=BA=ADn)">5. EVENT DISPLAY MAPPING (s=E1=BB=B1 ki=E1=BB=87n th=E1=
+=BB=9Di gian th=E1=BB=B1c trong tr=E1=BA=ADn)</h2>
+<p>Gi=E1=BB=AF nguy=C3=AAn to=C3=A0n b=E1=BB=99 b=E1=BA=A3ng =C4=91=C3=A3 c=
+=C3=B3 =E2=80=94 nh=C3=B3m n=C3=A0y quan tr=E1=BB=8Dng nh=E1=BA=A5t cho FOM=
+O v=C3=AC x=E1=BA=A3y ra b=E1=BA=A5t ng=E1=BB=9D gi=E1=BB=AFa tr=E1=BA=ADn,=
+ kh=C3=B4ng theo l=E1=BB=8Bch c=E1=BB=91 =C4=91=E1=BB=8Bnh.</p>
+<div class=3D"table-wrap">
+<table class=3D"wrapped confluenceTable">
+<thead class=3D"">
+<tr class=3D"">
+<th class=3D"confluenceTh">Match Event</th>
+<th class=3D"confluenceTh">Format Title</th>
+<th class=3D"confluenceTh">Format Description</th>
+<th class=3D"confluenceTh">Example</th>
+<th class=3D"confluenceTh">Errors handle</th>
+<th class=3D"confluenceTh">Image Display</th>
+</tr>
+</thead>
+<tbody class=3D"">
+<tr class=3D"">
+<td class=3D"confluenceTd">goal</td>
+<td class=3D"confluenceTd"><code>{player_name}</code> ghi b=C3=A0n</td>
+<td class=3D"confluenceTd"><code>{home_team}</code> [<code>{home_score}</co=
+de>] - <code>{away_score}</code> <code>{away_team}</code> <code>{minute}'</=
+code></td>
+<td class=3D"confluenceTd">Mbeumo ghi b=C3=A0n / ManCity [2] - 1 Arsenal 32=
+'</td>
+<td class=3D"confluenceTd"><br></td>
+<td class=3D"confluenceTd">Team Logo</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">goal, rescinded (VAR t=E1=BB=AB ch=E1=BB=91i b=
+=C3=A0n th=E1=BA=AFng)</td>
+<td class=3D"confluenceTd">VAR t=E1=BB=AB ch=E1=BB=91i b=C3=A0n th=E1=BA=AF=
+ng</td>
+<td class=3D"confluenceTd"><code>{home_team}</code> [<code>{home_score}</co=
+de>] - <code>{away_score}</code> <code>{away_team}</code> <code>{minute}'</=
+code></td>
+<td class=3D"confluenceTd">VAR t=E1=BB=AB ch=E1=BB=91i b=C3=A0n th=E1=BA=AF=
+ng / ManCity [1] - 1 Arsenal 34'</td>
+<td class=3D"confluenceTd"><br></td>
+<td class=3D"confluenceTd">Team Logo</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">own_goal</td>
+<td class=3D"confluenceTd"><code>{player_name}</code> ph=E1=BA=A3n l=C6=B0=
+=E1=BB=9Bi nh=C3=A0</td>
+<td class=3D"confluenceTd"><code>{home_team}</code> [<code>{home_score}</co=
+de>] - <code>{away_score}</code> <code>{away_team}</code> <code>{minute}'</=
+code></td>
+<td class=3D"confluenceTd">Nguy=E1=BB=85n V=C4=83n A ph=E1=BA=A3n l=C6=B0=
+=E1=BB=9Bi nh=C3=A0 / ManCity [2] - 1 Arsenal 32'</td>
+<td class=3D"confluenceTd"><br></td>
+<td class=3D"confluenceTd">Team Logo</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">penalty</td>
+<td class=3D"confluenceTd"><code>{player_name}</code> ghi b=C3=A0n ph=E1=BA=
+=A1t =C4=91=E1=BB=81n</td>
+<td class=3D"confluenceTd"><code>{home_team}</code> [<code>{home_score}</co=
+de>] - <code>{away_score}</code> <code>{away_team}</code> <code>{minute}'</=
+code></td>
+<td class=3D"confluenceTd">Nguy=E1=BB=85n V=C4=83n A ghi b=C3=A0n ph=E1=BA=
+=A1t =C4=91=E1=BB=81n / ManCity [2] - 1 Arsenal 78'</td>
+<td class=3D"confluenceTd"><br></td>
+<td class=3D"confluenceTd">Team Logo</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">missed_penalty</td>
+<td class=3D"confluenceTd"><code>{player_name}</code> =C4=91=C3=A1 h=E1=BB=
+=8Fng ph=E1=BA=A1t =C4=91=E1=BB=81n</td>
+<td class=3D"confluenceTd"><code>{home_team}</code> <code>{home_score}</cod=
+e> - <code>{away_score}</code> <code>{away_team}</code> <code>{minute}'</co=
+de></td>
+<td class=3D"confluenceTd">Nguy=E1=BB=85n V=C4=83n A =C4=91=C3=A1 h=E1=BB=
+=8Fng ph=E1=BA=A1t =C4=91=E1=BB=81n / ManCity 1 - 1 Arsenal 55'</td>
+<td class=3D"confluenceTd">1. Description thi=E1=BA=BFu data =E2=86=92 =E1=
+=BA=A9n Description, ch=E1=BB=89 hi=E1=BB=87n Title. 2. Title thi=E1=BA=BFu=
+ data =E2=86=92 <code>{player_name}</code> hi=E1=BB=87n <code>{team_name}</=
+code> t=C6=B0=C6=A1ng =E1=BB=A9ng; VAR <code>{addition}</code> thi=E1=BA=BF=
+u =E2=86=92 hi=E1=BB=87n "VAR: Xem l=E1=BA=A1i t=C3=ACnh hu=E1=BB=91ng"</td=
+>
+<td class=3D"confluenceTd">Team Logo</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">yellow_card</td>
+<td class=3D"confluenceTd"><code>{player_name}</code> nh=E1=BA=ADn th=E1=BA=
+=BB v=C3=A0ng</td>
+<td class=3D"confluenceTd"><code>{home_team}</code> <code>{home_score}</cod=
+e> - <code>{away_score}</code> <code>{away_team}</code> <code>{minute}'</co=
+de></td>
+<td class=3D"confluenceTd">Nguy=E1=BB=85n V=C4=83n B nh=E1=BA=ADn th=E1=BA=
+=BB v=C3=A0ng / ManCity 1 - 1 Arsenal 40'</td>
+<td class=3D"confluenceTd">(=C3=A1p d=E1=BB=A5ng chung nh=C6=B0 tr=C3=AAn)<=
+/td>
+<td class=3D"confluenceTd">Team Logo</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">red_card</td>
+<td class=3D"confluenceTd"><code>{player_name}</code> nh=E1=BA=ADn th=E1=BA=
+=BB =C4=91=E1=BB=8F</td>
+<td class=3D"confluenceTd"><code>{home_team}</code> <code>{home_score}</cod=
+e> - <code>{away_score}</code> <code>{away_team}</code> <code>{minute}'</co=
+de></td>
+<td class=3D"confluenceTd">Nguy=E1=BB=85n V=C4=83n B nh=E1=BA=ADn th=E1=BA=
+=BB =C4=91=E1=BB=8F / ManCity 1 - 1 Arsenal</td>
+<td class=3D"confluenceTd">(=C3=A1p d=E1=BB=A5ng chung nh=C6=B0 tr=C3=AAn)<=
+/td>
+<td class=3D"confluenceTd">Team Logo</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">yellow_red_card</td>
+<td class=3D"confluenceTd"><code>{player_name}</code> nh=E1=BA=ADn th=E1=BA=
+=BB v=C3=A0ng th=E1=BB=A9 2</td>
+<td class=3D"confluenceTd"><code>{home_team}</code> <code>{home_score}</cod=
+e> - <code>{away_score}</code> <code>{away_team}</code> <code>{minute}'</co=
+de></td>
+<td class=3D"confluenceTd">Nguy=E1=BB=85n V=C4=83n B nh=E1=BA=ADn th=E1=BA=
+=BB v=C3=A0ng th=E1=BB=A9 2 / ManCity 1 - 1 Arsenal 85'</td>
+<td class=3D"confluenceTd">(=C3=A1p d=E1=BB=A5ng chung nh=C6=B0 tr=C3=AAn)<=
+/td>
+<td class=3D"confluenceTd">Team Logo</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">var</td>
+<td class=3D"confluenceTd">VAR: <code>{addition}</code></td>
+<td class=3D"confluenceTd"><code>{home_team}</code> <code>{home_score}</cod=
+e> - <code>{away_score}</code> <code>{away_team}</code> <code>{minute}'</co=
+de></td>
+<td class=3D"confluenceTd">VAR: Xem l=E1=BA=A1i t=C3=ACnh hu=E1=BB=91ng pen=
+alty / ManCity 1 - 1 Arsenal 60'</td>
+<td class=3D"confluenceTd">(=C3=A1p d=E1=BB=A5ng chung nh=C6=B0 tr=C3=AAn)<=
+/td>
+<td class=3D"confluenceTd">Team Logo</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">pen_shootout_success</td>
+<td class=3D"confluenceTd"><code>{player_name}</code> s=C3=BAt lu=C3=A2n l=
+=C6=B0u th=C3=A0nh c=C3=B4ng</td>
+<td class=3D"confluenceTd"><code>{home_team}</code> [<code>{home_penalty_sc=
+ore}</code>] - <code>{away_penalty_score}</code> <code>{away_team}</code></=
+td>
+<td class=3D"confluenceTd">Nguy=E1=BB=85n V=C4=83n A s=C3=BAt lu=C3=A2n l=
+=C6=B0u th=C3=A0nh c=C3=B4ng / ManCity [4] 3 - 3 (3) Arsenal</td>
+<td class=3D"confluenceTd"><br></td>
+<td class=3D"confluenceTd">Team Logo</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">pen_shootout_fail</td>
+<td class=3D"confluenceTd"><code>{player_name}</code> s=C3=BAt lu=C3=A2n l=
+=C6=B0u h=E1=BB=8Fng</td>
+<td class=3D"confluenceTd"><code>{home_team}</code> <code>{home_penalty_sco=
+re}</code> - <code>{away_penalty_score}</code> <code>{away_team}</code></td=
+>
+<td class=3D"confluenceTd">Nguy=E1=BB=85n V=C4=83n A s=C3=BAt lu=C3=A2n l=
+=C6=B0u h=E1=BB=8Fng / ManCity [4] 3 - 3 (3) Arsenal</td>
+<td class=3D"confluenceTd"><br></td>
+<td class=3D"confluenceTd">Team Logo</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">substitution</td>
+<td class=3D"confluenceTd"><code>{team_name}</code> thay ng=C6=B0=E1=BB=9Di=
+ (<code>{minute}'</code>)</td>
+<td class=3D"confluenceTd"><code>{related_player_name}</code> =E2=9E=94 <co=
+de>{player_name}</code></td>
+<td class=3D"confluenceTd">ManCity thay ng=C6=B0=E1=BB=9Di (75') / Nguy=E1=
+=BB=85n V=C4=83n A =E2=96=B6 Nguy=E1=BB=85n V=C4=83n C, Tr=E1=BA=A7n V=C4=
+=83n B =E2=96=B6 L=C3=AA V=C4=83n D,...</td>
+<td class=3D"confluenceTd"><br></td>
+<td class=3D"confluenceTd">Team Logo</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id=3D"ContentMappingchoNotificationSport(m=C3=B4nB=C3=B3ng=C4=91=C3=A1)=
+-6.Personalizeh=C3=B3atheo=C4=91=E1=BB=99iusertheod=C3=B5i(followed_teams)"=
+>6. Personalize h=C3=B3a theo =C4=91=E1=BB=99i user theo d=C3=B5i (followed=
+_teams)</h2>
+<blockquote>
+<p>Ch=E1=BB=89 d=E1=BB=B1a tr=C3=AAn <strong>=C4=91=E1=BB=99i</strong> =C4=
+=91=C3=A3 follow.</p>
+</blockquote>
+<p>C=C6=A1 ch=E1=BA=BF x=C3=A1c =C4=91=E1=BB=8Bnh:</p>
+<pre><code>is_personalized_match =3D home =E2=88=88 followed_teams OR away =
+=E2=88=88 followed_teams
+is_personalized_event  =3D event.team =E2=88=88 followed_teams
+</code></pre>
+<div class=3D"table-wrap">
+<table class=3D"wrapped confluenceTable">
+<thead class=3D"">
+<tr class=3D"">
+<th class=3D"confluenceTh">Tr=C6=B0=E1=BB=9Dng h=E1=BB=A3p</th>
+<th class=3D"confluenceTh">X=E1=BB=AD l=C3=BD</th>
+</tr>
+</thead>
+<tbody class=3D"">
+<tr class=3D"">
+<td class=3D"confluenceTd">Tr=E1=BA=ADn c=C3=B3 =C4=91=E1=BB=99i user follo=
+w (<code>is_personalized_match =3D true</code>)</td>
+<td class=3D"confluenceTd">Th=C3=AAm d=E1=BA=A5u hi=E1=BB=87u =C6=B0u ti=C3=
+=AAn v=C3=A0o Title, VD: <code>=E2=AD=90 </code> + Title g=E1=BB=91c, ho=E1=
+=BA=B7c ch=C3=A8n "=C4=91=E1=BB=99i b=E1=BA=A1n theo d=C3=B5i" v=C3=A0o Des=
+c. V=C3=AD d=E1=BB=A5: <code>=E2=AD=90 Tottenham vs Leeds</code> / "=F0=9F=
+=94=A5 =C4=90=E1=BB=99i b=E1=BA=A1n theo d=C3=B5i v=E1=BB=ABa v=C3=A0o tr=
+=E1=BA=ADn! Nh=E1=BA=A5n xem tr=E1=BB=B1c ti=E1=BA=BFp ngay"</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">S=E1=BB=B1 ki=E1=BB=87n (goal, th=E1=BA=BB =C4=
+=91=E1=BB=8F...) do =C4=91=E1=BB=99i user follow t=E1=BA=A1o ra</td>
+<td class=3D"confluenceTd">=C6=AFu ti=C3=AAn =C4=91=E1=BA=A9y =C4=91=E1=BB=
+=99 =C6=B0u ti=C3=AAn push cao h=C6=A1n, c=C3=B3 th=E1=BB=83 th=C3=AAm nh=
+=C3=A3n "=E2=AD=90" v=C3=A0o Title m=E1=BA=B7c =C4=91=E1=BB=8Bnh c=E1=BB=A7=
+a Event Mapping =E1=BB=9F M=E1=BB=A5c 5</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">Tr=E1=BA=ADn/s=E1=BB=B1 ki=E1=BB=87n kh=C3=B4ng =
+li=C3=AAn quan follow list</td>
+<td class=3D"confluenceTd">D=C3=B9ng wording m=E1=BA=B7c =C4=91=E1=BB=8Bnh,=
+ kh=C3=B4ng =C4=91=E1=BB=95i</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><br></p>
+<p><br></p>
+    </div>
+</body>
+</html>
+------=_Part_14841_1001350644.1787066036555
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: base64
+Content-Location: file:///C:/f95ea5c091def0487214724e07d6c014
+
+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
+kFDmBKOcJCKwZs2aO1zn1XrLli2JkihcBHJG4Oabb96/du3aW3LmUI5EwBGQUDoIDbqUfuErevTo
+MePSSy/dUPpNVQsbksA111yzuVmzZktcHZ5zpkUEckZAQpkzlHKUiIC7R/ntP//5z1snTZq0NVEa
+hYtANgRmzpy5+6GHHjLvvffepdn4UV4RiEdAQhmPisJyTWDvhg0bht966617f/rTn27LtfMC+lNR
+RUhg1qxZe0aOHGmqqqrOd9X7wJkWEcgpAQllTnHKWRICK7Zu3Tr4lltu2fytb31LD1okAaWo1Al8
+73vf++iKK67YtmfPnrNdrgXOtIhAzglIKHOOVA6TEHh98+bN//riiy/+qW3bttV33XXXtv379ydJ
+rigRiE/ATbPu6t69+5Ynnnji9W3btp3kUvGkq1uFFm2KQI4ISChzBFJuUiZQ9c477/z7xx9/PNRN
+wy5t1KjRgcrKyk1upLnfdXrmxhtvNHPnzpWJQZ1zYPbs2Wby5MlmyJAhm5s0abL7+uuvf23NmjUj
+Vq9ePcideaudaRGBvBGQUOYNrRzXQ2DB2rVrz3AjyqMXLlw47mc/+9kvrr766j/eeeedb1922WWL
+LitzGzFixFas3DnQ/vHjxz84evTo52+77bb/+eMf//i9Tz755HMffPDBae78mutMS2kQKOpWSCiL
++vCUReXWu1bO3Lhx4+j169efVV1dfdymTZsGlrtt2bJl+RZn5c6B9v/jH/+4/J///OeZbvuKffv2
+PeTOl3edaRGBghGQUBYMtQoSAREQARGIIgEJZcxR064IiIAIiIAIhAlIKMM0tC0CIiACIiACMQQk
+lDFAtBslAqqrCIiACOSfgIQy/4xVggiIgAiIQIQJSCgjfPBUdRGIEgHVVQSiSkBCGdUjp3qLgAiI
+gAgUhICEsiCYVYgIiIAIRImA6homIKEM09C2CIiACIiACMQQkFDGANGuCIiACIiACIQJFLtQhuuq
+bREQAREQAREoOAEJZcGRq0AREAEREIEoEZBQRuloFXtdVT8REAERKEECEsoSPKhqkgiIgAiIQO4I
+SChzx1KeRCBKBFRXERCBFAlIKFMEpWQiIAIiIALlSUBCWZ7HXa0WARGIEgHVtUEJSCgbFL8KFwER
+EAERKHYCEspiP0KqnwiIgAiIQIMSSFMoG7SuKlwEREAEREAECk5AQllw5CpQBERABEQgSgQklFE6
+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
+Mjt+yi0CIiACIlDiBEpMKEv8aKl5IiACIiACBScgoSw4chUoAiIgAiIQJQISyigdrRKrq5ojAiIg
+AlEgIKGMwlFSHUVABERABBqMgISywdCrYBGIEgHVVQTKl4CEsnyPvVouAiIgAiKQAgEJZQqQlEQE
+REAEokRAdc0tAQllbnnKmwiIgAiIQIkRkFCW2AGNUnOstXuiVF/VVQREoDwJHHbEEUfs3b59+468
+NF9ORSABgb179xonlAliFSwCAYFPduzYsTfY0j8RKBCBXbt2Gdc/bQ8Xd5gLWPvWW299Eg7Utgjk
+m8CqVat2VFVVrcp3OfIfaQIfuPNkZ6RboMpHjsB77723L7ZvYur178uWLWMduQapwjklUFBnCxcu
+3LF79+7lBS1UhUWNwOtLly49ELVKq77RJvDSSy9tcy143VntgkAudeq5/+23364N1IYI5JPAvn37
+zF/+8pf2royXnGkRgUQEXtuyZcveFStWJIpXuAjklMC2bdvM4sWLK5zT+c5qF4TStGvXbu4999zz
+cW2oNkQgjwR+8Ytf7OratesCV8RGZ1oyIVAmedxF1aMPP/yw7lOWyfFu6GZOnz4dPZzn6lHtrHYJ
+hPK9996bdN9997V0V2+1EdoQgXwRmDhx4u41a9bcki//8ls6BHbu3HnPXXfdZdavX186jVJLipbA
+zTffvG3Tpk2TYisYCKULXHH00UdP/9a3vvWh29YiAnkjMG7cuA1NmjR52RXwR2daRKA+Am8ffvjh
+P7v66qu31ZewiONVtQgQ+P73v7/X/T3nqrrQWZ3FC6VZvXr1lW5utuqOO+6o81hsndTaEYEsCMya
+NeuAm9o4/P33378sCzfKWmYEPvnkk++98MILaydPnlxmLVdzC0VgxowZxt0S+njz5s3fjldmrVC6
+yL0bNmwY7oaeO++8807dr3RAtOSOwMyZM3eOGDFiT1VV1fnO6wfOtIhAygRcBzb0xhtv3Hj33Xen
+nEcJRSAVAo899pi57LLLdm/btm24S7/ZuH+xS1goiVvhOrLBkyZNqrr00ks3EyATgWwJjB8/fuuV
+V165a8+ePWc7XzzE41ZaRCAtAm+7juzLTizfueKKK3a6UWZamZVYBOIRuO666w585zvf+cj1TWe4
++D87i7vECiWJ/uZuZp44f/78hW3btq12V3A79u/fT7hMBNIi4KZZ93br1u1jN+X6V3cB1tdlrvPI
+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
+2pasP2NEiKDydDBseaELo18uLvBFHfGD4cv3gT6cta8HbfT1p+5s4yMTi7RQZtJg5REBESgrAmps
+DgkgZLhDkFjn2or1JwgllLk+0vInAiIgAiVKAIFkdJiv5jHqY/THiNEbZearvFT9SihTJaV0IiAC
+IiAC+SVQpN4llEV6YFQtERABERCB4iAgoSyO46BaiIAIiIAIFCkBCWXcA6NAERABERABEaghIKGs
+4aD/IiACIiACIhCXgIQyLhYFRomA6ioCIiAC+SQgocwnXfkWAREQARGIPAEJZeQPoRogAlEioLqK
+QPQISCijd8xUYxEQAREQgQISkFAWELaKEgEREIEoEVBdawhIKGs46L8IiIAIiIAIxCUgoYyLRYEi
+IAIiIAIiUEMgGkJZU1f9FwEREAEREIGCE5BQFhy5ChQBERABEYgSAQlllI5WNOqaci2ttXtSTqyE
+IiACItBABBDK3Tt27PikgcpXsWVKYO/evWaf+yvT5qvZ6RH4xPVRe9PLotQikB2BXbt2GddPbccL
+Qrlu5cqV1ezIRKBQBNw5V+V0ck2hylM5CQhEI/iDVatW7YxGVVXLUiHw3nvv7auqqlpFexDKv7/y
+yitHsCMTgUIR+NOf/rRn27ZtrxSqPJUTaQKvL1269ECkW6DKR47ASy+9tM1V+nVnBqFc6lRz/9tv
+v82+TATyTsCNJM2SJUvauYJedKZFBOoj8NqWLVv2rlixor50pR6v9hWIgLuIN4sXL65wxc13Fgil
+qaio+O19991XRYBMBPJN4P7779979NFHcwJuzHdZ8l8aBNzF1aMPP/yw7lOWxuEs+lZMnz7dtGvX
+bp6raHBbkhGlWbNmzR333HNPM3fV5sK1iEB+Cdx444071q5de2t+S5H3UiKwc+fOe+666y6zfv36
+UmqW2lKkBG6++eZtmzZtmuSrFwil21nRqVOnhy699NINbrveRQlEIFMC11xzzeYjjzxyscv/R2da
+RCBVAm8ffvjhP7v66qu3pZpB6UQgEwLf//7397q/51zehc6CxQulcVf4o9ycbNWkSZO2BjH6JwI5
+JvDYY4/tdtNnzGBcnmPXclcGBD755JPvvfDCC2snT55cBq1VExuCwIwZM8wvfvGLjzdv3vztcPm1
+QukC93744Yfn3nLLLXt++tOf6qrNASmNpThaMWvWrD1uxsJs3br1fFejD5xpEYG0CbgObKibut94
+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
+iE5wHN+1cMkAAAAASUVORK5CYII=
+------=_Part_14841_1001350644.1787066036555--

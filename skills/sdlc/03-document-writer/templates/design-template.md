@@ -1,16 +1,14 @@
 # Legacy Design Template
 
-This template is kept only for backward compatibility with older FPTPlay docs.
+This template is deprecated. FPTPlay no longer uses `design/design-contract.md`.
 
-New FPTPlay final docs should use the flat final template instead:
+FPTPlay final docs are a single source-of-truth spec per sub-feature:
 
 ```text
-features/_templates/final-feature/feature-functional-requirements.md
+features/final-docs/<Large-Feature>/<Sub-Feature>/product/<feature-name>.md
 ```
 
-In the flat format, UI/design details belong inside `<feature-name>-functional-requirements.md`, especially `8.4 Surface Details by Surface`.
-
-Use this split design template only when the user explicitly asks for old `product/api/design` format or when maintaining an existing old feature folder.
+UI/design details belong inside that spec, under the Screen Element Specification section.
 
 - **Lightweight docs:** may include wireframe suggestions, ASCII sketches, UX questions, and discovery notes.
 - **Legacy final docs:** must be implementation-ready and aligned with Product/API contracts. Keep it concise; do not duplicate Product/API prose except where needed for UI behavior.
@@ -42,7 +40,7 @@ Use this split design template only when the user explicitly asks for old `produ
 |---|---|---|
 | Product spec | `../product/functional-specification.md` | Legacy split product behavior source. |
 | API contract | `../api/technical-contract.md` | Legacy split data/error source. |
-| Flat final contract | `../<feature-name>-functional-requirements.md` | Preferred FPTPlay final source. |
+| Final spec | `../product/<feature-name>.md` | Single source-of-truth FPTPlay final spec. |
 | Prototype | `...` | Reference only unless marked source-of-truth. |
 
 ## 3. Screen Inventory

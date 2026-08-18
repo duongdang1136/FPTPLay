@@ -66,17 +66,19 @@ Typical structure:
 
 ```text
 features/final-docs/<Large-Feature>/<Sub-Feature>/
-  <feature-name>-functional-requirements.md
+  README.md
+  product/<feature-name>.md
 ```
 
 Example:
 
 ```text
-features/final-docs/Pre-Waiting-Room/Pre-Live-Waiting-Room/
-  pre-live-waiting-room-functional-requirements.md
+features/final-docs/Sport-Zone/Notifications-Alert/
+  README.md
+  product/Notifications-&-Alert.md
 ```
 
-The functional requirements file combines Product, UX, API/integration, state, error, and QA requirements. Screen Element Specification should include text-based wireframes per surface when useful. Do not auto-create `<feature-name>-mockup.html`; create a mockup only when the user explicitly asks.
+The single spec combines Product, UX, API/integration, state, error, and QA requirements, following the structure of the PD source doc when one exists. Do not create or maintain legacy split contracts (`product/functional-specification.md`, `api/technical-contract.md`, `design/design-contract.md`). Screen Element Specification should include text-based wireframes per surface when useful. Do not auto-create `<feature-name>-mockup.html`; create a mockup only when the user explicitly asks.
 
 ## Workflow
 

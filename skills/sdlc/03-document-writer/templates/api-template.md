@@ -1,21 +1,13 @@
 # Legacy API Template
 
-This template is kept only for backward compatibility with older FPTPlay docs.
+This template is deprecated. FPTPlay no longer uses `api/technical-contract.md`.
 
-## Default for new FPTPlay final docs
+## Default for FPTPlay final docs
 
-Do not generate new final docs as `api/technical-contract.md` by default.
-
-Use the flat final template instead:
+Do not generate `api/technical-contract.md`. API/integration details belong inside the single source-of-truth spec:
 
 ```text
-features/_templates/final-feature/feature-functional-requirements.md
-```
-
-In the flat final format, API/integration details belong inside:
-
-```text
-<feature-name>-functional-requirements.md
+features/final-docs/<Large-Feature>/<Sub-Feature>/product/<feature-name>.md
 ```
 
 Recommended section:

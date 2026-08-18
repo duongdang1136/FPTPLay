@@ -81,10 +81,10 @@ features/lightweight/<Large-Feature>/<Sub-Feature>/
   design/<feature>-design.md
 
 features/final-docs/<Large-Feature>/<Sub-Feature>/
-  <feature-name>-functional-requirements.md
+  product/<feature-name>.md
 ```
 
-For FPTPlay final docs, `<feature-name>-functional-requirements.md` is the main handoff contract. It combines Product, UX, API/integration, state, error, and QA requirements. Do not auto-create `<feature-name>-mockup.html`; create a mockup/prototype only when the user explicitly asks.
+For FPTPlay final docs, `product/<feature-name>.md` is the **single source-of-truth handoff spec** per sub-feature. It combines Product, UX, API/integration, state, error, and QA requirements in one file, following the structure of the PD source doc when one exists (e.g. Confluence export converted to markdown). Do not create `api/technical-contract.md` or `design/design-contract.md` — API/integration and design details are sections inside the single spec. Do not auto-create `<feature-name>-mockup.html`; create a mockup/prototype only when the user explicitly asks.
 
 For Screen Element Specification, keep all surface-level UI details in **8.4 Surface Details by Surface**. Use one surface block per meaningful surface/location. Each surface block should include surface details, **Sketching wireframe / Text-Based Wireframing**, and a surface elements table. Put placement notes and any status/state behavior as brief surface behavior notes inside the relevant surface block; do not create separate `Surface summary`, `Status/state behavior`, 8.3, 8.5, or 8.6 sections.
 
@@ -112,7 +112,7 @@ For small features, omit `<Sub-Feature>` only when the repo convention supports 
 Use `skills/sdlc/03-document-writer/templates/product-template.md` as canonical shape.
 
 For lightweight mode, write `product/SRS-<feature>.md` with open questions allowed.
-For final mode in FPTPlay, write or update `<feature-name>-functional-requirements.md` with open questions resolved or marked as accepted assumptions. Do not split new final docs into `product/`, `api/`, and `design/` folders unless the user explicitly asks for legacy format.
+For final mode in FPTPlay, write or update `product/<feature-name>.md` (single source-of-truth spec) with open questions resolved or marked as accepted assumptions. Never split final docs into `product/functional-specification.md`, `api/technical-contract.md`, and `design/design-contract.md`.
 
 Minimum final Product coverage:
 
@@ -143,7 +143,7 @@ Release Checklist
 Use `skills/sdlc/03-document-writer/templates/api-template.md` as canonical shape.
 
 For lightweight mode, write `api/API-<feature>.md`.
-For final mode in FPTPlay, do not create a standalone `API / Integration Contract` section by default. Fold API/integration expectations into Business Rules, flow preconditions, Error Handling, and Handoff Checklist. Only create a separate API contract when user explicitly asks for low-level/dev contract or when maintaining legacy split docs.
+For final mode in FPTPlay, do not create a standalone `API / Integration Contract` section by default. Fold API/integration expectations into Business Rules, flow preconditions, Error Handling, and Handoff Checklist. Only create a separate API contract when the user explicitly asks for a low-level/dev contract.
 For formal task-state mode, write/maintain `state/tasks/{TASK-ID}/technical_contract.md`.
 
 Default Pulse envelope unless code-backed API docs prove otherwise:
@@ -281,7 +281,7 @@ Nếu action trigger side effects:
 Use `skills/sdlc/03-document-writer/templates/design-template.md` as canonical shape.
 
 For lightweight mode, write `design/<feature>-design.md`.
-For final mode in FPTPlay, fold UI/design details into `<feature-name>-functional-requirements.md` under `Screen Element Specification`. Do not create/update `<feature-name>-mockup.html` unless the user explicitly asks for a mockup/prototype.
+For final mode in FPTPlay, fold UI/design details into `product/<feature-name>.md` under `Screen Element Specification`. Do not create/update `<feature-name>-mockup.html` unless the user explicitly asks for a mockup/prototype.
 For formal task-state mode, include design/UI state sections in `functional_document.md` or attach a separate design note if PM requests it.
 
 Minimum final Design coverage inside the functional requirements file:
@@ -388,7 +388,7 @@ Feature docs mode:
 features/lightweight/<...>/product/SRS-<feature>.md
 features/lightweight/<...>/api/API-<feature>.md
 features/lightweight/<...>/design/<feature>-design.md
-features/final-docs/<...>/<feature-name>-functional-requirements.md
+features/final-docs/<...>/product/<feature-name>.md
 ```
 
 Update `state.yaml`:
@@ -410,7 +410,7 @@ status: done | needs_clarification
 summary: "Spec complete: {N} APIs, {M} schemas, {K} acceptance criteria. {X} change requirements recorded."
 artifacts:
   - name: functional requirements contract
-    path: state/tasks/{TASK-ID}/functional_document.md OR features/.../<feature-name>-functional-requirements.md
+    path: state/tasks/{TASK-ID}/functional_document.md OR features/.../product/<feature-name>.md
   - name: mockup / visual companion
     path: features/.../<feature-name>-mockup.html (only when user explicitly asks)
   - name: technical contract
@@ -471,7 +471,7 @@ Thông báo Telegram:
 
 ### FPTPlay final docs style reference
 
-Use `features/final-docs/Sport-Zone/Live-Activity/product/live-activity-user-flows-functional-requirements.md` as the writing-style reference when generating FPTPlay final functional docs:
+Use `features/final-docs/Sport-Zone/Live-Activity/product/Live-Activity.md` as the writing-style reference when generating FPTPlay final functional docs:
 
 - Caveman Vietnam: ít chữ, dễ đọc, đúng ý, không low-level.
 - Actor names: prefer `Logged-in User`, `App`; only add Server/API/CMS when the reader truly needs it.

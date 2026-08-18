@@ -1,38 +1,23 @@
 # Legacy Product Template
 
-This template is kept only for backward compatibility with older FPTPlay docs.
+This template is deprecated. FPTPlay no longer uses `product/functional-specification.md`.
 
-## Default for new FPTPlay final docs
+## Default for FPTPlay final docs
 
-Do not generate new final docs as `product/functional-specification.md` by default.
-
-Use the flat final template instead:
+Default final output (single source-of-truth spec per sub-feature):
 
 ```text
-features/_templates/final-feature/feature-functional-requirements.md
+features/final-docs/<Large-Feature>/<Sub-Feature>/product/<feature-name>.md
 ```
 
-Default final output:
-
-```text
-features/final-docs/<Large-Feature>/<Sub-Feature>/<feature-name>-functional-requirements.md
-```
-
-`<feature-name>-functional-requirements.md` combines Product, UX, integration expectations, state/behavior rules, and error handling. Do not create standalone API/State/Analytics/QA sections unless explicitly requested.
-
-## When this legacy template is allowed
-
-Use this split product template only when:
-
-- user explicitly asks for old `product/api/design` format, or
-- maintaining an existing old feature folder where split files already exist and must stay split.
+`product/<feature-name>.md` combines Product, UX, integration expectations, state/behavior rules, and error handling, following the structure of the PD source doc when one exists. Do not create standalone API/State/Analytics/QA sections unless explicitly requested.
 
 For lightweight docs, continue using `features/lightweight/<...>/product/SRS-<feature>.md` when needed.
 
 
 ### FPTPlay final docs style reference
 
-Use `features/final-docs/Sport-Zone/Live-Activity/product/live-activity-user-flows-functional-requirements.md` as the writing-style reference when generating FPTPlay final functional docs:
+Use `features/final-docs/Sport-Zone/Live-Activity/product/Live-Activity.md` as the writing-style reference when generating FPTPlay final functional docs:
 
 - Caveman Vietnam: ít chữ, dễ đọc, đúng ý, không low-level.
 - Use `hệ thống`, not `App`, in Vietnamese product docs.

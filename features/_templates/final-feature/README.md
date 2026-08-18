@@ -11,12 +11,12 @@
 ## Final artifacts
 
 ```text
-<feature-name>-functional-requirements.md
+product/<feature-name>.md
 ```
 
 ## Functional requirements coverage
 
-`<feature-name>-functional-requirements.md` is the main FE/BE/QA handoff contract. It should include Product, UX, integration expectations, state/behavior rules, and error handling.
+`product/<feature-name>.md` is the single source-of-truth FE/BE/QA handoff spec per sub-feature. It should include Product, UX, integration expectations, state/behavior rules, and error handling, following the structure of the PD source doc when one exists. Do not create legacy split contracts (`product/functional-specification.md`, `api/technical-contract.md`, `design/design-contract.md`). `feature-functional-requirements.md` in this template folder is kept only as a generic content checklist when no PD source doc structure is available.
 
 For Screen Element Specification, keep all surface-level UI details in **8.4 Surface Details by Surface**. Use one surface block per meaningful surface/location. Each surface block should include:
 
@@ -39,7 +39,7 @@ Do not auto-create `<feature-name>-mockup.html`. Create a mockup/prototype only 
 
 ### FPTPlay final docs style reference
 
-Use `features/final-docs/Sport-Zone/Live-Activity/product/live-activity-user-flows-functional-requirements.md` as the writing-style reference when generating FPTPlay final functional docs:
+Use `features/final-docs/Sport-Zone/Live-Activity/product/Live-Activity.md` as the writing-style reference when generating FPTPlay final functional docs:
 
 - Caveman Vietnam: ít chữ, dễ đọc, đúng ý, không low-level.
 - Actor names: prefer `Logged-in User`, `App`; only add Server/API/CMS when the reader truly needs it.

@@ -44,11 +44,7 @@ Use for product/UX clarification:
 
 ### 03 Document Writer
 
-Use to promote accepted BA assumptions into implementation-ready final contracts:
-
-- `product/functional-specification.md`
-- `api/technical-contract.md`
-- `design/design-contract.md`
+Use to promote accepted BA assumptions into implementation-ready final contracts. Final docs are a **single source-of-truth markdown spec per sub-feature** (converted from / aligned with the PD source doc structure). Do **not** create or maintain legacy split contracts (`product/functional-specification.md`, `api/technical-contract.md`, `design/design-contract.md`) — API and design expectations live inside the single spec.
 
 ## FPTPlay Default Mode
 
@@ -79,10 +75,10 @@ Final docs:
 ```text
 features/final-docs/<Large-Feature>/<Sub-Feature>/
   README.md
-  product/functional-specification.md
-  api/technical-contract.md
-  design/design-contract.md
+  product/<feature-name>.md    # single source-of-truth spec (theo template doc nguồn của PD)
 ```
+
+Do not create `api/technical-contract.md` or `design/design-contract.md`; API/integration and design details are sections inside the single spec.
 
 ## Rules
 
