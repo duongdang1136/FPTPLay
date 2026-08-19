@@ -167,6 +167,7 @@ Tương tác với notification:
 | UC-06 | Interact with Notification Sport → Expand or Deeplink | User | Hold expand hoặc tap notification | Hiển thị Expanded View hoặc điều hướng đến Match Detail |
 | UC-07 | Cấu hình per-event khi Đặt lịch | User | User mở Dialog config từ toast Config hoặc từ match Đã đặt lịch | Cấu hình per-event được lưu theo profileId + match; state Đặt lịch được cập nhật |
 
+
 ## 5. Business rules
 
 #### 5.1. Notification subscription
@@ -628,7 +629,7 @@ Detail UC:
 | Basic Path | State Chưa đặt lịch: (1) User chọn Đặt lịch → hệ thống hiển thị toast + button Config. (2) User chọn Config → mở Dialog cấu hình; button Lưu disable. (3) User thay đổi toggle → enable button Lưu. (4) User chọn Lưu → lưu cấu hình và cập nhật state sang Đã đặt lịch. State Đã đặt lịch: (1) User chọn action → mở Dialog cấu hình. (2) User chọn Tắt thông báo. (3) User chọn Lưu → hủy Đặt lịch và cập nhật state sang Chưa đặt lịch. |
 | Post-condition | Cấu hình per-event được lưu theo profileId + match. State Đặt lịch của match được cập nhật tương ứng. Unsubscribe match trigger re-evaluation theo UC-05. |
 | Alternative Path | User mở Dialog nhưng không thay đổi gì: button Lưu giữ disable; user đóng Dialog, không có thay đổi. User chỉnh sửa config của match đã Đặt lịch (không Tắt thông báo): Lưu → cập nhật config, giữ state Đã đặt lịch. |
-| Exception Handling | Lưu cấu hình thất bại: hiển thị lỗi, giữ cấu hình cũ, cho phép retry. OS permission bị deny: không tự động set toggle về off; config vẫn lưu bình thường. Match không còn hợp lệ: không mở Dialog, disable/hidden action. |
+      | Exception Handling | Lưu cấu hình thất bại: hiển thị lỗi, giữ cấu hình cũ, cho phép retry. OS permission bị deny: không tự động set toggle về off; config vẫn lưu bình thường. Match không còn hợp lệ: không mở Dialog, disable/hidden action. |
 
 ## 7. Screen Element Specification
 
