@@ -16,10 +16,10 @@
 Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên **Full Player** để user điều khiển video nhanh hơn.
 
 - Áp dụng chung cho: **VOD, Live Channel, Event, Timeshift (TS), Playlist**.
-- Tua và tăng tốc chỉ hoạt động khi nội dung, quyền xem và player hiện tại cho phép.
+- Tua và tăng tốc chỉ hoạt động với loại nội dung được hỗ trợ; **Live Channel không hỗ trợ tua hoặc tăng tốc**.
 - Không ghi đè gesture hệ thống.
 - Không làm custom volume hoặc brightness; dùng điều khiển hệ thống.
-- Player trong Detail và hành vi bên trong Mini View không thuộc feature này.
+- Player trong Detail ngoài scope. Các thao tác bên trong Mini View thuộc phạm vi sản phẩm nhưng được đặc tả ở tài liệu riêng; tài liệu này chừa vị trí để Product bổ sung manual.
 
 ---
 
@@ -29,6 +29,7 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 |---|---|---|---|---|
 | v0.2 | 2026-10-02 | Product / Dylan | Bản gần nhất trước các trao đổi về double-tap, khóa 2x và Fit / Fill / Zoom. | Pending |
 | v0.3 | 2026-10-05 | Dylan | Bỏ cộng dồn double-tap; bổ sung long-press 2x, khóa tốc độ, Fit / Fill / Zoom; phân biệt rõ requirement đã chốt và đề xuất cần xác nhận. | Pending |
+| v0.4 | 2026-10-05 | Dylan | Chốt release đồng thời iOS/Android; Live Channel không tua/tăng tốc; 2x chỉ hoạt động trong lúc long-press và thả về 1x; chốt zoom tối đa 8x. | Pending |
 
 ---
 
@@ -50,19 +51,17 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 | Web | Out of scope | Không thuộc bộ mobile touch gesture trong tài liệu này. |
 | SmartTV / Box | Out of scope | Tiếp tục dùng remote/D-pad và control hiện tại. |
 
-> **Cần xác nhận:** phạm vi release thực tế có triển khai đồng thời iOS và Android hay chia theo phase.
+> **Đã chốt:** triển khai đồng thời trên iOS và Android.
 
 ### 3.3 Content scope
 
 | Loại nội dung | Scope | Rule chính |
 |---|---|---|
-| VOD | In scope | Cho tua/tăng tốc nếu nội dung và player cho phép. |
-| Live Channel | In scope | Có thể vuốt ngang đổi kênh; tua/tăng tốc phụ thuộc stream/TS và quyền nội dung. |
-| Event | In scope | Không áp dụng vuốt ngang đổi kênh. |
-| Timeshift (TS) | In scope | Tua/tăng tốc chỉ trong vùng TS hợp lệ; đến live edge phải kết thúc 2x theo rule được chốt. |
-| Playlist | In scope | Có control chuyển mục/tập tiếp theo; không tạo gesture mới. |
-
-**Định nghĩa:** trong tài liệu này, **Live TV = Live Channel**.
+| VOD | In scope | Cho tua và long-press 2x nếu nội dung/player cho phép. |
+| Live Channel | In scope | Cho vuốt ngang đổi kênh; **không hỗ trợ tua hoặc long-press 2x**. |
+| Event | In scope | Không áp dụng vuốt ngang đổi kênh; tua/2x phụ thuộc khả năng và quyền của nội dung. |
+| Timeshift (TS) | In scope | Tua/2x chỉ trong vùng TS hợp lệ; đến live edge dừng 2x và phát 1x. |
+| Playlist | In scope | Có control chuyển mục/tập tiếp theo; tua/2x phụ thuộc nội dung hiện tại. |
 
 ### 3.4 User scope
 
@@ -70,7 +69,7 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 |---|---|---|
 | User đang xem Full Player | In scope | Actor chính. |
 | User đang xem player trong Detail | Out of scope | Không áp dụng bộ gesture này. |
-| User đang ở Mini View | Out of scope | Chỉ gesture chuyển từ Full Player sang Mini View nằm trong scope. |
+| User đang ở Mini View | In scope — tài liệu riêng | Các thao tác trong Mini View được đặc tả ở tài liệu khác; Product bổ sung manual tại mục 3.5. |
 
 ### 3.5 In scope
 
@@ -78,10 +77,10 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 - Double-tap trái/phải để tua độc lập 10 giây.
 - Kéo progress bar để seek.
 - Long-press để phát 2x tạm thời.
-- Long-press rồi kéo xuống để khóa 2x.
 - Pinch để zoom tự do.
 - Kéo một ngón để di chuyển vùng hình khi video lớn hơn Fit.
 - Vuốt xuống từ Full Player sang Mini View.
+- **Phạm vi Mini View bổ sung manual:** [Product bổ sung tại đây].
 - Vuốt ngang đổi kênh chỉ trên Live Channel.
 - Control chuyển tập/mục tiếp theo.
 - Fit / Fill / Zoom và control đưa video về kích thước gốc.
@@ -89,13 +88,11 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 ### 3.6 Out of scope
 
 - Gesture trên player trong Detail.
-- Kéo, neo góc, resize, đóng hoặc mở lại Full Player từ Mini View.
 - Custom volume gesture.
 - Custom brightness gesture.
 - Ghi đè gesture hệ thống.
 - Vuốt ngang đổi Event.
 - Tạo gesture riêng cho chuyển tập/mục tiếp theo.
-- Chốt một mức zoom tối đa là “chuẩn Apple/Android”.
 
 ---
 
@@ -117,7 +114,7 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 | GVP-UC-001 | Hiện hoặc ẩn player controls | User | Tap video | Control đổi trạng thái visible/hidden. |
 | GVP-UC-002 | Tua bằng double-tap | User | Double-tap nửa trái/phải video | Nội dung lùi/tiến tối đa 10 giây trong vùng được phép. |
 | GVP-UC-003 | Seek bằng progress bar | User | Kéo progress bar | Player phát từ mốc hợp lệ đã chọn. |
-| GVP-UC-004 | Phát 2x tạm thời hoặc khóa 2x | User | Long-press; có thể kéo xuống | Player phát 2x trong lúc giữ hoặc duy trì 2x sau khi khóa. |
+| GVP-UC-004 | Phát 2x tạm thời | User | Long-press video | Player phát 2x trong lúc giữ; thả tay trở về tốc độ bình thường 1x. |
 | GVP-UC-005 | Thay đổi chế độ hiển thị video | User | Chọn Fit/Fill hoặc pinch | Video hiển thị đúng tỷ lệ, giữ mức zoom hợp lệ. |
 | GVP-UC-006 | Di chuyển vùng hình đang zoom | User | Kéo một ngón khi lớn hơn Fit | Vùng hình di chuyển trong biên hợp lệ. |
 | GVP-UC-007 | Chuyển Full Player sang Mini View | User | Vuốt xuống tại trạng thái cho phép | Player chuyển Mini View, giữ vị trí xem và play/pause. |
@@ -131,7 +128,7 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 ### 6.1 Global gesture rules — Đã chốt
 
 1. Gesture chỉ áp dụng trên **Full Player**.
-2. Tua và tăng tốc chỉ chạy khi nội dung, quyền xem và player cho phép.
+2. Tua và tăng tốc chỉ chạy với loại nội dung được hỗ trợ; **Live Channel không hỗ trợ tua hoặc tăng tốc**.
 3. Không ghi đè gesture điều hướng hoặc gesture hệ thống.
 4. Vùng control, progress bar và vùng gesture hệ thống không được coi là vùng gesture video tương ứng.
 5. Không custom volume và brightness; user dùng điều khiển hệ thống.
@@ -147,7 +144,7 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 
 ### 6.3 Double-tap tua 10 giây — Đã chốt
 
-1. Chỉ áp dụng trên Full Player và nội dung cho phép tua.
+1. Chỉ áp dụng trên Full Player, với nội dung cho phép tua; **không áp dụng cho Live Channel**.
 2. Nửa trái video dùng để tua lùi; nửa phải dùng để tua tiến.
 3. Double-tap trái: lùi tối đa 10 giây.
 4. Double-tap phải: tiến tối đa 10 giây.
@@ -158,56 +155,28 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 9. Nếu đích tua vượt vùng được phép, hệ thống dừng tại mốc đầu/cuối hợp lệ.
 10. Nếu player đã ở giới hạn, hệ thống không tua thêm và không hiển thị như đã tua thành công.
 11. Tua giữ nguyên trạng thái play/pause trước thao tác.
-12. Loại trừ control, progress bar và vùng gesture hệ thống.
+12. Double-tap tua chỉ được nhận khi user chạm trực tiếp vào vùng hình video. Nếu user chạm vào nút điều khiển, progress bar hoặc vùng điều hướng hệ thống, hệ thống xử lý theo chức năng của vùng đó và không thực hiện tua.
 
 ### 6.4 Seek bằng progress bar — Đã chốt
 
-1. User có thể kéo progress bar để seek khi nội dung cho phép.
+1. User có thể kéo progress bar để seek khi nội dung cho phép; **Live Channel không hỗ trợ seek**.
 2. Trong lúc kéo, hệ thống hiển thị thời gian đích.
 3. Hiển thị thumbnail nếu nguồn/player hiện tại có thumbnail.
 4. Mốc đích phải được giới hạn trong vùng seek hợp lệ.
 5. Seek không tự thay đổi trạng thái play/pause nếu không có rule riêng của player.
 
-### 6.5 Long-press 2x và khóa tốc độ
+### 6.5 Long-press phát 2x tạm thời — Đã chốt
 
-#### 6.5.1 Đã chốt
-
-1. Long-press trên video để phát 2x.
-2. Nếu user thả khi chưa khóa, player trở về **tốc độ trước khi long-press**, không mặc định về 1x.
-3. User có thể giữ rồi kéo xuống để khóa tốc độ 2x.
-4. Khi long-press 2x đã kích hoạt, kéo xuống được ưu tiên cho ý định khóa tốc độ; không đồng thời chuyển Mini View.
-
-#### 6.5.2 Đề xuất cần Product/Designer/Dev/QA xác nhận
-
-1. Giữ **0,5 giây** để kích hoạt 2x.
-2. Nếu user bắt đầu kéo trước khi đủ thời gian giữ, không kích hoạt 2x.
-3. Sau khi kích hoạt, hiển thị: **“2x · Kéo xuống để giữ”**.
-4. User kéo xuống tối thiểu **48pt trên iOS / 48dp trên Android**, tính từ điểm bắt đầu giữ.
-5. Khi đạt ngưỡng, hiển thị: **“Thả để giữ 2x”**.
-6. Thả khi vẫn đạt ngưỡng: khóa 2x.
-7. Kéo ngược lên dưới ngưỡng rồi thả: hủy ý định khóa và trở về tốc độ trước.
-8. Ngưỡng tính theo quãng kéo; không yêu cầu kéo trúng icon.
-9. Nhãn đặt giữa phía trên video và tránh vùng phụ đề.
-10. Khi đã khóa, hiển thị **“2x · Trở lại {tốc độ trước}”**, kể cả khi control ẩn.
-11. Tap **“Trở lại”** để bỏ khóa và khôi phục tốc độ trước.
-
-> `0,5 giây` và `48pt/dp` là giá trị prototype đề xuất, chưa phải chuẩn Apple/Android và chưa phải requirement đã chốt.
-
-#### 6.5.3 Ma trận hành vi khóa 2x — Đề xuất cần xác nhận
-
-| Tình huống | Hành vi đề xuất |
-|---|---|
-| Player đang pause | Không kích hoạt long-press 2x. |
-| Tốc độ hiện tại từ 2x trở lên | Không kích hoạt long-press 2x. |
-| Đang khóa 2x, user long-press tiếp | Giữ trạng thái khóa hiện tại. |
-| User pause khi đang khóa | Bỏ khóa, về tốc độ trước và giữ pause. |
-| User seek khi đang khóa | Giữ 2x nếu mốc đích vẫn hỗ trợ. |
-| User chọn tốc độ khác trong menu | Bỏ khóa và áp dụng tốc độ mới. |
-| Chuyển Mini View | Bỏ khóa và về tốc độ trước. |
-| Chuyển video/tập/kênh | Kết thúc khóa của nội dung cũ. |
-| TS đến live edge | Kết thúc 2x và phát trực tiếp ở 1x. |
-| Hệ thống ngắt thao tác đang giữ | Hủy thao tác và về tốc độ trước. |
-| Buffering trong lúc giữ/khóa | Giữ trạng thái tốc độ; thao tác thả tay vẫn được xử lý. |
+1. Long-press trực tiếp trên vùng hình video để phát 2x tạm thời.
+2. Chỉ áp dụng với nội dung hỗ trợ tăng tốc; **không áp dụng cho Live Channel**.
+3. Trong lúc user còn giữ tay, player tiếp tục phát 2x.
+4. Khi user thả tay, player trở về tốc độ phát bình thường **1x**.
+5. 2x chỉ duy trì trong lúc user giữ tay.
+6. Sau khi user thả tay, hệ thống không tiếp tục duy trì 2x.
+7. Khi player đang pause, long-press không kích hoạt 2x.
+8. Nếu hệ thống ngắt chuỗi chạm, player dừng 2x và trở về 1x.
+9. Nếu buffering xảy ra trong lúc user đang giữ, khi playback tiếp tục thì tốc độ tuân theo trạng thái giữ tay hiện tại; khi user đã thả tay thì phát 1x.
+10. Feedback trong lúc giữ dùng nhãn ngắn **“2x”** và tránh che phụ đề.
 
 ### 6.6 Fit / Fill / Zoom
 
@@ -218,28 +187,23 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 3. **Fit:** hiển thị toàn bộ video trong khung player; có thể có viền trống; là mức nhỏ nhất.
 4. **Fill:** phóng video vừa phủ kín khung player; phần hình vượt khung bị cắt.
 5. **Zoom:** user pinch để phóng/thu liên tục; thả tay giữ mức vừa chọn.
-6. Khi video lớn hơn Fit, user kéo một ngón để di chuyển vùng hình.
-7. Không cho kéo video vượt biên hợp lệ.
-8. Có control **“Về kích thước gốc”** để đưa video về Fit và căn giữa.
-9. Khi video lớn hơn Fit, một ngón ưu tiên di chuyển hình; không nhận vuốt ngang đổi kênh hoặc vuốt xuống Mini View.
-10. Khi trở về Fit, khôi phục hai gesture trên nếu loại nội dung cho phép.
-11. Zoom không làm thay đổi thời điểm xem, tốc độ hoặc trạng thái play/pause.
-12. Giới hạn zoom tối đa chưa chốt; không mặc định 3x.
+6. Mức zoom tối đa là **8x so với Fit**, tính theo chiều rộng và chiều cao; không tính theo diện tích.
+7. Khi video lớn hơn Fit, user kéo một ngón để di chuyển vùng hình.
+8. Không cho kéo video vượt biên hợp lệ.
+9. Có control **“Về kích thước gốc”** để đưa video về Fit và căn giữa.
+10. Khi video lớn hơn Fit, một ngón ưu tiên di chuyển hình; không nhận vuốt ngang đổi kênh hoặc vuốt xuống Mini View.
+11. Khi trở về Fit, khôi phục hai gesture trên nếu loại nội dung cho phép.
+12. Zoom không làm thay đổi thời điểm xem, tốc độ hoặc trạng thái play/pause.
 
-#### 6.6.2 Giới hạn zoom — Cần xác nhận
+#### 6.6.2 Giới hạn zoom 8x — Đã chốt
 
-1. Spec tạm thời:
-
-   > Cho phép zoom tự do từ mức Fit đến giới hạn tối đa do sản phẩm cấu hình. Mức tối đa cần được xác nhận qua thử nghiệm trên các tỷ lệ video và màn hình hỗ trợ.
-
-2. `3x` nếu được thử nghiệm thì được hiểu là chiều rộng và chiều cao gấp 3 so với Fit; không phải diện tích gấp 3.
-3. Chưa có nguồn Apple/Android quy định `3x` là mức zoom tối đa chuẩn cho video.
-4. Không mặc định một mức cố định luôn đủ để đạt Fill với mọi tỷ lệ video/màn hình.
-5. Cần prototype ít nhất trên các nhóm tỷ lệ video: 16:9, 4:3, 21:9, 9:16 và tỷ lệ bất thường.
-6. Product cần chốt một trong các cách:
-   - Giới hạn cấu hình cố định sau thử nghiệm.
-   - Giới hạn hiệu lực luôn đủ đạt Fill và không thấp hơn ngưỡng cấu hình.
-   - Giới hạn khác theo platform/device nếu có bằng chứng cần thiết.
+1. User được zoom tự do trong khoảng từ Fit đến tối đa **8x**.
+2. 8x được tính theo tỷ lệ tuyến tính so với Fit:
+   - Chiều rộng tối đa bằng 8 lần chiều rộng ở Fit.
+   - Chiều cao tối đa bằng 8 lần chiều cao ở Fit.
+3. Khi pinch vượt 8x, hệ thống giữ video tại 8x; không scale thêm.
+4. Fill là preset nằm trong khoảng Fit–8x. Với tỷ lệ video bất thường cần scale lớn hơn 8x mới phủ kín khung, hệ thống dừng ở 8x.
+5. Mức 8x là quyết định sản phẩm để align trải nghiệm tham chiếu YouTube; không gọi đây là chuẩn Apple hoặc Android.
 
 #### 6.6.3 Interaction đơn giản hóa — Đề xuất cần xác nhận
 
@@ -271,10 +235,9 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 1. Vuốt xuống từ Full Player để chuyển sang Mini View trong ứng dụng.
 2. Giữ vị trí xem hiện tại.
 3. Giữ trạng thái play/pause hiện tại.
-4. Chỉ gesture chuyển sang Mini View nằm trong scope.
-5. Khi long-press 2x đã kích hoạt, kéo xuống không được đồng thời chuyển Mini View.
-6. Khi video lớn hơn Fit, kéo một ngón ưu tiên pan; không chuyển Mini View.
-7. Gesture phải tránh xung đột và không ghi đè gesture hệ thống.
+4. Mục này chỉ đặc tả gesture chuyển từ Full Player sang Mini View. Các thao tác trong Mini View thuộc scope của tài liệu riêng và được chừa vị trí manual tại mục 3.5.
+5. Khi video lớn hơn Fit, kéo một ngón ưu tiên pan; không chuyển Mini View.
+6. Gesture phải tránh xung đột và không ghi đè gesture hệ thống.
 
 ### 6.8 Vuốt ngang đổi Live Channel — Đã chốt
 
@@ -283,14 +246,13 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 3. Khi video lớn hơn Fit, kéo một ngón ưu tiên pan; không đổi kênh.
 4. Khi trở về Fit, vuốt ngang đổi kênh hoạt động lại.
 5. Việc xác định kênh trước/sau đi theo danh sách kênh hiện tại của player.
-6. Chuyển kênh phải kết thúc trạng thái khóa 2x của kênh cũ nếu rule này được Product xác nhận.
 
 ### 6.9 Thứ tự ưu tiên gesture — Đề xuất cần xác nhận
 
 1. Pinch hai ngón → Zoom.
 2. Một ngón khi video lớn hơn Fit → Pan vùng hình.
-3. Long-press đã kích hoạt → Điều khiển 2x/khóa 2x.
-4. Double-tap trái/phải → Tua.
+3. Long-press đã kích hoạt → Phát 2x tạm thời trong lúc giữ.
+4. Double-tap trái/phải → Tua nếu nội dung không phải Live Channel và cho phép tua.
 5. Swipe ngang/dọc tại Fit → Đổi Live Channel hoặc chuyển Mini View.
 6. Tap → Hiện/ẩn control.
 7. Khi một gesture được nhận, không xử lý gesture khác trong cùng chuỗi chạm.
@@ -351,7 +313,7 @@ flowchart LR
 |---|---|
 | Actor | User, hệ thống |
 | Triggers | User double-tap nửa trái hoặc nửa phải video. |
-| Pre-condition | Full Player; nội dung cho phép tua; điểm chạm không nằm trên control/progress/system area. |
+| Pre-condition | Full Player; nội dung cho phép tua; không phải Live Channel; user double-tap trực tiếp vào vùng hình video. |
 | Basic Path | 1. Hệ thống nhận một double-tap độc lập.<br>2. Xác định hướng tua.<br>3. Tính mốc hợp lệ tối đa 10 giây.<br>4. Seek và hiện feedback của lần đó. |
 | Post-condition | Player giữ play/pause trước thao tác; vị trí xem thay đổi trong vùng hợp lệ. |
 | Alternative Path | Nếu còn ít hơn 10 giây tới biên, chỉ tua số giây thực tế còn lại. |
@@ -377,7 +339,7 @@ flowchart LR
 |---|---|
 | Actor | User, hệ thống |
 | Triggers | User kéo progress bar. |
-| Pre-condition | Nội dung/player cho phép seek. |
+| Pre-condition | Nội dung/player cho phép seek; không phải Live Channel. |
 | Basic Path | 1. User kéo thumb.<br>2. Hệ thống hiện thời gian đích và thumbnail nếu có.<br>3. Hệ thống giới hạn mốc hợp lệ.<br>4. User thả tay.<br>5. Player seek. |
 | Post-condition | Player ở mốc mới; play/pause giữ theo trạng thái trước thao tác. |
 | Alternative Path | Nếu không có thumbnail, chỉ hiện thời gian đích. |
@@ -385,32 +347,31 @@ flowchart LR
 
 ### GVP-US-003 — User phát nhanh 2x
 
-#### GVP-UC-004 — Long-press để phát 2x và khóa tốc độ
+#### GVP-UC-004 — Long-press để phát 2x tạm thời
 
 **Activity Flows:**
 
 ```mermaid
 flowchart LR
  Start([" "]) --> A["User long-press video"]
- A --> B["Player phát 2x"]
- B --> C{"User kéo xuống để khóa?"}
- C -- Không --> D["User thả tay"]
- D --> E["Về tốc độ trước"]
- C -- Có --> F["User thả tại vùng khóa"]
- F --> G["Giữ 2x"]
- E --> End1([" "])
- G --> End2([" "])
+ A --> B{"Nội dung hỗ trợ 2x?"}
+ B -- Không --> C["Giữ tốc độ hiện tại"]
+ B -- Có --> D["Phát 2x trong lúc giữ"]
+ D --> E["User thả tay"]
+ E --> F["Trở về 1x"]
+ C --> End1([" "])
+ F --> End2([" "])
 ```
 
 | Field | Details |
 |---|---|
 | Actor | User, hệ thống |
 | Triggers | User long-press vùng video. |
-| Pre-condition | Full Player; nội dung/player cho phép 2x. Điều kiện pause/tốc độ hiện tại cần Product xác nhận. |
-| Basic Path | 1. User long-press.<br>2. Hệ thống phát 2x.<br>3. User thả khi chưa khóa.<br>4. Hệ thống về tốc độ trước. |
-| Post-condition | Nếu không khóa: tốc độ cũ được khôi phục. Nếu khóa: player tiếp tục 2x. |
-| Alternative Path | User kéo xuống và thả tại vùng khóa để duy trì 2x. |
-| Exception Handling | Khi thao tác bị hệ thống ngắt hoặc nội dung không hỗ trợ, hủy 2x và về trạng thái an toàn; rule chi tiết cần xác nhận. |
+| Pre-condition | Full Player; player đang phát; nội dung hỗ trợ 2x; không phải Live Channel. |
+| Basic Path | 1. User long-press vùng video.<br>2. Hệ thống phát 2x trong lúc user giữ tay.<br>3. User thả tay.<br>4. Hệ thống trở về 1x. |
+| Post-condition | Playback tiếp tục ở tốc độ bình thường 1x. |
+| Alternative Path | Nếu nội dung không hỗ trợ 2x hoặc là Live Channel, hệ thống giữ tốc độ hiện tại. |
+| Exception Handling | Nếu chuỗi chạm bị hệ thống ngắt, hủy 2x và trở về 1x. |
 
 ### GVP-US-004 — User thay đổi vùng hiển thị video
 
@@ -438,7 +399,7 @@ flowchart LR
 | Basic Path | 1. User thực hiện thao tác.<br>2. Hệ thống scale video và giữ tỷ lệ gốc.<br>3. Hệ thống giới hạn mức zoom.<br>4. Thả tay, hệ thống giữ mức hợp lệ. |
 | Post-condition | Vị trí xem, tốc độ và play/pause không đổi. |
 | Alternative Path | User bấm “Về kích thước gốc” để trở về Fit và căn giữa. |
-| Exception Handling | Nếu mức zoom vượt giới hạn chưa chốt, hệ thống chặn tại mức tối đa được Product cấu hình. |
+| Exception Handling | Nếu pinch vượt 8x, hệ thống giữ video tại mức tối đa 8x. |
 
 #### GVP-UC-006 — Pan vùng hình khi đang zoom
 
@@ -472,7 +433,7 @@ flowchart LR
 ```mermaid
 flowchart LR
  Start([" "]) --> A["User vuốt xuống tại Full Player"]
- A --> B{"Đang long-press 2x hoặc lớn hơn Fit?"}
+ A --> B{"Video đang lớn hơn Fit?"}
  B -- Có --> C["Không chuyển Mini View"]
  B -- Không --> D["Chuyển Mini View"]
  D --> E["Giữ vị trí xem và play/pause"]
@@ -484,11 +445,11 @@ flowchart LR
 |---|---|
 | Actor | User, hệ thống |
 | Triggers | User vuốt xuống trên Full Player. |
-| Pre-condition | Không bị gesture hệ thống chiếm; không đang pan/khóa 2x. |
+| Pre-condition | Không bị gesture hệ thống chiếm; video đang ở Fit và không đang pan. |
 | Basic Path | 1. User vuốt xuống.<br>2. Hệ thống chuyển Mini View.<br>3. Giữ vị trí xem và play/pause. |
 | Post-condition | Player ở Mini View. |
 | Alternative Path | Không có trong scope. |
-| Exception Handling | Khi đang zoom lớn hơn Fit hoặc long-press đã kích hoạt, xử lý gesture hiện tại và không chuyển Mini View. |
+| Exception Handling | Khi đang zoom lớn hơn Fit, xử lý thao tác thành pan và không chuyển Mini View. |
 
 #### GVP-UC-008 — Vuốt ngang đổi Live Channel
 
@@ -610,9 +571,9 @@ System gesture areas nằm ngoài vùng gesture video ưu tiên.
 | # | Element | States | Format / Copy | Rules / Notes |
 |---:|---|---|---|---|
 | 1 | Tap gesture layer | enabled, blocked | Không có copy | Toggle control khi không bị gesture khác nhận. |
-| 2 | Double-tap feedback | backward, forward, boundary | Hướng + số giây thực tế | Mỗi lần độc lập; không cộng dồn. |
-| 3 | Progress preview | dragging, unavailable | Thời gian đích; thumbnail nếu có | Không bịa thumbnail khi nguồn không hỗ trợ. |
-| 4 | Long-press 2x label | temporary, lock-ready, locked | Copy chi tiết cần xác nhận | Không che phụ đề. |
+| 2 | Double-tap feedback | backward, forward, boundary, unavailable | Hướng + số giây thực tế | Mỗi lần độc lập; không cộng dồn; không áp dụng Live Channel. |
+| 3 | Progress preview | dragging, unavailable | Thời gian đích; thumbnail nếu có | Không áp dụng seek trên Live Channel; không bịa thumbnail khi nguồn không hỗ trợ. |
+| 4 | Long-press 2x label | visible while pressing, hidden | `2x` | Chỉ hiện trong lúc giữ; không che phụ đề. |
 | 5 | Display mode control | Fit, Fill, Custom Zoom | `Vừa khung`, `Lấp đầy` | Có/không có nút Zoom riêng cần xác nhận. |
 | 6 | Reset display control | visible, hidden | `Về kích thước gốc` | Hiện khi lớn hơn Fit; đưa về Fit và căn giữa. |
 | 7 | Zoom feedback | pinching, hidden | Đề xuất `Zoom {n}x` | Có thể bỏ ở bản đầu. |
@@ -623,8 +584,7 @@ System gesture areas nằm ngoài vùng gesture video ưu tiên.
 - **Fit:** video căn giữa; có thể đổi Live Channel và chuyển Mini View.
 - **Fill/Custom Zoom:** một ngón pan; chặn swipe đổi kênh và Mini View.
 - **Pinching:** ưu tiên scale; không xử lý gesture khác trong cùng chuỗi chạm.
-- **Long-press active:** kéo xuống dành cho lock 2x; không chuyển Mini View.
-- **Control hidden:** trạng thái khóa 2x có thể vẫn cần label “Trở lại”; cần Product xác nhận.
+- **Long-press active:** player phát 2x trong lúc user giữ tay; thả tay trở về 1x.
 
 **Surface-specific notes:**
 
@@ -640,10 +600,10 @@ System gesture areas nằm ngoài vùng gesture video ưu tiên.
 |---|---|---|
 | Double-tap khi đã ở biên seek | Không hiển thị như tua thành công | Giữ vị trí hiện tại. |
 | Double-tap vượt biên | Hiện số giây thực tế đã tua | Dừng ở mốc đầu/cuối hợp lệ. |
-| Nội dung không cho tua | Không hiện feedback thành công | Giữ playback hiện tại; copy unavailable nếu Product yêu cầu. |
-| Long-press không đủ điều kiện | Chưa chốt copy | Không kích hoạt 2x. |
-| Long-press bị hệ thống ngắt | Không cần báo lỗi | Hủy thao tác và về tốc độ trước. |
-| Zoom đạt mức tối đa | Feedback trực quan tại biên; copy không bắt buộc | Không scale vượt mức cấu hình. |
+| Live Channel hoặc nội dung không cho tua | Không hiện feedback thành công | Giữ playback hiện tại; không thực hiện double-tap seek hoặc progress-bar seek. |
+| Long-press trên Live Channel hoặc nội dung không hỗ trợ 2x | Không hiển thị `2x` | Giữ tốc độ hiện tại. |
+| Long-press bị hệ thống ngắt | Không cần báo lỗi | Hủy 2x và trở về 1x. |
+| Zoom đạt mức tối đa | Feedback trực quan tại biên; copy không bắt buộc | Giữ mức 8x, không scale thêm. |
 | Pan tới biên | Không cần báo lỗi | Chặn tại biên; không để lộ vùng trống. |
 | Swipe ngang trên Event | Không báo đổi kênh | Không đổi nội dung. |
 | Swipe khi video lớn hơn Fit | Không báo đổi kênh/Mini View | Xử lý thành pan nếu hợp lệ. |
@@ -655,17 +615,17 @@ System gesture areas nằm ngoài vùng gesture video ưu tiên.
 
 | Item | Link / Note |
 |---|---|
-| Apple — Create a great video playback experience | <https://developer.apple.com/videos/play/wwdc2022/10147/> — tham khảo Fit/Fill và pinch phủ kín màn hình; không quy định zoom tối đa 3x. |
+| Apple — Create a great video playback experience | <https://developer.apple.com/videos/play/wwdc2022/10147/> — tham khảo Fit/Fill và pinch phủ kín màn hình; không dùng làm nguồn cho giới hạn 8x. |
 | Apple — Gestures | <https://developer.apple.com/design/human-interface-guidelines/gestures> — custom gesture cần dễ khám phá và có cách thao tác thay thế. |
 | Android — Drag and scale | <https://developer.android.com/develop/ui/views/touch-and-input/gestures/scale> — hướng dẫn triển khai pinch/scale; thông số code mẫu không phải chuẩn UX video. |
-| Android — Media3 1.11 | <https://developer.android.com/blog/posts/media3-1-11-whats-new> — ví dụ long-press phát nhanh; không quy định kéo xuống khóa tốc độ. |
+| Android — Media3 1.11 | <https://developer.android.com/blog/posts/media3-1-11-whats-new> — tham khảo long-press phát nhanh; sản phẩm chỉ giữ hành vi 2x tạm thời. |
 | Android — Audio output | <https://developer.android.com/media/platform/output> — media volume dùng điều khiển hệ thống. |
 
 ### 10.1 Source interpretation rules
 
-- Không gọi `0,5 giây`, `48pt/dp`, `2x/2.5x/3x` là chuẩn Apple hoặc Android.
+- Mức zoom tối đa `8x` là quyết định sản phẩm để align trải nghiệm tham chiếu YouTube; không gọi là chuẩn Apple hoặc Android.
 - Không dùng code sample của nền tảng làm quyết định UX mặc định.
-- Các thông số trên chỉ được đưa vào requirement sau khi Product xác nhận và prototype/QA kiểm chứng.
+- Các nguồn Apple/Android được dùng để tham khảo gesture và playback behavior, không phải để chứng minh giới hạn 8x.
 
 ---
 
@@ -673,33 +633,28 @@ System gesture areas nằm ngoài vùng gesture video ưu tiên.
 
 ### 11.1 Cần Product/Designer/Dev/QA xác nhận
 
-- [ ] Ngưỡng giữ để kích hoạt 2x: đề xuất `0,5 giây`.
-- [ ] Ngưỡng kéo để khóa 2x: đề xuất `48pt iOS / 48dp Android`.
-- [ ] Copy và vị trí label long-press/locked 2x.
-- [ ] Toàn bộ ma trận edge case khóa 2x tại mục 6.5.3.
+- [ ] Product bổ sung manual phạm vi kéo, neo góc, resize, đóng và mở lại Full Player từ Mini View tại mục 3.5.
 - [ ] Có giữ hai preset Fit/Fill hay chỉ Fit mặc định + pinch + reset.
 - [ ] Có hiển thị con số `Zoom {n}x` trong lúc pinch hay không.
-- [ ] Công thức và giá trị zoom tối đa; `3x` chưa chốt.
-- [ ] Mức zoom tối đa có bắt buộc luôn đạt được Fill với mọi tỷ lệ hay không.
 - [ ] Reset Fit khi đổi nội dung, đổi kênh, chuyển Mini View và xoay màn hình.
 - [ ] Zoom quanh điểm giữa hai ngón và behavior phụ đề rời/burn-in.
 - [ ] Thứ tự ưu tiên gesture tại mục 6.9.
 - [ ] Cách nhận diện swipe ngang/dọc đủ điều kiện, tránh nhầm với tap/pan/system gesture.
-- [ ] iOS và Android release cùng lúc hay theo phase.
 
 ### 11.2 Handoff checklist
 
 - [x] Chỉ Full Player nằm trong scope.
 - [x] Content scope gồm VOD, Live Channel, Event, TS và Playlist.
 - [x] Double-tap không còn logic cộng dồn.
-- [x] Long-press trả về tốc độ trước, không mặc định 1x.
+- [x] Long-press chỉ phát 2x tạm thời; thả tay trở về 1x; không duy trì 2x sau khi thả.
 - [x] Vuốt ngang chỉ đổi Live Channel, không đổi Event.
 - [x] Full → Mini giữ vị trí xem và play/pause.
 - [x] Pan khi zoom chặn đổi kênh và chuyển Mini View.
 - [x] Bỏ custom volume/brightness.
 - [x] Không ghi đè gesture hệ thống.
-- [x] Các thông số chưa chốt được ghi rõ là đề xuất.
-- [x] `3x` không được gọi là chuẩn Apple/Android.
+- [x] Live Channel không hỗ trợ tua hoặc tăng tốc.
+- [x] Zoom tối đa 8x so với Fit; đây là quyết định sản phẩm, không phải chuẩn Apple/Android.
+- [x] iOS và Android triển khai đồng thời.
 - [ ] Designer dựng wireframe/prototype cho Full Player.
 - [ ] Product chốt các mục 11.1.
 - [ ] Dev xác nhận khả năng theo content/player/platform.
