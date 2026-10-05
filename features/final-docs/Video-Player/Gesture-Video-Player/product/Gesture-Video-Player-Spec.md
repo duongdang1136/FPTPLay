@@ -30,6 +30,7 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 | v0.2 | 2026-10-02 | Product / Dylan | Bản gần nhất trước các trao đổi về double-tap, khóa 2x và Fit / Fill / Zoom. | Pending |
 | v0.3 | 2026-10-05 | Dylan | Bỏ cộng dồn double-tap; bổ sung long-press 2x, khóa tốc độ, Fit / Fill / Zoom; phân biệt rõ requirement đã chốt và đề xuất cần xác nhận. | Pending |
 | v0.4 | 2026-10-05 | Dylan | Chốt release đồng thời iOS/Android; Live Channel không tua/tăng tốc; 2x chỉ hoạt động trong lúc long-press và thả về 1x; chốt zoom tối đa 8x. | Pending |
+| v0.5 | 2026-10-05 | Dylan | Chốt Fit/Fill toggle, Custom Zoom, feedback zoom, điểm neo/phụ đề/reset, thứ tự ưu tiên gesture và nguyên tắc nhận diện swipe. | Pending |
 
 ---
 
@@ -83,7 +84,7 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 - **Phạm vi Mini View bổ sung manual:** [Product bổ sung tại đây].
 - Vuốt ngang đổi kênh chỉ trên Live Channel.
 - Control chuyển tập/mục tiếp theo.
-- Fit / Fill / Zoom và control đưa video về kích thước gốc.
+- Fit / Fill / Zoom, một control chuyển đổi Fit ↔ Fill và action **“Về vừa khung”**.
 
 ### 3.6 Out of scope
 
@@ -115,7 +116,7 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 | GVP-UC-002 | Tua bằng double-tap | User | Double-tap nửa trái/phải video | Nội dung lùi/tiến tối đa 10 giây trong vùng được phép. |
 | GVP-UC-003 | Seek bằng progress bar | User | Kéo progress bar | Player phát từ mốc hợp lệ đã chọn. |
 | GVP-UC-004 | Phát 2x tạm thời | User | Long-press video | Player phát 2x trong lúc giữ; thả tay trở về tốc độ bình thường 1x. |
-| GVP-UC-005 | Thay đổi chế độ hiển thị video | User | Chọn Fit/Fill hoặc pinch | Video hiển thị đúng tỷ lệ, giữ mức zoom hợp lệ. |
+| GVP-UC-005 | Thay đổi chế độ hiển thị video | User | Bấm control Fit ↔ Fill, pinch hoặc reset | Video hiển thị đúng tỷ lệ, giữ mức zoom hợp lệ. |
 | GVP-UC-006 | Di chuyển vùng hình đang zoom | User | Kéo một ngón khi lớn hơn Fit | Vùng hình di chuyển trong biên hợp lệ. |
 | GVP-UC-007 | Chuyển Full Player sang Mini View | User | Vuốt xuống tại trạng thái cho phép | Player chuyển Mini View, giữ vị trí xem và play/pause. |
 | GVP-UC-008 | Đổi Live Channel | User | Vuốt ngang tại trạng thái cho phép | Player chuyển kênh theo hướng vuốt. |
@@ -176,7 +177,7 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 7. Khi player đang pause, long-press không kích hoạt 2x.
 8. Nếu hệ thống ngắt chuỗi chạm, player dừng 2x và trở về 1x.
 9. Nếu buffering xảy ra trong lúc user đang giữ, khi playback tiếp tục thì tốc độ tuân theo trạng thái giữ tay hiện tại; khi user đã thả tay thì phát 1x.
-10. Feedback trong lúc giữ dùng nhãn ngắn **“2x”** và tránh che phụ đề.
+10. Feedback trong lúc giữ dùng nhãn **“Tốc độ 2x”** và tránh che phụ đề.
 
 ### 6.6 Fit / Fill / Zoom
 
@@ -190,7 +191,7 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 6. Mức zoom tối đa là **8x so với Fit**, tính theo chiều rộng và chiều cao; không tính theo diện tích.
 7. Khi video lớn hơn Fit, user kéo một ngón để di chuyển vùng hình.
 8. Không cho kéo video vượt biên hợp lệ.
-9. Có control **“Về kích thước gốc”** để đưa video về Fit và căn giữa.
+9. Có action **“Về vừa khung”** để đưa video về Fit và căn giữa.
 10. Khi video lớn hơn Fit, một ngón ưu tiên di chuyển hình; không nhận vuốt ngang đổi kênh hoặc vuốt xuống Mini View.
 11. Khi trở về Fit, khôi phục hai gesture trên nếu loại nội dung cho phép.
 12. Zoom không làm thay đổi thời điểm xem, tốc độ hoặc trạng thái play/pause.
@@ -205,30 +206,48 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 4. Fill là preset nằm trong khoảng Fit–8x. Với tỷ lệ video bất thường cần scale lớn hơn 8x mới phủ kín khung, hệ thống dừng ở 8x.
 5. Mức 8x là quyết định sản phẩm để align trải nghiệm tham chiếu YouTube; không gọi đây là chuẩn Apple hoặc Android.
 
-#### 6.6.3 Interaction đơn giản hóa — Đề xuất cần xác nhận
+#### 6.6.3 Interaction Fit / Fill / Custom Zoom — Đã chốt
 
-1. Control chỉ có hai preset:
-   - **Vừa khung — Fit**.
-   - **Lấp đầy — Fill**.
-2. Không tạo nút Zoom riêng.
-3. Khi user pinch từ Fit hoặc Fill, player tự chuyển sang trạng thái **Zoom tùy chỉnh**.
-4. Khi đang lớn hơn Fit, hiển thị control **“Về kích thước gốc”**.
-5. Bản đầu chưa cần hiển thị liên tục con số zoom; ưu tiên cho user thấy cách reset.
-6. Nếu cần feedback trong lúc pinch, dùng copy tạm thời dạng **“Zoom 1.6x”**, phân biệt với **“Tốc độ 2x”**.
+1. Player sử dụng **một control chuyển đổi Fit ↔ Fill**, không hiển thị hai control riêng.
+2. Trạng thái mặc định khi mở nội dung là **Vừa khung — Fit**.
+3. Khi đang Fit, bấm control chuyển sang **Lấp đầy — Fill**.
+4. Khi đang Fill, bấm control trở lại Fit.
+5. UI có thể dùng icon; accessibility label hoặc tooltip phải mô tả hành động đích là **“Lấp đầy màn hình”** hoặc **“Vừa khung”**.
+6. Không tạo nút Zoom riêng.
+7. Khi user pinch từ Fit hoặc Fill, player chuyển sang trạng thái **Zoom tùy chỉnh**.
+8. Khi đang ở Zoom tùy chỉnh, hiển thị action **“Về vừa khung”**.
+9. Chọn “Về vừa khung” đưa video về Fit, căn giữa hình và khôi phục các gesture bị chặn khi video lớn hơn Fit.
+10. Trong lúc pinch, hiển thị tạm thời mức zoom theo định dạng **“Zoom {n}x”**; feedback biến mất sau khi kết thúc thao tác.
+11. Feedback zoom phải phân biệt với feedback tốc độ:
+    - Zoom: **“Zoom 1.6x”**.
+    - Long-press tăng tốc: **“Tốc độ 2x”**.
 
-#### 6.6.4 Điểm neo, phụ đề và reset — Đề xuất cần xác nhận
+#### 6.6.4 Điểm neo, phụ đề và reset — Đã chốt
 
-1. Zoom quanh điểm giữa hai ngón tay.
-2. Chỉ phóng và di chuyển lớp hình video.
-3. Control player giữ nguyên kích thước và vị trí.
-4. Phụ đề rời do player render giữ nguyên kích thước và nằm trong safe area.
-5. Phụ đề burn-in phóng/cắt cùng hình video.
-6. Reset về Fit khi:
-   - Đổi video/tập/kênh.
+1. Pinch zoom quanh điểm giữa hai ngón tay.
+2. Trong lúc zoom, hệ thống giữ vùng hình tại điểm tương tác ở vị trí tương đối ổn định.
+3. Nếu vị trí sau zoom vượt biên hợp lệ, hệ thống điều chỉnh video về biên gần nhất.
+4. Chỉ lớp hình video được zoom và pan.
+5. Player controls, progress bar và feedback gesture giữ nguyên kích thước và vị trí.
+6. Phụ đề rời do player render:
+   - Giữ nguyên kích thước.
+   - Nằm trong safe area của player.
+   - Không zoom hoặc di chuyển theo vùng hình.
+7. Phụ đề burn-in zoom, pan và bị cắt cùng hình video.
+8. Reset video về Fit và căn giữa khi:
+   - Đổi video, tập hoặc Live Channel.
    - Chuyển sang Mini View.
    - Mở lại Full Player từ Mini View.
    - Xoay màn hình.
-7. Giữ zoom khi tap control, play/pause, seek, buffering, đổi tốc độ hoặc đổi chất lượng trong cùng nội dung.
+9. Giữ mức zoom hiện tại trong cùng nội dung và cùng phiên Full Player khi:
+   - Tap hiện/ẩn control.
+   - Play hoặc pause.
+   - Seek.
+   - Buffering.
+   - Đổi chất lượng.
+   - Đổi audio track hoặc phụ đề.
+   - Long-press phát 2x tạm thời.
+10. Khi reset về Fit, khôi phục gesture đổi Live Channel và chuyển Mini View nếu loại nội dung cho phép.
 
 ### 6.7 Vuốt xuống chuyển Mini View — Đã chốt
 
@@ -247,15 +266,31 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 4. Khi trở về Fit, vuốt ngang đổi kênh hoạt động lại.
 5. Việc xác định kênh trước/sau đi theo danh sách kênh hiện tại của player.
 
-### 6.9 Thứ tự ưu tiên gesture — Đề xuất cần xác nhận
+### 6.9 Thứ tự ưu tiên gesture — Đã chốt
 
-1. Pinch hai ngón → Zoom.
-2. Một ngón khi video lớn hơn Fit → Pan vùng hình.
-3. Long-press đã kích hoạt → Phát 2x tạm thời trong lúc giữ.
-4. Double-tap trái/phải → Tua nếu nội dung không phải Live Channel và cho phép tua.
-5. Swipe ngang/dọc tại Fit → Đổi Live Channel hoặc chuyển Mini View.
-6. Tap → Hiện/ẩn control.
-7. Khi một gesture được nhận, không xử lý gesture khác trong cùng chuỗi chạm.
+1. Vùng gesture hệ thống, control và progress bar xử lý theo chức năng sở hữu; gesture video không được nhận tại các vùng này.
+2. Pinch hai ngón → Zoom.
+3. Một ngón khi video lớn hơn Fit → Pan vùng hình.
+4. Long-press đã được nhận → Phát 2x tạm thời trong lúc giữ.
+5. Double-tap trái/phải → Tua nếu nội dung không phải Live Channel và cho phép tua.
+6. Swipe ngang/dọc tại Fit → Đổi Live Channel hoặc chuyển Mini View.
+7. Tap → Hiện/ẩn control khi chuỗi chạm không được nhận là gesture khác.
+8. Khi một gesture được nhận, khóa gesture đó đến hết chuỗi chạm; không đồng thời xử lý gesture khác.
+
+### 6.10 Nhận diện swipe ngang/dọc — Đã chốt
+
+1. Chỉ xét swipe khi thao tác bắt đầu trực tiếp trên vùng hình video, ngoài control, progress bar và vùng gesture hệ thống.
+2. Chỉ xét swipe đổi kênh hoặc chuyển Mini View khi video đang ở Fit. Khi video lớn hơn Fit, một ngón được xử lý là pan.
+3. Trong lúc hướng thao tác chưa rõ, hệ thống tiếp tục theo dõi và chưa kích hoạt tap, đổi kênh hoặc chuyển Mini View.
+4. Khi độ dịch chuyển ngang là hướng chủ đạo, hệ thống nhận swipe ngang:
+   - Chỉ đổi kênh nếu nội dung là Live Channel.
+   - Không đổi nội dung đối với Event, VOD, TS hoặc Playlist.
+5. Khi độ dịch chuyển dọc xuống là hướng chủ đạo, hệ thống nhận swipe xuống để chuyển Mini View.
+6. Vuốt dọc lên không kích hoạt chuyển Mini View và không được suy diễn thành gesture khác.
+7. Với thao tác chéo chưa thể hiện rõ hướng chủ đạo, hệ thống tiếp tục theo dõi; nếu kết thúc mà không đủ điều kiện nhận swipe thì không đổi kênh hoặc chuyển Mini View.
+8. Sau khi một hướng swipe được nhận, khóa trục đó đến hết chuỗi chạm để tránh đổi hành vi giữa chừng.
+9. Ngưỡng bắt đầu di chuyển và vận tốc dùng gesture recognizer/touch slop phù hợp của từng nền tảng; không hard-code một giá trị pixel hoặc thời gian chung cho iOS và Android.
+10. Dev có thể tinh chỉnh ngưỡng theo nền tảng nhưng không được làm thay đổi các rule về vùng bắt đầu, hướng chủ đạo, trạng thái Fit và thứ tự ưu tiên tại mục 6.9.
 
 ---
 
@@ -381,24 +416,26 @@ flowchart LR
 
 ```mermaid
 flowchart LR
- Start([" "]) --> A{"User chọn preset hay pinch?"}
+ Start([" "]) --> A{"User bấm Fit ↔ Fill, pinch hay reset?"}
  A -- Fit --> B["Hiện toàn bộ video và căn giữa"]
  A -- Fill --> C["Phủ kín player và giữ tỷ lệ"]
  A -- Pinch --> D["Zoom quanh điểm tương tác"]
+ A -- Reset --> F["Về Fit và căn giữa"]
  D --> E["Giữ mức zoom hợp lệ khi thả"]
  B --> End1([" "])
  C --> End2([" "])
  E --> End3([" "])
+ F --> End4([" "])
 ```
 
 | Field | Details |
 |---|---|
 | Actor | User, hệ thống |
-| Triggers | User chọn Fit/Fill hoặc thực hiện pinch. |
+| Triggers | User bấm control Fit ↔ Fill, thực hiện pinch hoặc chọn “Về vừa khung”. |
 | Pre-condition | Full Player; không nằm trong chuỗi gesture hệ thống. |
-| Basic Path | 1. User thực hiện thao tác.<br>2. Hệ thống scale video và giữ tỷ lệ gốc.<br>3. Hệ thống giới hạn mức zoom.<br>4. Thả tay, hệ thống giữ mức hợp lệ. |
+| Basic Path | 1. User bấm control để chuyển Fit ↔ Fill hoặc pinch để vào Custom Zoom.<br>2. Hệ thống scale video quanh điểm tương tác và giữ tỷ lệ gốc.<br>3. Hệ thống giới hạn mức zoom trong khoảng Fit–8x.<br>4. Trong lúc pinch, hiện tạm `Zoom {n}x`.<br>5. Thả tay, hệ thống giữ mức hợp lệ. |
 | Post-condition | Vị trí xem, tốc độ và play/pause không đổi. |
-| Alternative Path | User bấm “Về kích thước gốc” để trở về Fit và căn giữa. |
+| Alternative Path | User bấm “Về vừa khung” để trở về Fit và căn giữa. |
 | Exception Handling | Nếu pinch vượt 8x, hệ thống giữ video tại mức tối đa 8x. |
 
 #### GVP-UC-006 — Pan vùng hình khi đang zoom
@@ -511,7 +548,7 @@ flowchart LR
 | Final Figma | TBD — Designer cập nhật sau khi chốt interaction. |
 | Source document | `Gesture_Video_Player.pdf` — Library ID `libfile_aa2d4615b4188191b2ddcdfeb830ccf7`. |
 | Previous spec | `Gesture-Video-Player-Spec.md` v0.2 — Library ID `libfile_5acb673767ac81918a65bcea69db54c1`. |
-| Wireframe | Chưa dựng trong repo; cần dựng từ SURF-001 sau khi chốt các mục mở. |
+| Wireframe | Chưa dựng trong repo; Designer dựng từ SURF-001 và các interaction đã chốt. |
 
 ### 8.2 Information Architecture
 
@@ -525,7 +562,7 @@ Full Player
 ├── Player controls overlay
 │   ├── Progress bar
 │   ├── Next item control
-│   └── Fit / Fill / Reset display control
+│   └── Fit ↔ Fill control / Về vừa khung
 └── System-owned areas
     ├── System navigation gestures
     ├── System volume
@@ -559,7 +596,7 @@ Full Player
 │                                                  │
 │                  [↙ Vuốt xuống]                  │
 │                                                  │
-│ [Fit/Fill/Reset]      [Next item]                │
+│ [Fit ↔ Fill / Về vừa khung] [Next item]          │
 │ ───────────── Progress bar ─────────────         │
 └──────────────────────────────────────────────────┘
 
@@ -573,10 +610,10 @@ System gesture areas nằm ngoài vùng gesture video ưu tiên.
 | 1 | Tap gesture layer | enabled, blocked | Không có copy | Toggle control khi không bị gesture khác nhận. |
 | 2 | Double-tap feedback | backward, forward, boundary, unavailable | Hướng + số giây thực tế | Mỗi lần độc lập; không cộng dồn; không áp dụng Live Channel. |
 | 3 | Progress preview | dragging, unavailable | Thời gian đích; thumbnail nếu có | Không áp dụng seek trên Live Channel; không bịa thumbnail khi nguồn không hỗ trợ. |
-| 4 | Long-press 2x label | visible while pressing, hidden | `2x` | Chỉ hiện trong lúc giữ; không che phụ đề. |
-| 5 | Display mode control | Fit, Fill, Custom Zoom | `Vừa khung`, `Lấp đầy` | Có/không có nút Zoom riêng cần xác nhận. |
-| 6 | Reset display control | visible, hidden | `Về kích thước gốc` | Hiện khi lớn hơn Fit; đưa về Fit và căn giữa. |
-| 7 | Zoom feedback | pinching, hidden | Đề xuất `Zoom {n}x` | Có thể bỏ ở bản đầu. |
+| 4 | Long-press 2x label | visible while pressing, hidden | `Tốc độ 2x` | Chỉ hiện trong lúc giữ; không che phụ đề. |
+| 5 | Display mode control | Fit, Fill, Custom Zoom | `Vừa khung`, `Lấp đầy` | Một control chuyển đổi Fit ↔ Fill; không có nút Zoom riêng. |
+| 6 | Reset display control | visible, hidden | `Về vừa khung` | Hiện ở Custom Zoom; đưa về Fit, căn giữa và khôi phục gesture phù hợp. |
+| 7 | Zoom feedback | pinching, hidden | `Zoom {n}x` | Hiện tạm trong lúc pinch; ẩn sau khi kết thúc thao tác. |
 | 8 | Next item control | visible, disabled, hidden | Theo control hiện tại | Không tạo gesture mới. |
 
 **Surface behavior notes:**
@@ -590,7 +627,7 @@ System gesture areas nằm ngoài vùng gesture video ưu tiên.
 
 - Không thêm custom volume/brightness layer.
 - Không ghi đè vùng điều hướng hệ thống.
-- Phụ đề rời và phụ đề burn-in cần xử lý khác nhau như mục 6.6.4.
+- Phụ đề rời giữ nguyên trong safe area; phụ đề burn-in zoom/pan/crop cùng hình như mục 6.6.4.
 
 ---
 
@@ -601,7 +638,7 @@ System gesture areas nằm ngoài vùng gesture video ưu tiên.
 | Double-tap khi đã ở biên seek | Không hiển thị như tua thành công | Giữ vị trí hiện tại. |
 | Double-tap vượt biên | Hiện số giây thực tế đã tua | Dừng ở mốc đầu/cuối hợp lệ. |
 | Live Channel hoặc nội dung không cho tua | Không hiện feedback thành công | Giữ playback hiện tại; không thực hiện double-tap seek hoặc progress-bar seek. |
-| Long-press trên Live Channel hoặc nội dung không hỗ trợ 2x | Không hiển thị `2x` | Giữ tốc độ hiện tại. |
+| Long-press trên Live Channel hoặc nội dung không hỗ trợ 2x | Không hiển thị `Tốc độ 2x` | Giữ tốc độ hiện tại. |
 | Long-press bị hệ thống ngắt | Không cần báo lỗi | Hủy 2x và trở về 1x. |
 | Zoom đạt mức tối đa | Feedback trực quan tại biên; copy không bắt buộc | Giữ mức 8x, không scale thêm. |
 | Pan tới biên | Không cần báo lỗi | Chặn tại biên; không để lộ vùng trống. |
@@ -631,15 +668,11 @@ System gesture areas nằm ngoài vùng gesture video ưu tiên.
 
 ## 11. Open Decisions & Handoff Checklist
 
-### 11.1 Cần Product/Designer/Dev/QA xác nhận
+### 11.1 Nội dung còn cần bổ sung
 
 - [ ] Product bổ sung manual phạm vi kéo, neo góc, resize, đóng và mở lại Full Player từ Mini View tại mục 3.5.
-- [ ] Có giữ hai preset Fit/Fill hay chỉ Fit mặc định + pinch + reset.
-- [ ] Có hiển thị con số `Zoom {n}x` trong lúc pinch hay không.
-- [ ] Reset Fit khi đổi nội dung, đổi kênh, chuyển Mini View và xoay màn hình.
-- [ ] Zoom quanh điểm giữa hai ngón và behavior phụ đề rời/burn-in.
-- [ ] Thứ tự ưu tiên gesture tại mục 6.9.
-- [ ] Cách nhận diện swipe ngang/dọc đủ điều kiện, tránh nhầm với tap/pan/system gesture.
+
+Các quyết định về Fit/Fill, feedback zoom, reset Fit, điểm neo/phụ đề, thứ tự ưu tiên gesture và nhận diện swipe đã được chốt tại mục 6.6, 6.9 và 6.10.
 
 ### 11.2 Handoff checklist
 
@@ -654,9 +687,14 @@ System gesture areas nằm ngoài vùng gesture video ưu tiên.
 - [x] Không ghi đè gesture hệ thống.
 - [x] Live Channel không hỗ trợ tua hoặc tăng tốc.
 - [x] Zoom tối đa 8x so với Fit; đây là quyết định sản phẩm, không phải chuẩn Apple/Android.
+- [x] Một control chuyển đổi Fit ↔ Fill; pinch chuyển Custom Zoom; không có nút Zoom riêng.
+- [x] Hiển thị tạm `Zoom {n}x` trong lúc pinch; action reset là “Về vừa khung”.
+- [x] Reset Fit khi đổi nội dung/kênh, chuyển Mini View, mở lại Full Player và xoay màn hình.
+- [x] Đã chốt điểm neo zoom, behavior phụ đề rời/burn-in, gesture priority và nguyên tắc nhận diện swipe.
 - [x] iOS và Android triển khai đồng thời.
 - [ ] Designer dựng wireframe/prototype cho Full Player.
-- [ ] Product chốt các mục 11.1.
+- [x] Product đã chốt Fit/Fill/Zoom, reset, phụ đề, gesture priority và swipe recognition.
+- [ ] Product bổ sung phần Mini View manual tại mục 3.5.
 - [ ] Dev xác nhận khả năng theo content/player/platform.
 - [ ] QA lập test matrix theo content type, player state và gesture priority.
 - [ ] Approved By được cập nhật trước implementation handoff cuối.
