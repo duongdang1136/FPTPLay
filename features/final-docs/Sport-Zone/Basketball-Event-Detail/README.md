@@ -19,8 +19,9 @@ Hình 1 chỉ dùng tham khảo layout Event Detail không có match và không 
 ## Final artifacts
 
 ```text
-product/Basketball-Event-Detail-Web.md  # single source-of-truth Product/BA/UX/QA spec
-product/FPT_Play_man_hinh.pdf           # source UI export, read-only reference
+product/Basketball-Event-Detail-Web.md                  # functional requirements theo FPTPlay final-feature template
+product/Basketball-Event-Detail-Web-BA-Feature-Spec.md  # BA handoff theo BA-Feature-Spec-Template.md
+product/FPT_Play_man_hinh.pdf                           # source UI export, read-only reference
 ```
 
 ## Accepted decisions
