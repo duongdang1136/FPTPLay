@@ -101,6 +101,7 @@ Trận **Pre-Live** hoặc **Live** cho phép thao tác control. Trận **End** 
 | v7.0-draft | 2026-10-13 | Dylan | Drift rewrite: bỏ Notifications Sport/follow-source model; trigger On/Off tại Match Detail; default Off; tip guide lần đầu; toast; eligibility Pre-Live/Live/End; permission flow iOS/Android; lifecycle theo `profile_id + device_id + match_id`; silent-push token renewal. | Pending |
 | v7.1 | 2026-10-13 | Product decision | Chốt `Live-Activity-Change-Draft.md` làm canonical source of truth và final implementation handoff. Tên file được giữ nguyên. | Dang Duong |
 | v7.2 | 2026-10-13 | Product decision | Chuyển trigger/lifecycle sang device-scoped identity `device_id + match_id`; không gửi `profile_id`/`user_id`; switch profile và logout không end Live Activity. | Dang Duong |
+| v7.3 | 2026-10-13 | Product decision | Xóa Section 7bis và hệ ID `F-001`–`F-009` bị trùng; traceability dùng trực tiếp Use Case, Business Rules và section canonical. | Dang Duong |
 
 ---
 
@@ -523,48 +524,6 @@ flowchart LR
 | Alternative Path | Cold start vẫn route đúng. |
 | Exception Handling | Invalid/unavailable match → fallback Sport Zone match card. |
 
-### 7bis. System Functional Requirements
-
-#### F-001 — Persist trigger tuple
-
-**Description:** Upsert On/Off state uniquely by `device_id + match_id`.
-
-**Output:** One confirmed trigger state per tuple; duplicate requests are idempotent.
-
-#### F-002 — Gate trigger by match and platform state
-
-**Description:** Enable control for Pre-Live/Live, disable for End; apply platform permission/support rules before confirmed On.
-
-#### F-003 — Start Live Activity
-
-**Description:** Start/reconcile an activity for a tuple that is On when match becomes Live and token/platform checks pass.
-
-#### F-004 — Update Live Activity
-
-**Description:** Fan out match updates only to active On tuples for that `match_id`; dedupe old/duplicate events.
-
-#### F-005 — End Live Activity
-
-**Description:** End only the target tuple on user Off, Match End, cancellation/unavailability or explicit termination.
-
-#### F-006 — Renew token
-
-**Description:** Use two configured silent-push attempts before broadcast plus foreground reconciliation to renew/upload invalid or expiring token.
-
-#### F-007 — Render system surfaces
-
-**Description:** Render Dynamic Island/Lock Screen/Android ongoing notification inside OS constraints using current content-state rules.
-
-#### F-008 — Deeplink
-
-**Description:** Open Match Detail by `match_id`; fallback safely when unavailable.
-
-#### F-009 — Track analytics and performance
-
-**Description:** Capture trigger, tip, permission, token renew, start/update/end, display, tap, error and suppression metrics keyed with privacy-safe identifiers.
-
----
-
 ## 8. Screen Element Specification
 
 ### 8.1 Figma link
@@ -894,7 +853,7 @@ type LiveActivityLifecycleRequest = LiveActivityTriggerTuple & {
 | Trigger toggle | LA-UC-002/003 | Upsert On/Off; start/end when applicable. |
 | Token upsert | LA-UC-005 | Replace invalid/expired token for tuple/device. |
 | Lifecycle start/update/end | LA-UC-004 | Controls one activity tuple idempotently. |
-| Telemetry | F-009 | Records UX/reliability events. |
+| Telemetry | Section 15 — Analytics & Performance Evaluation | Records UX/reliability events. |
 
 ### 11.4 Trigger state contract
 
@@ -1197,17 +1156,14 @@ Never send raw activity token. Device identifier handling must follow privacy po
 
 ## 16. Traceability Matrix
 
-| Requirement | Business rules | API/technical | Design | QA |
+| Capability | Source requirement | API/technical | Design | QA |
 |---|---|---|---|---|
-| F-001 Trigger tuple | Identity rules | Unique tuple/upsert | Match Detail toggle | Device/match isolation; profile-switch continuity |
-| F-002 Eligibility | Match status + permission | Trigger state contract | Enabled/disabled states | Pre-Live/Live/End matrix |
-| F-003 Start | Lifecycle rules | Start exact tuple | On active/pending | Start timing/token cases |
-| F-004 Update | Display/update rules | Fan-out/filter exact tuples | OS content states | Dedupe/staleness |
-| F-005 End | Off/End rules | End exact tuple/version guard | Off/disabled | No stale recreation |
-| F-006 Token renew | Two silent-push attempts | Token contract | No foreground interruption | Attempt 1/2/failure |
-| F-007 Surfaces | OS constraints | Content state | Dynamic Island/Lock Screen/Android | Layout/update |
-| F-008 Deeplink | Routing | Payload match_id | Tap/hold | Cold start/fallback |
-| F-009 Analytics | Observability | Telemetry | N/A | Event coverage/privacy |
+| Trigger On/Off | LA-UC-002, LA-UC-003; Match Detail trigger rules | Trigger state contract; unique tuple/upsert | Match Detail toggle states | Eligibility, permission, idempotency, profile-switch continuity |
+| Lifecycle start/update/end | LA-UC-004; Identity and lifecycle rules | Lifecycle contract; exact tuple/version guard | On pending/active, Off, disabled | Start timing, dedupe, stale update, no stale recreation |
+| Token renewal | LA-UC-005; Token registration and renewal rules | Token renewal contract | Recovery state without blocking foreground | Attempt 1/2, timeout, both-fail recovery |
+| System surfaces | Section 8; Display/update rules | Content-state contract | Dynamic Island, Lock Screen, Android ongoing notification | Layout, event state, final state |
+| Deeplink | LA-UC-006; Routing rules | `match_id` route payload | Tap/hold interactions | Cold start, repeated tap, invalid route fallback |
+| Analytics and performance | Section 15; Observability rules | Telemetry contract | N/A | Event coverage, privacy, reliability metrics |
 
 ## 17. QA Acceptance Matrix
 
