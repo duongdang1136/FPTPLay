@@ -1,12 +1,13 @@
-# Live Activity — Match Detail Trigger Change Draft
+# Live Activity — Match Detail Trigger
 
 > Project: FPTPlay
 > Epic: Sport Zone
 > Feature: Live Activity
 > Audience: Product, BA, FE, BE, QA, iOS, Android
-> Status: Change draft — pending Product/Dev review
+> Status: Final implementation handoff — canonical source of truth
+> Canonical document: `product/Live-Activity-Change-Draft.md` — filename retained by Product decision on 2026-10-13
+> Supersedes: `product/Live-Activity.md` and the companion BA template document for implementation decisions
 > Base document: exact copy of `Live-Activity.md`, then semantically rewritten for the Match Detail trigger requirements dated 2026-10-13
-> Original source-of-truth: `product/Live-Activity.md` remains unchanged
 > Writing style: Caveman Vietnam — ít chữ, dễ đọc, đúng ý, không low-level
 > Last updated: 2026-10-13
 > Consolidation note (2026-08-18): single source-of-truth spec per sub-feature. Merged from legacy split contracts: `product/functional-specification.md` (system functional requirements, state model, analytics, QA), `api/technical-contract.md` (Section 11 — API & Technical Contract), `design/design-contract.md` (Section 10 — UX & Design Contract), and `product/live-activity-user-flows.md` (Section 12 — Wireframes). Source PDF: `product/LiveAct.pdf` (read-only reference).
@@ -23,17 +24,17 @@ Live Activity được bật/tắt bằng control riêng tại **Match Detail**:
 - Trạng thái mặc định là **Off**.
 - User chủ động bật/tắt cho từng trận.
 - Control độc lập với **Đặt lịch**, theo dõi đội, theo dõi mùa giải và task Notifications Sport cũ.
-- Mỗi trạng thái được quản lý theo bộ khóa `profile_id + device_id + match_id`.
+- Mỗi trạng thái được quản lý theo bộ khóa `device_id + match_id`.
 
 Trận **Pre-Live** hoặc **Live** cho phép thao tác control. Trận **End** disable control. Nếu user bật từ Pre-Live, hệ thống lưu intent và bắt đầu Live Activity khi trận đủ điều kiện phát. Nếu user bật khi trận đang Live, hệ thống bắt đầu ngay khi permission/token/device hợp lệ.
 
 - Epic: Sport Zone
 - Feature: Live Activity
-- Main user: User có profile trên Mobile App
+- Main user: User đã đăng nhập để vào Player/Match Detail trên Mobile App
 - Main platform: Mobile iOS, Mobile Android
 - Main entry point: Match Detail
 - Main surfaces: Match Detail trigger, tip guide, toast, iOS Dynamic Island, iOS Lock Screen Live Activity, Android ongoing notification
-- Main intent: Bật/tắt Live Activity cho đúng trận trên đúng profile và device
+- Main intent: Bật/tắt Live Activity cho đúng trận trên đúng device
 
 ### Success signals
 
@@ -41,10 +42,10 @@ Trận **Pre-Live** hoặc **Live** cho phép thao tác control. Trận **End** 
 |---|---|
 | Trigger clarity | User hiểu control trên Match Detail và trạng thái On/Off hiện tại. |
 | Permission correctness | iOS chỉ chuyển On sau khi Live Activities permission được grant; deny giữ Off. |
-| Lifecycle reliability | Start/update/end đúng theo `profile_id + device_id + match_id`. |
+| Lifecycle reliability | Start/update/end đúng theo `device_id + match_id`. |
 | Token reliability | Token hết hạn được renew trước giờ phát bằng khoảng 2 đợt silent push. |
 | User feedback | Mỗi thao tác On/Off có toast; lỗi có toast rõ ràng. |
-| Quality | Không duplicate activity, không update nhầm profile/device/match, không stale sau End/Off. |
+| Quality | Không duplicate activity, không update nhầm device/match, không stale sau End/Off. |
 
 ---
 
@@ -98,6 +99,8 @@ Trận **Pre-Live** hoặc **Live** cho phép thao tác control. Trận **End** 
 | v6.1 | 2026-08-18 | PD update | Thêm display states (Section 8.4): default = progress bar realtime + event icons; event mới = text ~6s rồi về default; match end = 3 stat chính so sánh 2 đội (Phạt góc, Kiểm soát bóng, Thẻ vàng). Resolve conflict còn sót: key event không trigger auto-switch selected match (F-002, 10.5, 10.7). | Pending |
 | v6.2 | 2026-08-18 | PD confirm | Chốt liên kết với Notifications & Alert: event trên Live Activity không config per-event; toggle Live feed = off → dừng update, giữ trạng thái cuối, không tự remove; không đồng bộ 2 chiều với OS Settings. | Pending |
 | v7.0-draft | 2026-10-13 | Dylan | Drift rewrite: bỏ Notifications Sport/follow-source model; trigger On/Off tại Match Detail; default Off; tip guide lần đầu; toast; eligibility Pre-Live/Live/End; permission flow iOS/Android; lifecycle theo `profile_id + device_id + match_id`; silent-push token renewal. | Pending |
+| v7.1 | 2026-10-13 | Product decision | Chốt `Live-Activity-Change-Draft.md` làm canonical source of truth và final implementation handoff. Tên file được giữ nguyên. | Dang Duong |
+| v7.2 | 2026-10-13 | Product decision | Chuyển trigger/lifecycle sang device-scoped identity `device_id + match_id`; không gửi `profile_id`/`user_id`; switch profile và logout không end Live Activity. | Dang Duong |
 
 ---
 
@@ -105,7 +108,7 @@ Trận **Pre-Live** hoặc **Live** cho phép thao tác control. Trận **End** 
 
 ### 3.1 Goal
 
-User mở Match Detail, chủ động bật/tắt Live Activity cho đúng trận. Hệ thống lưu trạng thái độc lập theo profile, device và match; bắt đầu/cập nhật/kết thúc activity đúng lifecycle.
+User đã đăng nhập để vào Player/Match Detail, sau đó chủ động bật/tắt Live Activity cho đúng trận. Hệ thống lưu trạng thái theo device và match; bắt đầu/cập nhật/kết thúc activity đúng lifecycle.
 
 ### 3.2 Platform scope
 
@@ -124,17 +127,18 @@ User mở Match Detail, chủ động bật/tắt Live Activity cho đúng trậ
 - iOS gọi surface là **Live Activity**.
 - Android dùng **ongoing notification** trong scope hiện tại.
 - Cùng một product intent nhưng permission và OS surface khác nhau.
-- Trigger state trong app là product state theo `profile_id + device_id + match_id`; OS surface có thể không hiện nếu device/permission/token không hợp lệ.
+- Trigger state trong app là product state theo `device_id + match_id`; OS surface có thể không hiện nếu device/permission/token không hợp lệ.
 - Task Notifications Sport cũ không còn là dependency hoặc trigger source.
 
 ### 3.4 User scope
 
 | User type | Scope | Notes |
 |---|---|---|
-| User có `profile_id` hợp lệ | In scope | Trigger/lifecycle được scope theo profile hiện tại. |
-| Guest/chưa có profile | In scope với login gate | Tap On mở flow đăng nhập/chọn profile. Sau khi hoàn tất, app quay lại đúng Match Detail nhưng giữ trigger Off; user chủ động tap On lại. Không tạo state thiếu `profile_id`. |
-| Nhiều profile trên cùng device | In scope | Mỗi profile có trạng thái riêng cho cùng `device_id + match_id`. |
-| Cùng profile trên nhiều device | In scope | Mỗi device có trạng thái/token/activity riêng. |
+| User đã đăng nhập | In scope | Login là điều kiện để vào Player/Match Detail; trigger không gửi hoặc dùng `profile_id`/`user_id`. |
+| Guest/chưa đăng nhập | Ngoài trigger flow | App yêu cầu login trước khi cho vào Player/Match Detail; không xử lý login tại trigger. |
+| Đổi profile trên cùng device | In scope | Dùng chung trigger/activity theo `device_id + match_id`; không tạo activity mới và không reset state. |
+| Logout sau khi đã bật | In scope | Live Activity tiếp tục hiển thị và nhận update; logout không tự Off/end activity. |
+| Cùng user/profile trên nhiều device | In scope | Mỗi device có trạng thái/token/activity riêng. |
 | Admin/CMS user | Out of scope | Không thuộc feature user-facing. |
 
 ### 3.5 In scope
@@ -145,7 +149,7 @@ User mở Match Detail, chủ động bật/tắt Live Activity cho đúng trậ
 - Toast sau mỗi On/Off thành công và khi thao tác lỗi.
 - Enable control ở Pre-Live và Live; disable khi End.
 - Permission behavior riêng cho iOS/Android.
-- Start/update/end theo `profile_id + device_id + match_id`.
+- Start/update/end theo `device_id + match_id`.
 - Token registration, expiry detection và renew bằng khoảng 2 silent pushes trước giờ phát.
 - Dynamic Island, Lock Screen Live Activity và Android ongoing notification.
 - Deeplink về đúng Match Detail.
@@ -173,9 +177,9 @@ User mở Match Detail, chủ động bật/tắt Live Activity cho đúng trậ
 | ID | Requirement | Notes |
 |---|---|---|
 | LA-NFR-001 | Update speed | Score/status mới phải được gửi tới activity active trong thời gian hợp lý; lỗi giữ trạng thái tốt gần nhất. |
-| LA-NFR-002 | Idempotency | Start/update/end và toggle phải idempotent theo `profile_id + device_id + match_id` và `event_id` khi có. |
-| LA-NFR-003 | Isolation | Không update/end activity của profile, device hoặc match khác. |
-| LA-NFR-004 | Security & privacy | Không hiển thị profile/device/token trên Lock Screen; token lưu an toàn. |
+| LA-NFR-002 | Idempotency | Start/update/end và toggle phải idempotent theo `device_id + match_id` và `event_id` khi có. |
+| LA-NFR-003 | Isolation | Không update/end activity của device hoặc match khác. |
+| LA-NFR-004 | Security & privacy | Không hiển thị device/token trên Lock Screen; token lưu an toàn. |
 | LA-NFR-005 | Observability | Log trigger, permission, register token, renew, start, update, end, deeplink và lỗi. |
 | LA-NFR-006 | Resilience | Silent push/token renew fail không làm đổi trigger On thành Off; hệ thống retry/đánh dấu suppressed có reason. |
 
@@ -184,7 +188,7 @@ User mở Match Detail, chủ động bật/tắt Live Activity cho đúng trậ
 | Term | Meaning |
 |---|---|
 | Live Activity trigger | Control On/Off tại Match Detail cho một match cụ thể. |
-| Trigger tuple | Bộ khóa duy nhất `profile_id + device_id + match_id`. |
+| Trigger tuple | Bộ khóa duy nhất `device_id + match_id`. |
 | Trigger Off | Không start/update Live Activity cho tuple; activity active phải được end. |
 | Trigger On | User đã bật intent cho tuple và permission/platform checks đạt rule tương ứng. |
 | Pre-Live | Trận chưa bắt đầu nhưng cho phép user bật trigger trước. |
@@ -274,17 +278,20 @@ User mở Match Detail, chủ động bật/tắt Live Activity cho đúng trậ
 
 #### Identity and lifecycle rules
 
-1. Identity duy nhất của trigger/activity là `profile_id + device_id + match_id`.
-2. Cùng match nhưng khác profile hoặc device là state/activity độc lập.
-3. On request phải upsert đúng tuple; không tạo duplicate active record cho cùng tuple.
-4. Off request chỉ end/suppress activity của đúng tuple.
-5. Start/update/end phải idempotent theo tuple và `event_id`/idempotency key.
-6. Pre-Live + On: lưu intent; chưa hiển thị score surface cho tới khi match Live/eligible.
-7. Live + On: start hoặc reconcile activity ngay nếu token/permission/device hợp lệ.
-8. Live data update: chỉ gửi tới các tuple On/active của `match_id` đó.
-9. Match End: gửi final state theo rule hiện hành rồi end activity; trigger disabled.
-10. User Off trước End: end activity ngay; không nhận update tiếp cho tuple.
-11. Không có priority selection hoặc auto-switch sang match khác trong model mới.
+1. Identity duy nhất của trigger/activity là `device_id + match_id`.
+2. Cùng match trên hai device là state/activity độc lập; các profile trên cùng device dùng chung state/activity.
+3. `profile_id` và `user_id` không được gửi trong trigger/token/lifecycle payload và không thuộc dedup key.
+4. On request phải upsert đúng tuple; không tạo duplicate active record cho cùng tuple.
+5. Off request chỉ end/suppress activity của đúng tuple.
+6. Start/update/end phải idempotent theo tuple và `event_id`/idempotency key.
+7. Switch profile không đổi trigger, không end và không tạo activity mới.
+8. Logout không đổi trigger và không end Live Activity đang hiển thị.
+9. Pre-Live + On: lưu intent; chưa hiển thị score surface cho tới khi match Live/eligible.
+10. Live + On: start hoặc reconcile activity ngay nếu token/permission/device hợp lệ.
+11. Live data update: chỉ gửi tới các tuple On/active của `match_id` đó.
+12. Match End: gửi final state theo rule hiện hành rồi end activity; trigger disabled.
+13. User Off trước End: end activity ngay; không nhận update tiếp cho tuple.
+14. Không có priority selection hoặc auto-switch sang match khác trong model mới.
 
 #### Trigger interaction matrix
 
@@ -308,7 +315,7 @@ User mở Match Detail, chủ động bật/tắt Live Activity cho đúng trậ
 1. Activity token được scope theo device/activity và liên kết với tuple.
 2. Token expire/invalid không tự đổi trigger On thành Off.
 3. Trước giờ phát sóng, server gửi khoảng **2 đợt silent push** xuống mobile để app renew token.
-4. Mỗi silent push yêu cầu app lấy token mới (nếu có) và upload server kèm `profile_id`, `device_id`, `match_id`, token version/time.
+4. Mỗi silent push yêu cầu app lấy token mới (nếu có) và upload server kèm `device_id`, `match_id`, token version/time; không gửi `profile_id` hoặc `user_id`.
 5. Khi server nhận token mới hợp lệ, các đợt renew còn lại có thể no-op hoặc dùng làm fallback; request phải idempotent.
 6. Nếu cả hai đợt fail, giữ trigger On nhưng mark activity `suppressed/token_unavailable`; log và retry theo policy.
 7. Lịch mặc định: đợt 1 tại **T-30 phút**, đợt 2 tại **T-5 phút** so với giờ phát hiện hành. Khi trận Postponed/đổi giờ, hủy schedule cũ và lập lại theo giờ mới.
@@ -335,7 +342,7 @@ User mở Match Detail, chủ động bật/tắt Live Activity cho đúng trậ
 
 #### System / API rules
 
-- Start/update/end idempotent theo `profile_id + device_id + match_id + event_id`.
+- Start/update/end idempotent theo `device_id + match_id + event_id`.
 - Token và device identifiers là dữ liệu nhạy cảm; lưu an toàn và cleanup token invalid.
 - Product owns template/data definition; engineering implement trong OS constraints.
 - Analytics/performance instrumentation bắt buộc cho trigger, permission, token renew, lifecycle và deeplink.
@@ -399,7 +406,7 @@ flowchart LR
 |---|---|
 | Actor | User, hệ thống |
 | Triggers | User tap trigger đang Off tại Match Detail. |
-| Pre-condition | Match Pre-Live hoặc Live; control enabled; có `profile_id`, `device_id`, `match_id`. |
+| Pre-condition | User đã đăng nhập và đã vào Player/Match Detail; match Pre-Live hoặc Live; control enabled; có `device_id`, `match_id`. |
 | Basic Path | 1. Check status.<br>2. iOS check Live Activities permission/support; Android dùng app-level notification permission state.<br>3. Permission hợp lệ → upsert tuple On.<br>4. Pre-Live: lưu intent.<br>5. Live: start/reconcile activity.<br>6. UI chuyển On và hiện toast. |
 | Post-condition | Tuple On; lifecycle tương ứng được thiết lập. |
 | Alternative Path | Authorization hợp lệ nhưng token tạm unavailable: intent vẫn On và UI hiển thị On-pending; hệ thống chạy renew/recovery. Chỉ chuyển `suppressed/token_unavailable` khi hết recovery window. |
@@ -433,7 +440,7 @@ flowchart LR
 
 ### LA-US-002 — Hệ thống duy trì lifecycle đúng tuple
 
-#### LA-UC-004 — Start/update/end theo `profile_id + device_id + match_id`
+#### LA-UC-004 — Start/update/end theo `device_id + match_id`
 
 **Activity Flows:**
 
@@ -456,7 +463,7 @@ flowchart LR
 | Pre-condition | Tuple và lifecycle event hợp lệ. |
 | Basic Path | Resolve đúng tuple → kiểm tra On/active → start/update/end → persist result/idempotency. |
 | Post-condition | Không ảnh hưởng tuple khác. |
-| Alternative Path | Cùng match nhiều profile/device: xử lý độc lập từng tuple. |
+| Alternative Path | Cùng match trên nhiều device: xử lý độc lập từng tuple. Switch profile hoặc logout trên cùng device không tạo tuple mới và không end activity. |
 | Exception Handling | Event trùng/cũ → no-op idempotent; token invalid → suppressed + renew path; end fail → retry. |
 
 #### LA-UC-005 — Renew Activity token trước giờ phát
@@ -520,7 +527,7 @@ flowchart LR
 
 #### F-001 — Persist trigger tuple
 
-**Description:** Upsert On/Off state uniquely by `profile_id + device_id + match_id`.
+**Description:** Upsert On/Off state uniquely by `device_id + match_id`.
 
 **Output:** One confirmed trigger state per tuple; duplicate requests are idempotent.
 
@@ -699,7 +706,7 @@ Rules:
 | LA-ERR-013 | End fail | Retry end đúng tuple; alert operational nếu vượt ngưỡng. | Không cần message ngoài app. |
 | LA-ERR-014 | Deeplink thiếu/corrupted `match_id` | Fallback Sport Zone match card. | `Không mở được trận đấu. Đã chuyển đến Sport Zone.` |
 | LA-ERR-015 | Match unavailable | Fallback. | `Không tìm thấy trận đấu này.` |
-| LA-ERR-016 | Không có `profile_id` hợp lệ | Mở login/chọn profile; quay lại đúng Match Detail với trigger Off, không auto-On. | `Vui lòng đăng nhập hoặc chọn hồ sơ để bật Hoạt động trực tiếp.` |
+| LA-ERR-016 | Session hết hạn khi đang ở Player/Match Detail | Trigger request không thực hiện; app dùng login/session flow hiện hành. Live Activity đã bật trên device không tự end chỉ vì logout/session hết hạn. | Dùng message/session flow hiện hành của app. |
 | LA-ERR-017 | Tip dismissed flag save fail | Đóng guide trong session; retry persist sau. | Không cần message. |
 
 ---
@@ -769,7 +776,7 @@ Cho user bật/tắt Live Activity ngay tại Match Detail, dễ hiểu nhưng k
 - Expanded state follows existing score/event/final-state tables in Section 8.
 - Tap routes by `match_id`; hold Dynamic Island expands.
 - No app-controlled multi-match priority/switch UI.
-- Lock-screen content must not expose private profile/device/token data.
+- Lock-screen content must not expose private device/token data.
 
 ### 10.8 Accessibility
 
@@ -803,8 +810,10 @@ Cho user bật/tắt Live Activity ngay tại Match Detail, dễ hiểu nhưng k
 
 - Internal endpoints require service-to-service auth.
 - Mobile trigger action reaches the public/mobile engagement API owned by implementation; internal orchestration consumes the confirmed state.
-- Canonical identity: `profile_id + device_id + match_id`.
-- Do not use `user_id` alone because multiple profiles may share an account/device.
+- Canonical identity: `device_id + match_id`.
+- Player/Match Detail yêu cầu login trước khi user vào màn, nhưng trigger/token/lifecycle payload không gửi `profile_id` hoặc `user_id`.
+- Server resolve và authorize `device_id` từ device/app-installation registration hiện hành; không tin một device identifier tùy ý không được bind.
+- Switch profile hoặc logout không đổi device-scoped trigger và không tự end Live Activity.
 
 ### 11.2 Core DTOs / Types
 
@@ -825,7 +834,6 @@ type LiveActivityLifecycleState =
   | 'failed';
 
 type LiveActivityTriggerTuple = {
-  profile_id: string;
   device_id: string;
   match_id: string;
 };
@@ -890,7 +898,7 @@ type LiveActivityLifecycleRequest = LiveActivityTriggerTuple & {
 
 ### 11.4 Trigger state contract
 
-- Unique constraint: `(profile_id, device_id, match_id)`.
+- Unique constraint: `(device_id, match_id)`.
 - Default read when no record exists: Off.
 - On accepted only when match is Pre-Live/Live and platform permission rule passes.
 - Off is valid for Pre-Live/Live and must clear pending intent/end active activity.
@@ -908,7 +916,7 @@ type LiveActivityLifecycleRequest = LiveActivityTriggerTuple & {
 ### 11.6 Token renewal contract
 
 1. Server schedules silent-push attempt 1 at **T-30 minutes** and attempt 2 at **T-5 minutes** from the current broadcast time.
-2. Payload identifies renew request without exposing token and includes correlation/event id; app resolves current profile/device/match context securely.
+2. Payload identifies renew request without exposing token and includes correlation/event id; app resolves current device/match context securely. Payload không chứa `profile_id` hoặc `user_id`.
 3. App requests/observes latest ActivityKit token and uploads via token-upsert capability.
 4. Token upsert is idempotent; newer `renewed_at`/version wins.
 5. Server waits up to **120 seconds** after each attempt for a newer valid token. Successful renew cancels/no-ops the remaining attempt where possible.
@@ -930,7 +938,7 @@ type LiveActivityLifecycleRequest = LiveActivityTriggerTuple & {
 | HTTP | `error_code` | Meaning | Client behavior |
 |---:|---|---|---|
 | 400 | `VALIDATION_ERROR` | Missing/invalid tuple/action. | Keep previous state; toast error. |
-| 401 | `UNAUTHORIZED` | Invalid auth/session. | Login/profile flow. |
+| 401 | `UNAUTHORIZED` | Invalid auth/session khi gọi từ Player/Match Detail. | Dùng login/session flow hiện hành; không tự end Live Activity đã bật trên device. |
 | 403 | `PERMISSION_DENIED` | Platform permission denied. | Keep Off; permission toast. |
 | 404 | `MATCH_NOT_FOUND` | Match unavailable. | Disable/fallback. |
 | 409 | `DUPLICATE_EVENT` | Event already processed. | Treat idempotent success. |
@@ -956,7 +964,7 @@ Race rules:
 - Off wins over in-flight update/start with older version/time.
 - End match wins over On request submitted after End state.
 - New token wins over old/expired token.
-- Profile switch reloads state for new `profile_id`; do not reuse previous profile state.
+- Switch profile reloads the same device-scoped state for `device_id + match_id`; logout does not clear or end that state.
 
 ### 11.10 Observability / audit
 
@@ -979,8 +987,8 @@ Track privacy-safe hashes/ids for:
 | iOS Off→On with deny | Remains Off. |
 | Live Off→On with valid token | Starts one activity. |
 | On→Off while Live | Ends only exact tuple. |
-| Same match, two profiles | Independent states. |
-| Same profile, two devices | Independent states/tokens. |
+| Switch profile on same device | Same trigger/activity state; no duplicate and no end. |
+| Same user/profile on two devices | Independent states/tokens by device. |
 | Match End | Final content is shown up to 15 minutes; trigger disabled and activity ended. |
 | Cancelled | Trigger disabled/Off; activity ends immediately. |
 | Postponed | Trigger remains enabled; On intent is retained; old renew schedule is replaced. |
@@ -994,7 +1002,7 @@ Track privacy-safe hashes/ids for:
 ### 11.12 Dependencies
 
 - Match Detail mobile UI.
-- Profile/session identity service.
+- Existing login/session gate for Player/Match Detail navigation.
 - Device registry and permission state.
 - Match status/event feed.
 - iOS ActivityKit/APNS Live Activity path.
@@ -1118,13 +1126,13 @@ On/suppressed → On/starting     Recovery succeeds while still eligible
 - Default state is Off.
 - Trigger is enabled Pre-Live/Live and disabled End.
 - iOS deny keeps trigger Off.
-- Identity/lifecycle is `profile_id + device_id + match_id`.
+- Identity/lifecycle is `device_id + match_id`; trigger/token/lifecycle payload does not send `profile_id` or `user_id`.
 - Notifications Sport/follow-source/priority-switch model is retired for this feature.
 - Token renew uses approximately two silent-push attempts before broadcast plus foreground reconciliation.
 
 ### Recommended decisions adopted in this draft
 
-1. Missing `profile_id`: open login/profile selection, return to the same Match Detail with trigger Off; never auto-On.
+1. Login boundary: mobile yêu cầu login trước khi vào Player/Match Detail; trigger không xử lý login và không gửi `profile_id`/`user_id`.
 2. Android permission denied: keep Off and guide to Settings; do not persist On-suppressed.
 3. iOS authorization: read `ActivityAuthorizationInfo().areActivitiesEnabled`; there is no app-owned runtime permission prompt in this flow. Observe/recheck changes from Settings.
 4. UI/copy: use a dedicated scoreboard/pulse icon, not bell/calendar; use the tip/toast copy in Sections 9–10.
@@ -1138,7 +1146,7 @@ On/suppressed → On/starting     Recovery succeeds while still eligible
 
 - Silent push is best-effort; both attempts may fail if app/device cannot receive background push.
 - Permission model differs between iOS Live Activities and Android notification permission.
-- Profile switch or stale cache can display wrong trigger state unless tuple reload is strict.
+- Stale device cache can display wrong trigger state unless tuple reload is strict; switch profile must reuse the same device-scoped state.
 - Race between Off and in-flight update/start can recreate stale activity without version/idempotency guards.
 - OS may throttle update cadence.
 
@@ -1163,7 +1171,7 @@ On/suppressed → On/starting     Recovery succeeds while still eligible
 | `live_activity_tapped` | Surface tapped | `surface`, `match_id`, `deeplink_result` |
 | `live_activity_error` | Lifecycle failure | `error_code`, `retry_count`, `token_status` |
 
-Never send raw activity token. Hash/profile/device handling must follow privacy policy.
+Never send raw activity token. Device identifier handling must follow privacy policy; analytics không gửi `profile_id` hoặc `user_id` cho trigger lifecycle.
 
 ### 15.2 Performance metrics
 
@@ -1176,7 +1184,7 @@ Never send raw activity token. Hash/profile/device handling must follow privacy 
 | End correctness | exact tuple ended on Off/End; no stale recreation |
 | Token renew success | successful renew / scheduled tuple; by attempt 1/2 |
 | Token unavailable rate | On tuples suppressed because token unavailable |
-| Tuple isolation defects | cross-profile/device/match update incidents — target 0 |
+| Tuple isolation defects | cross-device/match update incidents — target 0 |
 | Deeplink success | successful Match Detail opens / taps |
 
 ### 15.3 Evaluation approach
@@ -1191,7 +1199,7 @@ Never send raw activity token. Hash/profile/device handling must follow privacy 
 
 | Requirement | Business rules | API/technical | Design | QA |
 |---|---|---|---|---|
-| F-001 Trigger tuple | Identity rules | Unique tuple/upsert | Match Detail toggle | Multi-profile/device isolation |
+| F-001 Trigger tuple | Identity rules | Unique tuple/upsert | Match Detail toggle | Device/match isolation; profile-switch continuity |
 | F-002 Eligibility | Match status + permission | Trigger state contract | Enabled/disabled states | Pre-Live/Live/End matrix |
 | F-003 Start | Lifecycle rules | Start exact tuple | On active/pending | Start timing/token cases |
 | F-004 Update | Display/update rules | Fan-out/filter exact tuples | OS content states | Dedupe/staleness |
@@ -1213,16 +1221,16 @@ Never send raw activity token. Hash/profile/device handling must follow privacy 
 | iOS permission deny | Remains Off; permission toast. |
 | Android permission previously granted | Toggle uses current state; no repeated prompt. |
 | Android permission denied | Remains Off; Settings guidance; no prompt spam. |
-| Guest/no selected profile taps On | Login/profile selection opens; returns to same match Off; user taps On again. |
+| Guest opens Player/Match Detail | Existing mobile login gate runs before entering the screen; trigger flow is not reached until login succeeds. |
 | Cancelled | Trigger disabled/Off; activity immediately ended. |
 | Postponed | On intent retained; no active surface; renew schedule recalculated. |
 | Unavailable | Trigger disabled/Off until eligibility returns. |
 | On→Off Pre-Live | Intent cleared; Off toast. |
 | On→Off Live | Exact tuple ends; Off toast. |
 | Match End | Final state/end; trigger disabled. |
-| Same profile+device+match duplicate On | Idempotent; one state/activity. |
-| Same match, two profiles | Independent trigger/lifecycle. |
-| Same profile, two devices | Independent trigger/token/activity. |
+| Same device+match duplicate On | Idempotent; one state/activity. |
+| Switch profile on same device | Trigger/activity remains unchanged; no duplicate and no end. |
+| Same user/profile on two devices | Independent trigger/token/activity by device. |
 | Stale update after Off | Ignored; activity not recreated. |
 | Token expire before broadcast | Silent push renew flow runs. |
 | Renew succeeds attempt 1 | Token replaced; attempt 2 no-op/cancel. |
@@ -1242,18 +1250,18 @@ Never send raw activity token. Hash/profile/device handling must follow privacy 
 - iOS confirms ActivityKit authorization check, token lifecycle and silent-push feasibility.
 - Android confirms first-app-entry notification permission flow and denied-state behavior.
 - BE confirms tuple uniqueness, state versioning/idempotency and token renew scheduler.
-- FE confirms profile switching/cache reconciliation and loading/error rollback.
-- QA covers tip, toast, permission, status matrix, tuple matrix, races, renew attempts, lifecycle and deeplink.
-- Security reviews token storage/log redaction and profile/device isolation.
+- FE confirms device-scoped cache reconciliation, profile-switch continuity, logout continuity and loading/error rollback.
+- QA covers tip, toast, permission, status matrix, device/match tuple matrix, profile switch/logout continuity, races, renew attempts, lifecycle and deeplink.
+- Security reviews token storage/log redaction, authenticated device registration and device/match isolation.
 
 ## 19. Security / Privacy
 
-- Lock-screen content must not expose private profile/device data.
+- Lock-screen content must not expose private device data.
 - Raw activity tokens must never appear in analytics/logs.
 - Token storage must be encrypted/protected and invalid tokens cleaned up.
-- Internal endpoints require service-to-service auth; mobile endpoints require authenticated/authorized profile context as applicable.
-- Every operation validates ownership of `profile_id + device_id` before reading/updating the tuple.
-- Profile switch/logout must prevent the next profile from inheriting previous profile trigger state.
+- Internal endpoints require service-to-service auth; mobile trigger calls originate from the existing authenticated Player/Match Detail flow.
+- Every operation resolves and validates the registered device/app installation before reading/updating the `device_id + match_id` tuple; client-supplied `profile_id`/`user_id` is not required.
+- Profile switch and logout intentionally preserve the device-scoped trigger and any active Live Activity.
 - Silent push payload must contain only the minimum correlation data required and no sensitive token.
 
 ---

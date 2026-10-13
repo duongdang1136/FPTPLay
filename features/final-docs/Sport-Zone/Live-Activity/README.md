@@ -4,23 +4,73 @@
 > Large feature: Sport Zone
 > Sub-feature: Live Activity
 > Stage: Final implementation handoff
-> Related feature: `features/final-docs/Sport-Zone/Notifications-Alert/`
-> Last updated: 2026-08-18
+> Canonical source of truth: `product/Live-Activity-Change-Draft.md`
+> Last updated: 2026-10-13
 
 ## Purpose
 
-This folder is the implementation source of truth for Sport Zone Live Activity after promotion from lightweight Research + BA docs.
+Thư mục này chứa tài liệu handoff cho Live Activity của Sport Zone.
+
+Theo quyết định Product ngày 2026-10-13, file `Live-Activity-Change-Draft.md` là tài liệu chính thức để Product, BA, Designer, FE, BE, QA, iOS và Android dùng khi triển khai hoặc kiểm thử feature.
+
+Tên file có hậu tố `Change-Draft` được giữ nguyên; trạng thái nội dung bên trong đã được chốt là **Final implementation handoff — canonical source of truth**.
 
 ## Artifacts
 
 ```text
-product/Live-Activity.md   # single source-of-truth spec (product + UX + API/integration + state + QA)
-product/LiveAct.pdf        # source doc from PD (read-only reference)
+product/Live-Activity-Change-Draft.md
+  # Canonical source of truth: product + UX + lifecycle + API/technical + analytics + QA
+
+product/Live-Activity-Match-Detail-Trigger-BA-Feature-Spec.md
+  # Companion/reference doc theo BA-Feature-Spec-Template; không thay thế canonical spec
+
+product/Live-Activity.md
+  # Historical baseline trước thay đổi trigger Match Detail; không dùng để implement requirement mới
+
+product/LiveAct.pdf
+  # Source document từ PD; read-only reference
 ```
 
-Legacy split contracts (`product/functional-specification.md`, `api/technical-contract.md`, `design/design-contract.md`) and `product/live-activity-user-flows.md` were consolidated into `product/Live-Activity.md` on 2026-08-18 and removed. Consolidation notes (conflicts resolved, merged section mapping) are recorded inside the spec (Section 14 and References).
+## Source-of-truth rule
+
+Nếu các tài liệu có nội dung khác nhau, ưu tiên theo thứ tự:
+
+1. `product/Live-Activity-Change-Draft.md`
+2. Quyết định Product mới hơn được ghi nhận sau ngày 2026-10-13
+3. `product/Live-Activity-Match-Detail-Trigger-BA-Feature-Spec.md` — chỉ dùng để tham khảo wording/test scenario
+4. `product/Live-Activity.md` và `product/LiveAct.pdf` — historical/reference only
+
+Không lấy requirement follow-source, priority selection hoặc Notifications Sport trong tài liệu cũ để override canonical spec.
+
+## Final implementation scope
+
+- User bật/tắt Live Activity bằng trigger tại Match Detail.
+- Trigger nằm bên trái icon Đặt lịch và độc lập với Đặt lịch.
+- Tuple chưa có state hiển thị Off.
+- Trigger enabled ở Pre-Live và Live; disabled ở End.
+- Tip guide hiển thị một lần theo installation flag.
+- Mỗi thao tác On/Off có toast; thao tác lỗi giữ state đã xác nhận trước đó.
+- iOS kiểm tra `ActivityAuthorizationInfo().areActivitiesEnabled`.
+- Android sử dụng notification permission state từ app-level permission flow.
+- Start, update và end độc lập theo `device_id + match_id`; trigger/token/lifecycle payload không gửi `profile_id` hoặc `user_id`.
+- Server gửi silent push renew token ở T-30 và T-5; mỗi đợt chờ tối đa 120 giây.
+- Match End giữ final state tối đa 15 phút; User Off, Cancelled và Unavailable dismiss ngay.
+- OS surfaces gồm iOS Dynamic Island, iOS Lock Screen Live Activity và Android ongoing notification.
+- Mobile yêu cầu login trước khi vào Player/Match Detail; switch profile hoặc logout không đổi trigger và không end Live Activity trên device.
+
+## Superseded behavior
+
+Các hành vi sau không còn là requirement triển khai:
+
+- Dùng Đặt lịch để bật Live Activity.
+- Dùng theo dõi đội hoặc theo dõi mùa giải để bật Live Activity.
+- Dùng Notifications Sport hoặc per-event notification setting làm trigger/dependency.
+- Chọn match ưu tiên hoặc tự switch giữa nhiều followed matches.
+- Bắt đầu lifecycle dựa trên follow subscription cũ.
 
 ## Source lightweight docs
+
+Các tài liệu dưới đây là nguồn discovery/historical reference, không override canonical spec:
 
 ```text
 features/lightweight/Sport-Zone/Live-Activity/research/live-activity-research.md
@@ -30,40 +80,3 @@ features/lightweight/Sport-Zone/Live-Activity/product/open-questions-live-activi
 features/lightweight/Sport-Zone/Live-Activity/design/wireframe-suggestion-live-activity.md
 features/lightweight/Sport-Zone/Live-Activity/api/API-live-activity.md
 ```
-
-## Implementation scope
-
-- Live Activity is treated as a **Notification + Widget** hybrid: APN/APNS-style remote updates feed constrained system UI surfaces.
-- iOS Live Activity for Sport Zone matches followed by the user via 3 sources: Đặt Lịch (per-match), Theo dõi Đội bóng (team), Theo dõi Mùa giải (season).
-- Followed-match based eligibility: user may follow one match or multiple matches from any source combination.
-- **Option A MVP:** Dynamic Island shows one visible selected match at a time; Lock Screen may show multiple followed live match activities if OS allows.
-- Dynamic Island compact and expanded states on iOS devices that support Dynamic Island.
-- Lock-screen Live Activity state; OS may show one or multiple followed live match activities and handles expansion/presentation behavior where applicable.
-- Android ongoing notification (Android 8.0+); Android Dynamic Island / Live Updates / Samsung Now Bar-like is out of scope for this phase.
-- Product-defined template and data fields within OS UI constraints.
-- Live Activity update lifecycle throughout the selected followed match.
-- Deeplink behavior from compact/expanded Dynamic Island and lock screen into app.
-- Safe fallback routing (Sport Zone match card) if exact live target is unavailable.
-
-## Explicitly out of scope
-
-- Active Match Detail/Player screen as a mandatory start gate.
-- App-controlled multi-match expanded list, `+N` aggregation, or override of OS Lock Screen multi-activity presentation.
-- App-controlled override of OS expansion behavior on lock screen/Dynamic Island.
-- Redefining normal push notification behavior/copy.
-- Android Dynamic Island / persistent widget equivalent for this phase.
-- Payment/entitlement changes.
-- Full in-app match detail implementation.
-- Admin campaign/CMS tooling.
-
-## Final decision summary — Followed-match Option A
-
-- User explicit follow action (any of 3 sources) is the Live Activity intent source.
-- Match Detail/Player screen presence is optional context only; it must not be required for start eligibility.
-- Live Activity triggers when a followed match becomes live, not at the moment of follow.
-- Dynamic Island default selection: first followed match. If the first followed match ends or is unfollowed, switch to the next followed match that is currently live/eligible. No auto-switch on key events.
-- If the user follows multiple live matches, Dynamic Island shows only one priority match for MVP; Lock Screen may show multiple Live Activities if OS allows.
-- Tap Dynamic Island opens selected match deeplink; tap a Lock Screen card opens that card's matchId. Fallback is Sport Zone match card when deeplink data is missing/invalid.
-- Live Activity ends when the selected match ends/cancels/unavailable or user unfollows all eligible matches.
-- APN/APNS feasibility must be confirmed by iOS/backend: APN/APNS is the iOS provider path for remote Live Activity updates. Android uses ongoing notification, not APN/APNS.
-- Analytics/performance must measure update delivery, UI exposure, tap-through, staleness, priority switch quality, and device/OEM coverage.
