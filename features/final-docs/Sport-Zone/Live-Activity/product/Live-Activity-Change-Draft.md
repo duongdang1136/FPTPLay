@@ -330,7 +330,7 @@ User đã đăng nhập để vào Player/Match Detail, sau đó chủ động b
 2. Tap Dynamic Island/Lock Screen/Android ongoing notification mở Match Detail của `match_id` đó.
 3. Hold Dynamic Island mở expanded view, không deeplink ngay.
 4. App cold start vẫn route đúng Match Detail.
-5. `match_id` thiếu/corrupted/unavailable → fallback Sport Zone match card.
+5. `match_id` thiếu/corrupted/unavailable → fallback FPT Play home.
 6. Không stack trùng Match Detail khi user tap lặp.
 
 #### Display/update rules
@@ -508,7 +508,7 @@ flowchart LR
  A -- "Tap surface" --> C["Đọc match_id"]
  C --> D{"Match hợp lệ?"}
  D -- "Có" --> E["Mở Match Detail"]
- D -- "Không" --> F["Fallback Sport Zone"]
+ D -- "Không" --> F["Fallback FPT Play home"]
  B --> End1([" "])
  E --> End2([" "])
  F --> End3([" "])
@@ -522,7 +522,7 @@ flowchart LR
 | Basic Path | Hold → expand; tap → mở Match Detail theo `match_id`. |
 | Post-condition | User thấy expanded view hoặc đúng Match Detail. |
 | Alternative Path | Cold start vẫn route đúng. |
-| Exception Handling | Invalid/unavailable match → fallback Sport Zone match card. |
+| Exception Handling | Invalid/unavailable match → fallback FPTPlay home. |
 
 ## 8. Screen Element Specification
 
@@ -663,7 +663,7 @@ Rules:
 | LA-ERR-011 | Event trùng/cũ | Bỏ qua. | Không cần message. |
 | LA-ERR-012 | Update fail | Retry; giữ trạng thái tốt gần nhất. | Không cần message ngoài app. |
 | LA-ERR-013 | End fail | Retry end đúng tuple; alert operational nếu vượt ngưỡng. | Không cần message ngoài app. |
-| LA-ERR-014 | Deeplink thiếu/corrupted `match_id` | Fallback Sport Zone match card. | `Không mở được trận đấu. Đã chuyển đến Sport Zone.` |
+| LA-ERR-014 | Deeplink thiếu/corrupted `match_id` | Fallback FPTPlay home. | `Không mở được trận đấu. Đã chuyển đến Sport Zone.` |
 | LA-ERR-015 | Match unavailable | Fallback. | `Không tìm thấy trận đấu này.` |
 | LA-ERR-016 | Session hết hạn khi đang ở Player/Match Detail | Trigger request không thực hiện; app dùng login/session flow hiện hành. Live Activity đã bật trên device không tự end chỉ vì logout/session hết hạn. | Dùng message/session flow hiện hành của app. |
 | LA-ERR-017 | Tip dismissed flag save fail | Đóng guide trong session; retry persist sau. | Không cần message. |
