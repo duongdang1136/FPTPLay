@@ -32,7 +32,8 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 | v0.3 | 2026-10-05 | Dylan | Bỏ cộng dồn double-tap; bổ sung long-press 2x, khóa tốc độ, Fit / Fill / Zoom; phân biệt rõ requirement đã chốt và đề xuất cần xác nhận. | Pending |
 | v0.4 | 2026-10-05 | Dylan | Chốt release đồng thời iOS/Android; Live Channel không tua/tăng tốc; 2x chỉ hoạt động trong lúc long-press và thả về 1x; chốt zoom tối đa 8x. | Pending |
 | v0.5 | 2026-10-05 | Dylan | Chốt Fit/Fill toggle, Custom Zoom, feedback zoom, điểm neo/phụ đề/reset, thứ tự ưu tiên gesture và nguyên tắc nhận diện swipe. | Pending |
-| v0.6 | 2026-10-14 | Product / Dylan | Bổ sung onboarding cử chỉ lần đầu gồm 4 bước, versioned installation flag, use case/surface/analytics/QA; bổ sung vuốt lên để đưa phụ đề rời tới vị trí an toàn cao hơn. | Dang Duong |
+| v0.6 | 2026-10-14 | Product / Dylan | Bổ sung onboarding cử chỉ lần đầu gồm 4 bước, trạng thái đã xem lưu theo lần cài đặt ứng dụng, use case/surface/analytics/QA; bổ sung vuốt lên để đưa phụ đề rời tới vị trí an toàn cao hơn. | Dang Duong |
+| v0.7 | 2026-10-14 | Product / Dylan | Viết lại Business Rule và Use Case onboarding bằng ngôn ngữ dễ hiểu; dùng key cố định và bỏ cơ chế tự hiển thị lại theo version. | Dang Duong |
 
 ---
 
@@ -109,7 +110,7 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 | 2 | Video area | User tap, double-tap, long-press, pinch hoặc swipe | Full Player | Hệ thống thực hiện gesture hợp lệ có độ ưu tiên cao nhất. |
 | 3 | Progress bar | User kéo thumb/progress bar | Full Player controls | Hệ thống seek tới mốc hợp lệ và hiện preview nếu có. |
 | 4 | Next item control | User bấm tập/mục tiếp theo | Full Player controls | Hệ thống chuyển mục theo logic playlist hiện tại. |
-| 5 | Full Player đủ điều kiện lần đầu | User mở Full Player khi onboarding version hiện tại chưa hoàn tất | Onboarding overlay | Hiển thị lần lượt 4 bước; tap để chuyển bước; hoàn tất bước 4 thì đóng và lưu trạng thái local theo app installation. |
+| 5 | Full Player đủ điều kiện lần đầu | Người dùng mở Full Player khi chưa xem onboarding | Onboarding overlay | Hiển thị lần lượt 4 bước; chạm để chuyển bước; hoàn tất bước 4 thì đóng và lưu trạng thái đã xem trên thiết bị. |
 
 ---
 
@@ -126,7 +127,7 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 | GVP-UC-007 | Chuyển Full Player sang Mini View | User | Vuốt xuống tại trạng thái cho phép | Player chuyển Mini View, giữ vị trí xem và play/pause. |
 | GVP-UC-008 | Đổi Live Channel | User | Vuốt ngang tại trạng thái cho phép | Player chuyển kênh theo hướng vuốt. |
 | GVP-UC-009 | Chuyển tập/mục tiếp theo | User | Bấm control next item | Playlist chuyển sang mục tiếp theo theo logic hiện tại. |
-| GVP-UC-010 | Xem onboarding cử chỉ lần đầu | User | Lần đầu mở Full Player đủ điều kiện | User xem lần lượt 4 bước; hệ thống lưu trạng thái hoàn tất theo app installation. |
+| GVP-UC-010 | Xem onboarding cử chỉ lần đầu | Người dùng | Lần đầu mở Full Player đủ điều kiện | Người dùng xem lần lượt 4 bước; hệ thống lưu trạng thái đã xem trên thiết bị. |
 
 ---
 
@@ -277,7 +278,7 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 ### 6.9 Thứ tự ưu tiên gesture — Đã chốt
 
 1. Vùng gesture hệ thống do OS sở hữu luôn xử lý theo nền tảng; ứng dụng không ghi đè.
-2. Onboarding overlay đang hiển thị → Overlay chặn control, progress bar và toàn bộ gesture video. Chỉ tap đơn chuyển bước; gesture khác bị consume và không có hành vi.
+2. Khi onboarding đang hiển thị, lớp hướng dẫn nằm trên control và progress bar. Chỉ chạm một lần mới chuyển bước; các thao tác khác không tác động đến video.
 3. Khi onboarding không hiển thị, control và progress bar xử lý theo chức năng sở hữu; gesture video không được nhận tại các vùng này.
 4. Pinch hai ngón → Zoom.
 5. Vuốt dọc lên khi có phụ đề rời đang hiển thị → Đưa phụ đề tới vị trí an toàn cao hơn.
@@ -306,17 +307,16 @@ Gesture Video Player bổ sung thao tác chạm, vuốt, giữ và pinch trên *
 
 ### 6.11 Onboarding hướng dẫn cử chỉ lần đầu — Đã chốt
 
-1. Onboarding chỉ áp dụng trên Full Player của iOS/Android và hiển thị khi version hiện tại chưa được đánh dấu hoàn tất trên app installation.
-2. Chỉ hiển thị trên nội dung hỗ trợ Zoom, long-press 2x và double-tap tua hai hướng; nếu lần đầu mở là Live Channel hoặc nội dung không đủ điều kiện, hệ thống trì hoãn đến lần mở Full Player đủ điều kiện tiếp theo.
-3. Onboarding gồm đúng 4 bước theo thứ tự tại SURF-002; user tap để chuyển sang bước kế tiếp.
-4. Tap tại bước 4 đóng onboarding rồi ghi local key `gesture_player_onboarding_seen_v1` với giá trị boolean `true` theo app installation. Chỉ ghi key sau khi xử lý tap hoàn tất bước 4.
-5. Trong lúc onboarding hiển thị, chỉ tap đơn trên overlay chuyển bước. Double-tap, long-press, pinch và swipe bị consume, không chuyển bước và không truyền xuống player; không toggle controls, seek, phát 2x, zoom, pan, đổi kênh hoặc chuyển Mini View.
-6. Nếu user rời Full Player, app bị đóng hoặc playback lỗi trước khi hoàn tất bước 4, hệ thống đóng onboarding và không lưu completed; lần đủ điều kiện tiếp theo hiển thị lại từ bước 1.
-7. Completed flag không phụ thuộc profile/account; đổi profile hoặc logout trên cùng installation không hiển thị lại.
-8. Reinstall hoặc clear app data xóa local key và cho phép hiển thị lại. Khi nội dung onboarding thay đổi lớn, tăng hậu tố version của key, ví dụ từ `_v1` lên `_v2`; key version mới chưa có được xem là chưa hoàn tất.
-9. Lưu flag thất bại không được chặn playback; hệ thống tránh hiển thị lặp trong cùng player session và thử lại ở phiên đủ điều kiện sau.
-10. Mỗi bước có chỉ báo tiến trình `1/4` đến `4/4`, hỗ trợ screen reader và không chỉ dùng animation để truyền đạt nội dung.
-11. Copy onboarding phải dùng đúng nội dung Product chốt tại SURF-002.
+1. Onboarding chỉ hiển thị trên **Full Player của iOS và Android**.
+2. Onboarding xuất hiện ở lần đầu người dùng mở nội dung có hỗ trợ đầy đủ các cử chỉ được hướng dẫn. Nếu nội dung hiện tại không hỗ trợ, hệ thống chờ đến lần mở nội dung phù hợp tiếp theo.
+3. Onboarding gồm **4 bước** theo đúng thứ tự tại `SURF-002`.
+4. Người dùng **chạm một lần** để chuyển sang bước tiếp theo. Chạm ở bước cuối sẽ đóng onboarding.
+5. Trong lúc onboarding hiển thị, double-tap, chạm giữ, thu phóng hoặc vuốt sẽ không tác động đến video và không làm chuyển bước.
+6. Sau khi hoàn tất bước cuối, hệ thống lưu `gesture_player_onboarding_seen = true` trên thiết bị.
+7. Nếu người dùng thoát Player, ứng dụng bị đóng hoặc video gặp lỗi trước khi hoàn tất, hệ thống không lưu trạng thái. Lần sau onboarding bắt đầu lại từ bước đầu.
+8. Trạng thái đã xem được lưu theo lần cài đặt ứng dụng. Đổi profile hoặc đăng xuất không làm onboarding hiển thị lại; cài lại ứng dụng hoặc xóa dữ liệu ứng dụng sẽ hiển thị lại.
+9. Nếu không lưu được trạng thái, người dùng vẫn xem video bình thường và onboarding không được hiển thị lặp trong cùng phiên xem.
+10. Mỗi bước hiển thị tiến trình từ `1/4` đến `4/4`, hỗ trợ trình đọc màn hình và sử dụng đúng nội dung Product đã chốt tại `SURF-002`.
 
 ---
 
@@ -569,8 +569,8 @@ flowchart LR
 
 ### GVP-US-006 — User làm quen với bộ cử chỉ lần đầu
 
-- User cần biết các cử chỉ chính trước khi sử dụng Full Player.
-- Onboarding phải xuất hiện một lần theo app installation/version và không kích hoạt playback gesture bên dưới.
+- Người dùng được hướng dẫn các cử chỉ chính khi lần đầu sử dụng Full Player.
+- Onboarding chỉ hiển thị một lần sau khi cài ứng dụng và không làm ảnh hưởng đến video đang phát.
 
 #### GVP-UC-010 — Xem onboarding cử chỉ lần đầu
 
@@ -578,28 +578,29 @@ flowchart LR
 
 ```mermaid
 flowchart LR
- Start([" "]) --> A["User mở Full Player đủ điều kiện"]
- A --> B{"Onboarding version hiện tại đã hoàn tất?"}
- B -- Có --> C["Không hiển thị onboarding"]
- B -- Chưa --> D["Hiển thị bước 1/4"]
- D --> E["User tap chuyển bước"]
+ Start([" "]) --> A["Người dùng mở Full Player"]
+ A --> B{"Đã xem onboarding?"}
+ B -- "Đã xem" --> C["Mở Player bình thường"]
+ B -- "Chưa xem" --> D["Hiển thị bước 1/4"]
+ D --> E["Người dùng chạm để chuyển bước"]
  E --> F{"Đã tới bước 4/4?"}
  F -- Chưa --> E
- F -- Rồi --> G["User tap hoàn tất"]
- G --> H["Đóng onboarding và lưu completed flag"]
+ F -- Rồi --> G["Người dùng chạm để hoàn tất"]
+ G --> H["Đóng onboarding và lưu trạng thái đã xem"]
  C --> End1([" "])
  H --> End2([" "])
 ```
 
-| Field | Details |
+| Trường | Nội dung |
 |---|---|
-| Actor | User, hệ thống |
-| Triggers | User mở Full Player trên iOS/Android khi onboarding version hiện tại chưa hoàn tất. |
-| Pre-condition | Nội dung hỗ trợ Zoom, long-press 2x và double-tap tua hai hướng; completed flag của version hiện tại chưa tồn tại. |
-| Basic Path | 1. Hệ thống hiển thị bước 1/4.<br>2. User tap đơn để chuyển lần lượt qua bước 2, 3 và 4.<br>3. Trong lúc overlay hiển thị, các gesture khác bị consume và player không nhận interaction bên dưới.<br>4. User tap đơn tại bước 4.<br>5. Hệ thống đóng onboarding rồi ghi `gesture_player_onboarding_seen_v1 = true` theo app installation. |
-| Post-condition | Onboarding không hiển thị lại với version hiện tại trên cùng app installation, kể cả khi đổi profile hoặc logout. |
-| Alternative Path | Nếu nội dung hiện tại không hỗ trợ đủ gesture, hệ thống không hiển thị và chờ lần mở Full Player đủ điều kiện tiếp theo. Reinstall, clear app data hoặc tăng version flag cho phép hiển thị lại. |
-| Exception Handling | Nếu user rời Player/app bị đóng/playback lỗi trước khi hoàn tất, không lưu completed và lần sau bắt đầu lại từ bước 1. Nếu lưu flag lỗi, không chặn playback và không hiển thị lặp trong cùng session. |
+| Người thực hiện | Người dùng, hệ thống |
+| Kích hoạt | Người dùng mở Full Player khi chưa xem onboarding. |
+| Điều kiện trước | Thiết bị là iOS hoặc Android; nội dung đang mở hỗ trợ các cử chỉ được hướng dẫn. |
+| Luồng chính | 1. Hệ thống hiển thị bước `1/4`.<br>2. Người dùng chạm một lần để lần lượt chuyển qua các bước `2/4`, `3/4` và `4/4`.<br>3. Trong lúc onboarding hiển thị, các thao tác khác không tác động đến video và không làm chuyển bước.<br>4. Người dùng chạm tại bước cuối.<br>5. Hệ thống đóng onboarding và lưu trạng thái đã xem. |
+| Kết quả | Onboarding không hiển thị lại sau khi đã hoàn tất, kể cả khi người dùng đổi profile hoặc đăng xuất. |
+| Trường hợp khác | Nếu nội dung hiện tại không hỗ trợ đầy đủ các cử chỉ, hệ thống chưa hiển thị onboarding và chờ lần mở nội dung phù hợp tiếp theo. |
+| Gián đoạn | Nếu người dùng thoát Player, đóng ứng dụng hoặc video gặp lỗi trước khi hoàn tất, hệ thống không lưu trạng thái. Lần sau onboarding bắt đầu lại từ bước đầu. |
+| Lỗi lưu trạng thái | Không làm gián đoạn việc xem video và không hiển thị lại onboarding trong cùng phiên xem. |
 
 ---
 
@@ -709,9 +710,9 @@ System gesture areas nằm ngoài vùng gesture video ưu tiên.
 |---|---|
 | Surface / Location | Overlay phía trên Full Player. |
 | Platform | iOS, Android. |
-| When shown | Lần đầu mở Full Player đủ điều kiện khi completed flag của onboarding version hiện tại chưa tồn tại. |
+| When shown | Lần đầu mở Full Player đủ điều kiện khi chưa lưu trạng thái đã xem onboarding. |
 | Related UC / Flow | GVP-UC-010. |
-| Placement notes | Mỗi bước làm nổi bật đúng vùng/cử chỉ cần giới thiệu; overlay nằm trên controls/progress bar, nhận toàn bộ interaction và không truyền thao tác xuống player. Nội dung không được che khuất copy hoặc chỉ báo bước. |
+| Placement notes | Mỗi bước làm nổi bật đúng vùng/cử chỉ cần giới thiệu. Lớp hướng dẫn nằm trên control và progress bar; thao tác trên hướng dẫn không truyền xuống Player. Nội dung không được che phần mô tả hoặc chỉ báo bước. |
 
 **Sketching wireframe / Text-Based Wireframing:**
 
@@ -736,13 +737,13 @@ Gesture Onboarding — Step {n}/4
 | 1/4 | **Thu phóng và di chuyển vùng hình** | `Chụm/mở 2 ngón tay để phóng to/thu nhỏ video`<br><br>`Nếu phụ đề bị che khuất, dùng một ngón tay để vuốt màn hình lên trên` | Tap overlay → bước 2/4. |
 | 2/4 | **Phát nhanh 2x** | `Chạm giữ ở bất kỳ vị trí nào để xem ở tốc độ 2x` | Tap overlay → bước 3/4. Minh họa vùng hợp lệ nằm trong vùng hình video, ngoài control/progress bar/vùng hệ thống. |
 | 3/4 | **Tua tiến** | `Nhấp đúp vào vị trí này để tua tới 10 giây` | Tap overlay → bước 4/4. |
-| 4/4 | **Tua lùi** | `Nhấp đúp vào vị trí này để tua ngược 10 giây` | Tap overlay → đóng và lưu completed flag. |
+| 4/4 | **Tua lùi** | `Nhấp đúp vào vị trí này để tua ngược 10 giây` | Chạm vào lớp hướng dẫn → đóng và lưu trạng thái đã xem. |
 
 **Surface elements:**
 
 | # | Element | States | Format / Copy | Rules / Notes |
 |---:|---|---|---|---|
-| 1 | Onboarding overlay | step_1, step_2, step_3, step_4, hidden | Theo bảng exact copy | Nằm trên controls/progress bar; chặn toàn bộ interaction bên dưới. Chỉ tap đơn chuyển bước; gesture khác bị consume và không chuyển bước. |
+| 1 | Onboarding overlay | step_1, step_2, step_3, step_4, hidden | Theo bảng nội dung đã chốt | Nằm trên control/progress bar. Chỉ chạm một lần để chuyển bước; các thao tác khác không làm chuyển bước hoặc tác động đến video. |
 | 2 | Gesture illustration | zoom/subtitle, long-press, forward, backward | Animation hoặc hình tĩnh | Chỉ minh họa; text luôn phải có. Tuân theo Reduce Motion của hệ thống. |
 | 3 | Step indicator | 1/4–4/4 | `{n}/4` | Screen reader đọc được bước hiện tại và tổng số bước. |
 | 4 | Continue interaction | enabled | `Chạm để tiếp tục` | Tap ở bước 1–3 chuyển bước; bước 4 hoàn tất onboarding. |
@@ -752,8 +753,8 @@ Gesture Onboarding — Step {n}/4
 - Onboarding không pause hoặc thay đổi vị trí/tốc độ playback chỉ vì được hiển thị.
 - Chỉ tap đơn trên overlay mới chuyển bước; double-tap, long-press, pinch và swipe không chuyển bước, không toggle controls và không chạy gesture thật.
 - Đóng Player trước khi hoàn tất: không lưu completed; lần đủ điều kiện tiếp theo bắt đầu lại từ bước 1.
-- Hoàn tất bước 4: đóng overlay rồi ghi `gesture_player_onboarding_seen_v1 = true`; không hiển thị lại trên cùng installation/version.
-- Đổi profile/logout không reset completed flag; reinstall/clear app data hoặc tăng version cho phép hiển thị lại.
+- Hoàn tất bước 4: đóng lớp hướng dẫn rồi lưu `gesture_player_onboarding_seen = true`; những lần mở sau không hiển thị lại.
+- Đổi profile hoặc đăng xuất không làm onboarding hiển thị lại. Cài lại ứng dụng hoặc xóa dữ liệu ứng dụng sẽ hiển thị lại.
 
 **Surface-specific notes:**
 
@@ -782,7 +783,7 @@ Gesture Onboarding — Step {n}/4
 | Rời Player hoặc app bị đóng giữa onboarding | Không báo lỗi | Không lưu completed; lần đủ điều kiện sau bắt đầu lại từ bước 1. |
 | Lưu onboarding flag thất bại | Không chặn playback | Không hiển thị lặp trong cùng session; log lỗi và thử lại ở phiên đủ điều kiện sau. |
 | Tap đơn trên onboarding overlay | Hiện bước kế tiếp hoặc đóng ở bước 4 | Chỉ tap đơn chuyển bước; không truyền thao tác xuống player. |
-| Double-tap/long-press/pinch/swipe trên onboarding overlay | Không thực thi feedback | Consume thao tác, không chuyển bước và không truyền xuống player. |
+| Double-tap/chạm giữ/thu phóng/vuốt trên onboarding | Không có phản hồi playback | Không chuyển bước và không tác động đến Player. |
 
 ---
 
@@ -790,15 +791,15 @@ Gesture Onboarding — Step {n}/4
 
 | Event | Trigger | Thuộc tính tối thiểu |
 |---|---|---|
-| `gesture_onboarding_impression` | Hiển thị bước 1/4 | `version`, `platform`, `content_type` |
-| `gesture_onboarding_step_view` | Mỗi bước được hiển thị | `version`, `step`, `platform`, `content_type` |
-| `gesture_onboarding_completed` | User tap hoàn tất bước 4 | `version`, `platform`, `content_type` |
-| `gesture_onboarding_interrupted` | User rời Player, app đóng hoặc playback lỗi trước khi hoàn tất | `version`, `step`, `reason`, `platform`, `content_type` |
+| `gesture_onboarding_impression` | Hiển thị bước 1/4 | `platform`, `content_type` |
+| `gesture_onboarding_step_view` | Mỗi bước được hiển thị | `step`, `platform`, `content_type` |
+| `gesture_onboarding_completed` | Người dùng chạm hoàn tất bước 4 | `platform`, `content_type` |
+| `gesture_onboarding_interrupted` | Người dùng rời Player, ứng dụng đóng hoặc video lỗi trước khi hoàn tất | `step`, `reason`, `platform`, `content_type` |
 | `gesture_subtitle_position` | User vuốt lên để điều chỉnh phụ đề rời | `content_type`, `subtitle_type`, `display_mode`, `outcome` (`moved`, `top_boundary`, `unavailable`) |
 
-- Analytics không gửi raw local-storage value hoặc dữ liệu nhạy cảm chỉ để quản lý onboarding.
+- Analytics không gửi giá trị lưu local hoặc dữ liệu nhạy cảm chỉ để quản lý onboarding.
 - Impression của cùng bước không được ghi lặp do render lại trong cùng lần hiển thị.
-- Lỗi lưu completed flag được log phục vụ chẩn đoán nhưng không chặn playback.
+- Lỗi lưu trạng thái đã xem được ghi log phục vụ chẩn đoán nhưng không làm gián đoạn playback.
 - Không ghi `gesture_subtitle_position` thành công cho phụ đề burn-in hoặc khi không có phụ đề; dùng outcome `unavailable` nếu Product cần đo thao tác không khả dụng.
 
 ---
@@ -846,7 +847,7 @@ Các quyết định về Fit/Fill, feedback zoom, reset Fit, điểm neo/phụ 
 - [x] Hiển thị tạm `Zoom {n}x` trong lúc pinch; action reset là “Về vừa khung”.
 - [x] Reset Fit khi đổi nội dung/kênh, chuyển Mini View, mở lại Full Player và xoay màn hình.
 - [x] Đã chốt điểm neo zoom, behavior phụ đề rời/burn-in, gesture priority và nguyên tắc nhận diện swipe.
-- [x] Onboarding lần đầu gồm 4 bước, exact copy, installation-scoped versioned flag và UC-010.
+- [x] Onboarding lần đầu gồm 4 bước, nội dung Product đã chốt, key cố định theo lần cài đặt ứng dụng và UC-010.
 - [x] Vuốt lên đưa phụ đề rời tới vị trí an toàn cao hơn; phụ đề burn-in không di chuyển độc lập.
 - [x] iOS và Android triển khai đồng thời.
 - [ ] Designer dựng wireframe/prototype cho Full Player.
@@ -854,6 +855,6 @@ Các quyết định về Fit/Fill, feedback zoom, reset Fit, điểm neo/phụ 
 - [ ] Product bổ sung phần Mini View manual tại mục 3.5.
 - [ ] Dev xác nhận khả năng theo content/player/platform.
 - [ ] QA lập test matrix theo content type, player state và gesture priority.
-- [ ] QA kiểm tra onboarding với fresh install, hoàn tất, gián đoạn, đổi profile/logout, reinstall/clear data, version mới và chặn gesture bên dưới.
+- [ ] QA kiểm tra onboarding khi cài mới, hoàn tất, gián đoạn, đổi profile/đăng xuất, cài lại/xóa dữ liệu và chặn thao tác xuống Player.
 - [ ] QA kiểm tra vuốt phụ đề với phụ đề rời/burn-in/không có phụ đề, Fit/Fill/Custom Zoom, biên trên, safe area, playback invariance và xung đột với pan/Mini View/control/vùng gesture hệ thống.
 - [ ] Approved By được cập nhật trước implementation handoff cuối.
