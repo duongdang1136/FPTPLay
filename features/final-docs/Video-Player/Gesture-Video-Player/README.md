@@ -9,6 +9,8 @@
 
 Gesture và control trên Full Player cho VOD, Live Channel, Event, Timeshift và Playlist.
 
+Bao gồm onboarding cử chỉ lần đầu gồm 4 bước, lưu trạng thái hoàn tất bằng versioned local flag theo app installation.
+
 ## Final artifact
 
 ```text
