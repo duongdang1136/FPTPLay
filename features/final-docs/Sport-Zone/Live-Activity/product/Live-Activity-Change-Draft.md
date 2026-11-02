@@ -508,7 +508,7 @@ flowchart LR
  A -- "Tap surface" --> C["Đọc match_id"]
  C --> D{"Match hợp lệ?"}
  D -- "Có" --> E["Mở Match Detail"]
- D -- "Không" --> F["Mở Detail với Popup thông báo"]
+ D -- "Không" --> F["Notif ko tồn tại"]
  B --> End1([" "])
  E --> End2([" "])
  F --> End3([" "])
