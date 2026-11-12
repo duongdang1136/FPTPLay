@@ -501,8 +501,8 @@ flowchart LR
 flowchart LR
  Start([" "]) --> A["User vuốt xuống tại Full Player"]
  A --> B{"Video đang lớn hơn Fit?"}
- B -- Có --> C["Không chuyển Mini View"]
- B -- Không --> D["Chuyển Mini View"]
+ B -- Có --> C["Không chuyển Detail"]
+ B -- Không --> D["Chuyển Detail"]
  D --> E["Giữ vị trí xem và play/pause"]
  C --> End1([" "])
  E --> End2([" "])
