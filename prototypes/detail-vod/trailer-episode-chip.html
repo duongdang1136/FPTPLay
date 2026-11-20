@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Prototype — Trailer & Episode Navigation Chip</title>
+<style>
+:root{--bg:#0c0d10;--sheet:#181a20;--card:#242730;--muted:#9ca3af;--text:#f7f7f8;--accent:#ff6a21;--line:#30343d;--safe:18px}*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#161922,#08090c);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}.page{max-width:430px;margin:auto;min-height:100vh;padding:20px 14px 30px}.label{font-size:12px;color:#b7bdc9;margin:0 0 8px}.controls{background:#161920;border:1px solid #292d36;border-radius:16px;padding:12px;margin-bottom:14px}.controls select{width:100%;background:#252933;color:white;border:1px solid #3a3f4a;border-radius:10px;padding:10px;font-size:14px}.rule{font-size:12px;color:#b7bdc9;line-height:1.45;margin:10px 2px 0}.phone{height:735px;background:#090a0d;border:1px solid #343843;border-radius:30px;overflow:hidden;box-shadow:0 24px 80px #0009;position:relative}.hero{height:190px;background:radial-gradient(circle at 80% 20%,#71351d 0,#271b19 38%,#111318 70%);padding:22px 18px;display:flex;align-items:flex-end}.hero h1{margin:0;font-size:22px}.hero p{margin:5px 0 0;color:#c4c8d0;font-size:13px}.sheet{position:absolute;inset:134px 0 0;background:var(--sheet);border-radius:24px 24px 0 0;display:flex;flex-direction:column;overflow:hidden}.grab{width:38px;height:4px;border-radius:5px;background:#5d626c;margin:9px auto}.head{display:flex;justify-content:space-between;align-items:center;padding:3px var(--safe) 12px}.head strong{font-size:19px}.close{border:0;background:#292d35;color:white;width:32px;height:32px;border-radius:50%;font-size:20px}.season{margin:0 var(--safe) 10px;background:#242730;border:1px solid #353a45;border-radius:12px;padding:11px 12px;font-size:14px;display:flex;justify-content:space-between}.chips-wrap{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#1a1c22;min-height:53px;display:flex;align-items:center}.chips{display:flex;gap:8px;overflow-x:auto;padding:9px var(--safe);scrollbar-width:none}.chips::-webkit-scrollbar{display:none}.chip{flex:none;border:1px solid #3c414d;background:#252832;color:#d7dae0;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:650;transition:.18s}.chip.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 4px 14px #ff6a2140}.hidden{display:none!important}.list{overflow:auto;scroll-behavior:smooth;padding:4px var(--safe) 90px;flex:1}.section{scroll-margin-top:6px}.section-title{position:relative;font-size:15px;margin:18px 0 10px}.section-title:after{content:"";position:absolute;left:0;right:0;bottom:-8px;height:1px;background:#292d35}.item{display:grid;grid-template-columns:112px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid #292d35;min-height:86px}.thumb{height:65px;border-radius:9px;background:linear-gradient(135deg,#4c5361,#242832);display:grid;place-items:center;color:#e6e8ec;font-weight:800;font-size:13px;position:relative}.thumb.trailer{background:linear-gradient(135deg,#7a3017,#2d1b17)}.duration{position:absolute;right:5px;bottom:4px;background:#08090bd9;border-radius:4px;padding:2px 4px;font-size:10px}.meta h3{font-size:14px;margin:3px 0 6px;line-height:1.3}.meta p{font-size:12px;color:var(--muted);margin:0;line-height:1.35}.status{position:absolute;left:18px;right:18px;bottom:16px;background:#0d0f13e8;border:1px solid #353a45;border-radius:12px;padding:9px 12px;font-size:11px;color:#cfd3da;backdrop-filter:blur(8px)}.status b{color:#fff}.empty-chip-note{padding:10px 18px;color:#aeb4bf;font-size:12px}.badge{display:inline-block;background:#263143;color:#9dc0ff;border-radius:6px;padding:2px 6px;margin-left:6px;font-size:10px}@media(max-width:370px){.page{padding:8px}.phone{height:720px;border-radius:22px}}
+</style>
+</head>
+<body>
+<div class="page">
+  <p class="label">Prototype tương tác · Rule hiện tại được giữ nguyên</p>
+  <div class="controls">
+    <select id="scenario" aria-label="Chọn dữ liệu mẫu">
+      <option value="2,14">2 Trailer + 14 Episode — hiện 2 chip</option>
+      <option value="1,10">1 Trailer + 10 Episode — ẩn chip vì tổng ≤ 15</option>
+      <option value="20,1">20 Trailer + 1 Episode — Trailer, 1-1</option>
+      <option value="0,16">0 Trailer + 16 Episode — 1-15, 16-16</option>
+      <option value="0,31">0 Trailer + 31 Episode — 3 chip Episode</option>
+      <option value="16,0">16 Trailer + 0 Episode — ẩn chip vì chỉ 1 section</option>
+      <option value="2,30,alpha">2 Trailer + 30 Episode dạng 1A/1B</option>
+    </select>
+    <div class="rule"><b>Rule:</b> Trailer gom 1 section; Episode chia tối đa 15 item; chỉ hiện thanh chip khi tổng item &gt; 15 và có ít nhất 2 section.</div>
+  </div>
+
+  <div class="phone">
+    <div class="hero"><div><h1>Detail VOD</h1><p>Demo Bottom Sheet Danh sách Series</p></div></div>
+    <div class="sheet">
+      <div class="grab"></div>
+      <div class="head"><strong>Danh sách phát</strong><button class="close" aria-label="Đóng">×</button></div>
+      <div class="season"><span>Seasons: Season 1</span><span>⌄</span></div>
+      <div class="chips-wrap" id="chipsWrap"><div class="chips" id="chips"></div></div>
+      <div class="empty-chip-note hidden" id="emptyChipNote">Thanh chip được ẩn theo rule; danh sách vẫn cuộn và phát bình thường.</div>
+      <main class="list" id="list"></main>
+      <div class="status" id="status"></div>
+    </div>
+  </div>
+</div>
+<script>
+const scenarioEl=document.querySelector('#scenario'),chipsEl=document.querySelector('#chips'),chipsWrap=document.querySelector('#chipsWrap'),listEl=document.querySelector('#list'),statusEl=document.querySelector('#status'),emptyNote=document.querySelector('#emptyChipNote');
+let sections=[],observerLock=false,unlockTimer;
+function episodeLabel(i,alpha){if(!alpha)return String(i);const n=Math.ceil(i/2),letter=i%2?'A':'B';return `${n}${letter}`}
+function buildSections(t,e,alpha){const out=[];if(t>0)out.push({id:'trailer',label:'Trailer',type:'trailer',count:t,labels:Array.from({length:t},(_,i)=>`Trailer ${i+1}`)});for(let start=1;start<=e;start+=15){const end=Math.min(start+14,e),labels=[];for(let i=start;i<=end;i++)labels.push(episodeLabel(i,alpha));out.push({id:`episode-${start}`,label:`${labels[0]}-${labels.at(-1)}`,type:'episode',count:labels.length,labels})}return out}
+function render(){const [tRaw,eRaw,alphaFlag]=scenarioEl.value.split(','),t=+tRaw,e=+eRaw,alpha=alphaFlag==='alpha';sections=buildSections(t,e,alpha);const show=(t+e)>15&&sections.length>=2;chipsWrap.classList.toggle('hidden',!show);emptyNote.classList.toggle('hidden',show);chipsEl.innerHTML=show?sections.map((s,i)=>`<button class="chip ${i===0?'active':''}" data-target="${s.id}">${s.label}</button>`).join(''):'';listEl.innerHTML=sections.map(s=>`<section class="section" id="${s.id}" data-chip="${s.id}"><h2 class="section-title">${s.type==='trailer'?'Trailer':'Episode'} <span class="badge">${s.count} item</span></h2>${s.labels.map((label,i)=>`<article class="item"><div class="thumb ${s.type==='trailer'?'trailer':''}">${s.type==='trailer'?'▶':'Tập '+label}<span class="duration">${s.type==='trailer'?'01:30':'24:00'}</span></div><div class="meta"><h3>${s.type==='trailer'?label:`Tập ${label} — Tiêu đề tập phim`}</h3><p>${s.type==='trailer'?'Video giới thiệu nội dung':'Mô tả ngắn của tập phim đang hiển thị.'}</p></div></article>`).join('')}</section>`).join('');statusEl.innerHTML=`<b>${t} Trailer + ${e} Episode</b> · ${show?'Hiện chip: '+sections.map(s=>s.label).join(' · '):'Ẩn thanh chip'}`;listEl.scrollTop=0;bind();if(show)setActive(sections[0].id)}
+function setActive(id){document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('active',c.dataset.target===id));const active=document.querySelector(`.chip[data-target="${id}"]`);active?.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'})}
+function bind(){document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{observerLock=true;setActive(c.dataset.target);document.getElementById(c.dataset.target).scrollIntoView({behavior:'smooth',block:'start'});clearTimeout(unlockTimer);unlockTimer=setTimeout(()=>observerLock=false,650)})}
+listEl.addEventListener('scroll',()=>{if(observerLock||chipsWrap.classList.contains('hidden'))return;const max=listEl.scrollHeight-listEl.clientHeight;if(max-listEl.scrollTop<3){setActive(sections.at(-1).id);return}const top=listEl.getBoundingClientRect().top+8;let current=sections[0]?.id;document.querySelectorAll('.section').forEach(s=>{if(s.getBoundingClientRect().top<=top)current=s.id});if(current)setActive(current)});
+scenarioEl.addEventListener('change',render);render();
+</script>
+</body>
+</html>
