@@ -3,12 +3,12 @@
 - **Dự án:** FPT Play
 - **Nền tảng:** Mobile, Tablet
 - **Trạng thái:** Draft for Review
-- **Ngày cập nhật:** 19/10/2026
+- **Ngày cập nhật:** 13/11/2026
 - **Người phụ trách:** Đặng Thái Dương (BA)
 - **Thiết kế:** Figma
 - **Jira Task:** [FPTPLAY-4819](https://jira.fptplay.net/browse/FPTPLAY-4819)
 - **Tài liệu liên quan:** `PR031 - Detail VOD (Layout mới)`
-- **Nguồn đối chiếu:** `detailvodphase2.pdf`, `detailvod.pdf`, UI final `Man_hinh_thiet_ke.pdf`, `Detail-VOD-Change-Proposal-v1.1.md`, `Detail-VOD-BA-Feature-Spec.md`
+- **Nguồn đối chiếu:** `detailvodphase2.pdf`, `detailvod.pdf`, UI final `Man_hinh_thiet_ke.pdf`, UI final Detail Flat `Detail_VOD_List_Number.pdf`, `Detail-VOD-Change-Proposal-v1.1.md`, `Detail-VOD-BA-Feature-Spec.md`
 
 > Để đảm bảo tính đồng nhất và tránh trùng lặp, tài liệu này kế thừa các mô tả tính năng và business rule từ tài liệu liên quan. Các requirement không được thay đổi rõ ràng trong tài liệu này tiếp tục áp dụng theo baseline.
 >
@@ -21,7 +21,9 @@
 | Version | Date | Sprint | Người thay đổi | Người phê duyệt | Chi tiết thay đổi |
 | --- | --- | --- | --- | --- | --- |
 | V1.0 | — | — | Dương Đại Dũng (BA), Trần Bá Phước (Designer) | Đặng Anh Vũ | Phiên bản đầu tiên của `PR031 - Detail VOD (Layout mới)`. |
-| V1.1 | 19/10/2026 | Sprint 29 | Đặng Thái Dương (BA), Trần Bá Phước (Designer) | Đặng Anh Vũ | Cập nhật Phase 2: chuyển Danh sách tập, Bình luận và Playlist khỏi floating entry point sang Detail; thay tab Thông tin bằng nút **Đọc thêm**; cập nhật Detail Danh sách Series với Season Dropdown, Trailer, nhóm tập và bỏ filter Cũ nhất/Mới nhất; cập nhật D2G Surface. |
+| V1.1 | 27/10/2026 | Sprint 29 | Đặng Thái Dương (BA), Trần Bá Phước (Designer) | Đặng Anh Vũ | Cập nhật Phase 2: chuyển Danh sách tập, Bình luận và Playlist khỏi floating entry point sang Detail; thay tab Thông tin bằng nút **Đọc thêm**; Series tại Detail Flat có Number View mặc định và Thumbnail View, user chuyển view bằng toggle; Playlist luôn hiển thị Thumbnail View; VOD lẻ ẩn block Danh sách; cập nhật Bottom Sheet Series và D2G Surface. |
+| V1.2 | 12/11/2026 | Sprint 29 | Đặng Thái Dương (BA) | — | Cập nhật theo Q&A QC Mobile: hoàn thiện trạng thái dùng chung; phạm vi D2G/Vietnam Airlines/Vietjet Air; entry point Playlist/D2G; điều kiện Đọc thêm; Label; thứ tự block theo thiết bị; lưu View Style; Season Dropdown; chip Trailer/Episode; Bình luận và Download states. |
+| V1.3 | 13/11/2026 | Sprint 29 | Đặng Thái Dương (BA) | — | Cập nhật theo phương án PD/BE đã chốt: giữ Bình luận tại Floating Button; bổ sung tooltip tính năng mới; cấu hình ẩn/hiện hai mode và Label vương miện; điều chỉnh Season/Trailer theo loại nội dung; đồng bộ `pin_top`; bỏ filter D2G; bổ sung Airline ON; Playlist không dùng Navigation Chip; chưa áp dụng phân trang. |
 
 ---
 
@@ -32,11 +34,12 @@
 Thiết kế giao diện Mobile mới 2026 bao gồm redesign màn hình Detail VOD nhằm:
 
 - Tối ưu trải nghiệm khám phá và chuyển nội dung ngay trên Detail.
-- Tăng khả năng nhìn thấy Danh sách tập, Playlist, Bình luận, Short Videos, Trailers, Season và nội dung Liên quan.
-- Giảm phụ thuộc vào floating button đối với các nội dung đã có vị trí mới.
+- Tăng khả năng nhìn thấy Danh sách tập, Playlist, Short Videos, Trailers, Season và nội dung Liên quan; Bình luận giữ entry point Floating Button theo hiện trạng.
+- Chuyển Danh sách tập/Playlist về Detail Flat theo phạm vi đã chốt; riêng Bình luận tiếp tục dùng Floating Button theo hiện trạng.
 - Giữ Detail Danh sách dưới dạng Bottom Sheet để user xem danh sách mở rộng.
-- Thống nhất presentation theo loại nội dung: VOD bộ, VOD lẻ và Playlist/âm nhạc.
-- Giữ nguyên business rule hiện hành của Player, Comment, Download/D2G và entitlement nếu tài liệu này không quy định thay đổi.
+- Thống nhất presentation theo loại nội dung: VOD bộ, VOD lẻ, Playlist/âm nhạc, D2G, Vietnam Airlines và Vietjet Air.
+- Với D2G, Vietnam Airlines và Vietjet Air, Sprint 29 chỉ chuyển entry point Danh sách từ Floating Button/tab Videos cũ sang Detail Flat; UI/Flow và business rule của Card Item giữ nguyên.
+- Giữ nguyên business rule hiện hành của Player, Comment, Download/D2G và entitlement nếu tài liệu này không quy định thay đổi rõ ràng.
 
 ### 2.2. Nền tảng triển khai
 
@@ -60,6 +63,8 @@ Chi tiết kích thước và quy tắc resize tham chiếu tài liệu **Re-siz
 
 - Player, Pin Subscription, Shoppertainment, Like, Share, Download/D2G, AI Comment và entitlement tiếp tục theo baseline nếu không được thay đổi rõ ràng.
 - Detail Flat và Bottom Sheet có thể dùng chung dữ liệu/playing state nhưng dùng presentation khác nhau.
+- BE cung cấp thuộc tính cấu hình để Client ẩn/hiện hai mode Danh sách; Client hiển thị đúng mode được phép và không tự suy đoán khi thiếu contract.
+- Sprint 29 chưa áp dụng phân trang cho các danh sách thuộc phạm vi tài liệu này; Client hiển thị dataset của response hiện tại và không tự gọi trang tiếp theo.
 - Một block con lỗi không được đóng toàn bộ Detail hoặc xóa dữ liệu hợp lệ của block khác.
 - Không có dữ liệu thì ẩn block, trừ khi business rule hiện hành yêu cầu empty state.
 - Telemetry lỗi không được chặn user flow.
@@ -103,22 +108,31 @@ Chi tiết kích thước và quy tắc resize tham chiếu tài liệu **Re-siz
 | 2 | Block Pin Subscription | Screen | Kế thừa baseline; hiển thị theo subscription/entitlement của nội dung. |
 | 3 | Block Shoppertainment | Detail Shop — Bottom Sheet | Kế thừa baseline; không thay đổi nghiệp vụ trong Phase 2. |
 | 4 | Card Info và Đọc thêm | Title; Label; Metadata; icon Like, Share, D2G, AI Comment; nút **Đọc thêm**; Primary Info; Warning Content; Mô tả; Thể loại; Diễn viên lồng tiếng | **UPD VER1.1** — Thay tab Thông tin bằng nút **Đọc thêm**. Nút mở Primary Info đầy đủ; block diễn viên điều hướng tới Detail Diễn viên theo baseline. |
-| 5 | Danh sách Series | Danh sách số tập trên Detail; Detail Danh sách Series — Bottom Sheet; Season Dropdown; chip Trailers; chip nhóm tập; danh sách tập | **UPD VER1.1** — Bổ sung danh sách số tập tối giản trên Detail; mỗi item chỉ hiển thị số tập và icon Lock khi yêu cầu gói. Bottom Sheet tiếp tục là expanded view; bỏ filter Cũ nhất/Mới nhất; mặc định từ cũ đến mới. |
-| 6 | Danh sách Playlist | Detail Danh sách Playlist — Bottom Sheet | **UPD VER1.1** — Bổ sung carousel Playlist trên Detail và giữ list dọc trong Bottom Sheet. |
-| 7 | Khung Bình luận | Collapse trên Detail; Expand — Bottom Sheet | **UPD VER1.1** — Thay floating Bình luận bằng block preview; tap block mở Bottom Sheet Bình luận. |
+| 5 | Danh sách Series | Detail Flat: Number View, Thumbnail View và View Toggle; Detail Danh sách Series — Bottom Sheet; Season Dropdown; chip Trailers; chip nhóm tập; danh sách tập | **UPD VER1.1** — Series tại Detail Flat có hai presentation dùng chung dữ liệu: Number View là mặc định và Thumbnail View; user chủ động chuyển bằng toggle tại header block. Bottom Sheet tiếp tục là expanded view; bỏ filter Cũ nhất/Mới nhất; mặc định từ cũ đến mới. |
+| 6 | Danh sách Playlist | Thumbnail View trên Detail; Detail Danh sách Playlist — Bottom Sheet | **UPD VER1.1** — Playlist luôn hiển thị carousel thumbnail trên Detail, không có View Toggle; Bottom Sheet giữ list dọc. |
+| 7 | Bình luận | Floating Button; Comment surface hiện hành | **UPD VER1.3** — Giữ nguyên entry point Bình luận tại Floating Button; không hiển thị block preview Bình luận trên Detail Flat trong Sprint 29. |
 | 8 | Block Short Videos | Vertical Slider — Video | Hiển thị khi có dữ liệu, theo block style và business rule hiện hành. |
-| 9 | Block Trailers | Horizontal video list | Hiển thị block **Trailers & videos** trên Detail khi có dữ liệu. |
-| 10 | Block Season | Horizontal poster list | Hiển thị block **Các seasons** trên Detail đối với nội dung có Season khác. |
+| 9 | Block Trailers | Horizontal video list | **UPD VER1.3** — Detail Flat chỉ trả block Trailer cho VOD lẻ/Playlist khi có dữ liệu; VOD bộ không trả block Trailer tại Detail Flat. |
+| 10 | Block Season | Horizontal poster list | **UPD VER1.3** — Detail Flat chỉ trả block Season cho VOD lẻ/Playlist khi có dữ liệu; VOD bộ không trả block Season tại Detail Flat. |
 | 11 | Block Liên quan | Horizontal content list | Hiển thị nội dung liên quan theo baseline. |
-| — | D2G Surface | Header nội dung; tổng dung lượng; danh sách item đã tải; trạng thái thời hạn | **UPD VER1.1** — Surface riêng được mở từ icon D2G; hiển thị và quản lý nội dung tải theo Download/D2G flow hiện hành. |
+| 12 | Danh sách D2G/Vietnam Airlines/Vietjet Air | Block Danh sách tại Detail Flat; expanded list theo context; Download/D2G Surface | **UPD VER1.2** — Detail tiêu chuẩn hiển thị Danh sách trực tiếp tại Detail Flat thay cho Floating Button/tab Videos cũ. Detail mở từ trang Nội dung tải xuống giữ Download/D2G Surface và business rule hiện tại. |
 
-### 4.1. Thứ tự block theo loại nội dung
+### 4.1. Thứ tự block theo loại nội dung và thiết bị
 
-- **VOD bộ/Series:** Player → Pin Subscription (nếu có) → Shoppertainment (nếu có) → Card Info → Danh sách Series → Bình luận → Short Videos (nếu có) → Season → Trailers → Liên quan.
-- **VOD lẻ:** Player → Pin Subscription (nếu có) → Shoppertainment (nếu có) → Card Info → Bình luận → Trailers → Liên quan.
-- **Playlist/âm nhạc:** Player → Pin Subscription (nếu có) → Shoppertainment (nếu có) → Card Info → Danh sách Playlist → Bình luận → Liên quan.
+Thứ tự dưới đây không bao gồm Bình luận vì Bình luận được mở từ Floating Button theo hiện trạng.
 
-Block không có dữ liệu được ẩn và các block phía sau tự dồn lên.
+**Tablet Portrait và Tablet Landscape**
+
+- **VOD bộ/Series:** Player → Pin Subscription (nếu có) → Shoppertainment (theo `pin_top`/thứ tự API) → Card Info → Danh sách → Short Videos (nếu có) → Đề xuất cho bạn. Không trả block Season và Trailer tại Detail Flat.
+- **VOD lẻ:** Player → Pin Subscription (nếu có) → Shoppertainment (theo `pin_top`/thứ tự API) → Card Info → Danh sách (khi có Trailer) → Short Videos (nếu có) → Season (nếu có) → Trailer (nếu có) → Đề xuất cho bạn.
+- **Playlist/âm nhạc:** Player → Pin Subscription (nếu có) → Shoppertainment (theo `pin_top`/thứ tự API) → Card Info → Danh sách → Season (nếu có) → Trailer (nếu có) → Đề xuất cho bạn.
+- **D2G/Vietnam Airlines/Vietjet Air:** Player → Pin Subscription (nếu có) → Shoppertainment (theo `pin_top`/thứ tự API) → Card Info → Danh sách → Đề xuất cho bạn.
+
+**Mobile**
+
+- Áp dụng cùng thứ tự nghiệp vụ như Tablet; số lượng item nhìn thấy và responsive behavior theo widget/Figma của từng thiết bị.
+
+Block không có dữ liệu được ẩn, không giữ khoảng trống và các block phía sau tự dồn lên. Floating Button Bình luận không làm thay đổi thứ tự block tại Detail Flat.
 
 ---
 
@@ -210,7 +224,10 @@ Block không có dữ liệu được ẩn và các block phía sau tự dồn l
 
 **Behavior**
 
-- Phase 2 không thay đổi nghiệp vụ Shoppertainment.
+- `pin_top = 1`: áp dụng logic ghim Block Shoppertainment theo behavior hiện hành.
+- `pin_top = 0`: không ghim block; hiển thị Block Shoppertainment tại đúng vị trí theo thứ tự API trả về.
+- Client không tự đổi thứ tự block khi `pin_top = 0`.
+- Ngoài quy tắc vị trí theo `pin_top`, Phase 2 không thay đổi nghiệp vụ Shoppertainment.
 - Không có dữ liệu thì ẩn block.
 - Lỗi Shoppertainment không ảnh hưởng Player và các block khác.
 
@@ -249,8 +266,11 @@ Block không có dữ liệu được ẩn và các block phía sau tự dồn l
 
 - Card Info hiển thị Title, Label và Metadata theo dữ liệu hiện có.
 - Icon Like, Share, D2G và AI Comment tiếp tục theo rule hiện hành.
-- Nút **Đọc thêm** chỉ hiển thị khi có Primary Info để mở.
+- Client hiển thị nút **Đọc thêm** khi Primary Info có ít nhất một field hợp lệ để mở.
 - Primary Info có thể gồm Title đầy đủ, Label đầy đủ, Metadata đầy đủ, Warning Content, Mô tả và Thể loại.
+- Card Info có dữ liệu không đồng nghĩa Primary Info có dữ liệu. Nếu toàn bộ field Primary Info rỗng/null hoặc feature không áp dụng cho loại nội dung hiện tại, ẩn nút **Đọc thêm** và không giữ khoảng trống.
+- State Hidden của nút **Đọc thêm** không áp dụng cho nội dung đã bị hạ; nội dung đã hạ được xử lý ở cấp Detail/deeplink.
+- Label hiển thị tối đa 2 dòng. Nếu vượt quá 2 dòng, phần còn lại được che bằng lớp mờ theo Figma. Thứ tự Label giữ nguyên theo API; Client không tự sắp xếp lại.
 - Field thiếu được ẩn; không render label rỗng hoặc khoảng trống dư thừa.
 - Block diễn viên lồng tiếng dùng style `8 - Participant` khi có dữ liệu.
 - Sau khi thay đổi có hiệu lực, không duy trì song song tab Thông tin cũ.
@@ -260,6 +280,8 @@ Block không có dữ liệu được ẩn và các block phía sau tự dồn l
 - Chỉ tap đúng nút **Đọc thêm** mới mở Primary Info.
 - Đóng Primary Info quay lại đúng scroll/player state của Detail.
 - Tap diễn viên mở đúng Detail Diễn viên.
+- Tap Download không đồng thời phát/chuyển nội dung. Button Download kế thừa Download/D2G flow hiện hành với các state: Default/Chưa tải, Queued, Downloading có tiến trình, Paused, Failed có Retry và Downloaded.
+- **Cần bổ sung Figma:** Label vượt 2 dòng và các trạng thái Download tại Card Info.
 - **Cần xác nhận:** Primary Info được mở bằng Bottom Sheet, Pullup hay surface khác trong Figma final.
 
 ### 5.5. Block Danh sách Series
@@ -270,53 +292,130 @@ Block không có dữ liệu được ẩn và các block phía sau tự dồn l
 
 **Trước thay đổi:** Danh sách tập được mở từ floating entry point; Bottom Sheet có filter Cũ nhất/Mới nhất.
 
-**Sau thay đổi:** Detail hiển thị danh sách số tập dạng ngang, mỗi item chỉ có số tập và icon Lock khi yêu cầu gói; Bottom Sheet tiếp tục hiển thị danh sách mở rộng với Season Dropdown, Trailer và chip nhóm tập; bỏ filter Cũ nhất/Mới nhất.
+**Sau thay đổi:** Series tại Detail Flat có Number View/Thumbnail View theo thuộc tính hiển thị do BE trả về. Khi cả hai mode được phép, user chuyển presentation bằng View Toggle tại bên phải header `Danh sách >`. Bottom Sheet tiếp tục hiển thị danh sách mở rộng với Season Dropdown, Trailer và chip nhóm tập; bỏ filter Cũ nhất/Mới nhất.
 
 #### 5.5.1. Danh sách tập trên Detail
 
 **Luồng hoạt động**
 
-1. User mở Detail VOD bộ.
+1. User mở Detail VOD bộ/Series.
 2. Hệ thống xác định Season và tập hiện tại.
-3. Hệ thống hiển thị danh sách ô số tập theo thứ tự từ cũ đến mới.
-4. User cuộn ngang và chọn một ô tập.
-5. Nếu tập được phép xem, Player chuyển sang tập được chọn.
-6. Nếu tập yêu cầu gói, hệ thống thực hiện entitlement/subscription flow hiện hành.
-7. Hệ thống cập nhật tập đang chọn/đang phát và Season tương ứng khi chuyển tập thành công.
+3. Hệ thống tải một dataset tập dùng chung cho cả Number View và Thumbnail View.
+4. Hệ thống khôi phục presentation đã lưu của đúng Detail trong app session; nếu chưa có state đã lưu thì hiển thị **Number View** theo thứ tự từ cũ đến mới.
+5. User có thể chọn View Toggle tại bên phải header `Danh sách >` để chuyển giữa Number View và Thumbnail View.
+6. Hệ thống chỉ đổi presentation của block Danh sách; không đổi Season, tập đang phát hoặc dữ liệu đã tải.
+7. User cuộn ngang và chọn một tập tại view hiện tại.
+8. Nếu tập được phép xem, Player chuyển sang tập được chọn; nếu tập yêu cầu gói, hệ thống thực hiện entitlement/subscription flow hiện hành.
+9. Hệ thống cập nhật Selected/Playing state của đúng tập trên cả hai presentation.
 
 **Các trạng thái**
 
-- Danh sách: Loading, Loaded, Empty, Error.
-- Ô tập: Default, Pressed, Selected/Playing.
-- Quyền xem: Available, Package Required/Locked.
+- Danh sách: Loading, Loaded, Empty/Hidden, Error.
+- Presentation: Number View (Default), Thumbnail View; Visible/Hidden theo cấu hình mode từ BE.
+- View Toggle: Number Active, Thumbnail Active, Pressed.
+- Tập: Default, Pressed, Selected/Playing.
+- Nội dung Number View: Compact Label, Full Title Fallback, Missing Title.
+- Thumbnail: Loaded, Missing/Error Placeholder.
+- Quyền xem: Available, Package Required/Locked; Crown Label Visible/Hidden.
 
 **Behavior**
 
-- Detail dùng danh sách ô số tập dạng ngang để xem và chọn nhanh.
-- Mỗi ô chỉ hiển thị **số tập**.
-- Tập yêu cầu gói hiển thị thêm **icon Lock**.
-- Không hiển thị thumbnail, title/mô tả, thời lượng, seekbar lịch sử xem, nhãn gói dạng text hoặc Download trên danh sách Detail.
-- Mặc định sắp xếp tập từ cũ đến mới.
-- Không hiển thị filter Cũ nhất/Mới nhất.
-- Tập đang chọn/đang phát được thể hiện bằng Selected/Playing state theo Figma.
-- Các metadata và action đầy đủ của tập chỉ hiển thị trong Bottom Sheet nếu baseline quy định.
+- BE trả thuộc tính điều khiển ẩn/hiện Number View và Thumbnail View. Chỉ hiển thị View Toggle khi cả hai mode cùng được phép; nếu chỉ có một mode thì hiển thị trực tiếp mode đó và ẩn Toggle.
+- View Toggle nằm bên phải header `Danh sách >`; icon, kích thước và active state áp dụng theo Figma final.
+- **Number View — mặc định khi chưa có presentation state được lưu:**
+  - Hiển thị danh sách ô text dạng ngang để user chọn tập nhanh.
+  - Mỗi ô chỉ hiển thị một nội dung theo thứ tự ưu tiên:
+    1. **Compact Label:** nhãn tập ngắn đã được xác định chắc chắn, ví dụ `1`, `1A`, `1B`, `1C`, `2A`.
+    2. **Full Title Fallback:** nếu không xác định được Compact Label, hiển thị nguyên Title của item.
+  - Compact Label hiển thị đầy đủ; không tự đổi `1A` thành `1` hoặc đánh lại thành số thứ tự khác.
+  - Full Title Fallback hiển thị tối đa **2 dòng**; phần vượt giới hạn được truncate bằng `…`.
+  - Không hiển thị đồng thời Compact Label và Full Title trong cùng một ô.
+- **Thumbnail View:**
+  - Hiển thị carousel ngang theo UI final.
+  - Mỗi card gồm thumbnail, thời lượng overlay khi có dữ liệu và Title bên dưới thumbnail.
+  - Title hiển thị theo giới hạn dòng của component trong Figma; thumbnail lỗi/thiếu ảnh dùng placeholder đúng tỷ lệ.
+- BE trả biến/thuộc tính cho Label vương miện mới tại Danh sách số. Khi được bật, Number View hiển thị một icon vương miện dùng chung tại vị trí cố định theo widget; icon không thay đổi theo loại gói hoặc độ dài label.
+- Tập yêu cầu gói tiếp tục áp dụng entitlement hiện hành; Label vương miện không thay thế nội dung nhận diện tập.
+- Number View và Thumbnail View dùng chung dataset, thứ tự, entitlement và Selected/Playing state.
+- Chuyển view không gọi lại API nếu dataset hiện tại đã đủ dữ liệu cho view đích.
+- Không có Title và không xác định được Compact Label thì dùng fallback copy theo content contract hiện hành; không hiển thị item rỗng.
+- Series có đúng một Episode vẫn hiển thị block Danh sách với một item Number View.
+- API trả danh sách Episode rỗng thì ẩn toàn bộ block Danh sách, không giữ khoảng trống và đẩy các block phía sau lên.
+- Fullscreen Player sử dụng button **Danh sách phát**; chọn button mở danh sách bằng Thumbnail View, không kế thừa Number View tại Detail Flat.
+- Mặc định sắp xếp tập từ cũ đến mới và không hiển thị filter Cũ nhất/Mới nhất.
+- Bottom Sheet tiếp tục dùng list đầy đủ riêng; không bắt buộc giống presentation của Detail Flat.
+- Chưa áp dụng phân trang; Client không gọi trang tiếp theo cho Danh sách Series trong Sprint 29.
+
+**Rule xử lý Episode Title — Handoff Backend/Mobile**
+
+**Nguồn dữ liệu:** CMS chỉ cung cấp `title` của Episode; không giả định CMS có field label riêng.
+
+1. **Backend/BFF nhận Title từ CMS và thử tạo Compact Label**
+   - Trim khoảng trắng ở đầu/cuối Title.
+   - Chỉ parse khi Title bắt đầu bằng prefix `Tập` hoặc `Episode`, ngay sau prefix là **số + tối đa một chữ cái**.
+   - Ví dụ: `Tập 1B - Cuộc gặp gỡ` → `1B`; `Episode 2C: The Return` → `2C`.
+   - Chuẩn hóa hậu tố thành chữ hoa: `Tập 1c` → `1C`.
+
+2. **Nếu parse chắc chắn thành công**
+   - Backend/BFF trả `displayLabel` bằng Compact Label đã tạo.
+   - Mobile hiển thị `displayLabel` trong ô tập.
+
+3. **Nếu không parse được hoặc Title mơ hồ**
+   - Backend/BFF trả `displayLabel = null` và giữ nguyên `title`.
+   - Mobile hiển thị `title` tối đa **2 dòng**; vượt quá 2 dòng thì truncate bằng `…`.
+   - Không tự lấy số nằm giữa/cuối Title và không parse các prefix khác như `Phần`, `Trailer`, `OVA`.
+
+> Việc parse chỉ quyết định text hiển thị. Thứ tự và định danh item vẫn dùng field kỹ thuật hiện hành của API; không dùng Compact Label hoặc Title làm ID.
+
+**Matrix xử lý từ Episode Title**
+
+| # | Title từ CMS | Backend `displayLabel` | Nội dung Mobile hiển thị | Rule áp dụng |
+| ---: | --- | --- | --- | --- |
+| 1 | `Tập 1` | `1` | `1` | Parse được prefix và số tập. |
+| 2 | `Tập 12 - Trận chiến cuối cùng` | `12` | `12` | Hỗ trợ số tập nhiều chữ số. |
+| 3 | `Tập 1B - Cuộc gặp gỡ` | `1B` | `1B` | Parse được số tập và hậu tố chữ cái. |
+| 4 | `Tập 1c: Khởi đầu` | `1C` | `1C` | Chuẩn hóa hậu tố thành chữ hoa. |
+| 5 | `Episode 2C: The Return` | `2C` | `2C` | `Episode` là prefix hợp lệ. |
+| 6 | `Tập   3A   - Bí mật` | `3A` | `3A` | Cho phép khoảng trắng dư. |
+| 7 | `Tập 4 Sự trở lại` | `4` | `4` | Không bắt buộc có separator nếu label đầu Title rõ ràng. |
+| 8 | `Ngoại truyện: Cuộc gặp gỡ đầu tiên` | `null` | Full Title, tối đa 2 dòng | Không có prefix nhận diện tập. |
+| 9 | `Hành trình năm 2026` | `null` | Full Title, tối đa 2 dòng | Không lấy số nằm giữa/cuối Title. |
+| 10 | `Phần 2: Cuộc chiến bắt đầu` | `null` | Full Title, tối đa 2 dòng | `Phần` không phải prefix được hỗ trợ. |
+| 11 | `Trailer 1: First Look` | `null` | Full Title, tối đa 2 dòng | Không coi số Trailer là số tập. |
+| 12 | `OVA 1 - Chuyến đi đặc biệt` | `null` | Full Title, tối đa 2 dòng | `OVA` chưa thuộc prefix được hỗ trợ. |
+| 13 | `Tập 1A/1B - Bản tổng hợp` | `null` | Full Title, tối đa 2 dòng | Có nhiều nhãn tập, dữ liệu mơ hồ. |
+| 14 | `Tập đặc biệt: Đêm hội` | `null` | Full Title, tối đa 2 dòng | Không có số tập hợp lệ sau prefix. |
+| 15 | Title dài vượt 2 dòng | `null` | Full Title, tối đa 2 dòng và `…` | Truncate phần vượt giới hạn. |
+| 16 | Không có Title | `null` | Fallback copy theo content contract | Không để ô trống. |
 
 **Interaction Rules**
 
-- Tap ô Available chuyển Player sang đúng tập.
-- Tap ô có icon Lock không phát tập ngay; hệ thống kiểm tra đăng nhập và entitlement, sau đó mở subscription/package flow hiện hành khi cần.
-- Chỉ một ô có Selected/Playing state tại một thời điểm.
-- Phim lẻ không hiển thị block Danh sách Series.
-- **Cần xác nhận:** Detail có tự cuộn tới ô tập đang phát khi mở màn hay không.
-- **Quy tắc hiển thị và sắp xếp tập:**
-  - API cần cung cấp riêng **nhãn tập để hiển thị** và **thứ tự của tập trong danh sách**.
-  - UI hiển thị nguyên nhãn tập do API cung cấp, bao gồm cả chữ cái nếu có. Ví dụ: `1A`, `1B`, `2A`, `2B`.
-  - Danh sách được sắp xếp theo trường thứ tự riêng của API, ví dụ `sortOrder`; ứng dụng không tự phân tích `A/B` và không tự đánh lại nhãn thành `1`, `2`, `3`, `4`.
-  - Ví dụ: `1A (sortOrder 1)` → `1B (sortOrder 2)` → `2A (sortOrder 3)` → `2B (sortOrder 4)`.
-  - Khi user chọn một ô tập, hệ thống xác định nội dung bằng `episodeId/contentId`, không dùng nhãn `1A` hoặc số thứ tự làm định danh.
-  - Nếu API không trả trường thứ tự, trả trùng thứ tự hoặc thiếu nhãn hiển thị, xem là dữ liệu không hợp lệ; ứng dụng không tự suy đoán thứ tự.
+- Tap View Toggle chuyển trực tiếp giữa Number View và Thumbnail View ngay trong block Danh sách; không mở Bottom Sheet.
+- Toggle chỉ thay presentation; không tự phát tập, không đổi Season và không reset Player.
+- Sau khi chuyển view, Selected/Playing state vẫn gắn với cùng một Episode.
+- Tap item Available tại view bất kỳ chuyển Player sang đúng tập.
+- Tap item có trạng thái Lock không phát tập ngay; hệ thống kiểm tra đăng nhập và entitlement, sau đó mở subscription/package flow hiện hành khi cần.
+- Toàn bộ ô/card là tap target, trừ action độc lập được Figma quy định.
+- Chỉ một tập có Selected/Playing state tại một thời điểm.
+- Playlist không dùng View Toggle và luôn hiển thị Thumbnail View.
+- VOD lẻ không có Trailer thì ẩn block Danh sách; VOD lẻ có Trailer hiển thị Tab/block Danh sách theo layout tương tự phim bộ.
+- Khi user đổi Number View/Thumbnail View, hệ thống lưu presentation cho đúng Detail trong app session. Rời Detail bằng Back rồi mở lại đúng Detail thì khôi phục view đã chọn; nếu chưa có state thì dùng Number View.
+- Bottom Sheet Danh sách và danh sách trong Fullscreen Player luôn dùng Thumbnail/List View theo thiết kế riêng, không kế thừa presentation của Detail Flat.
+- **Cần xác nhận:** Detail có tự cuộn tới item đang phát khi mở màn hoặc sau khi chuyển view hay không.
 
-#### 5.5.2. Detail Danh sách Series — Bottom Sheet
+
+#### 5.5.2. Tooltip giới thiệu Danh sách mới
+
+**Mục đích:** Giới thiệu entry point và cách sử dụng Danh sách mới sau khi chuyển khỏi Floating Button.
+
+**Behavior**
+
+- Hiển thị tooltip tại vị trí được Jira/Figma quy định; nội dung, mũi tên, khoảng cách và trạng thái hiển thị theo Figma final.
+- Tooltip không thay đổi dữ liệu, mode Danh sách, Player hoặc entitlement.
+- Việc hiển thị lại/đã xem áp dụng theo rule được Client thống nhất từ Jira; không dùng tooltip như một entry point bắt buộc để mở Danh sách.
+- Các state cần có trên Figma: Visible, Dismissed/Hidden và responsive trên Mobile/Tablet.
+
+#### 5.5.3. Detail Danh sách Series — Bottom Sheet
 
 **Luồng hoạt động**
 
@@ -342,27 +441,39 @@ Block không có dữ liệu được ẩn và các block phía sau tự dồn l
 
 **Behavior**
 
-- Season Dropdown hiển thị `Seasons: {tên season}`.
+- Nếu có nhiều Season, Season Dropdown hiển thị `Seasons: {tên season}`.
+- Nếu chỉ có một Season, hiển thị tên Season dạng text và ẩn icon mở Dropdown.
+- Nếu title Season rỗng/null, vẫn render item Season để chọn nhưng vùng title để trống; Client không tự tạo fallback.
 - Dropdown trên 8 item cho phép cuộn; tên dài truncate theo component.
 - **BR-01 — Điều kiện hiển thị thanh chip:** nếu tổng số Trailer + Episode không vượt 15, ẩn toàn bộ thanh chip điều hướng.
 - **BR-02 — Một chip duy nhất:** nếu tổng item lớn hơn 15 nhưng sau khi grouping chỉ tạo được một chip, vẫn ẩn thanh chip vì không có giá trị điều hướng. Ví dụ 16 Trailer + 0 Episode chỉ có section Trailer.
 - **BR-03 — Grouping Trailer:** nếu Season có ít nhất một Trailer, toàn bộ Trailer nằm trong một section và chỉ tạo tối đa một chip **Trailer**; không chia Trailer thành các nhóm 15 item, bất kể có bao nhiêu Trailer.
-- **BR-04 — Grouping Episode:** chỉ Episode được chia thành các section tối đa 15 tập: `1-15`, `16-30`, `31-45`. Nhóm cuối dùng range thực tế.
+- **BR-04 — Grouping Episode:** chỉ Episode được chia thành các section tối đa 15 item theo thứ tự API. Tên chip lấy label của item đầu và item cuối trong nhóm; kể cả nhóm một item vẫn hiển thị dạng `{đầu}-{cuối}`, ví dụ `16-16`, `31-31`.
 - **BR-05 — Range Episode độc lập:** số lượng Trailer không làm thay đổi range của Episode. Ví dụ 2 Trailer + 14 Episode tạo section Episode `1-14`, không phải `3-16`.
-- **BR-06 — Thứ tự chip:** khi thanh chip được hiển thị, chip **Trailer** đứng trước, sau đó là các chip Episode theo thứ tự tăng dần. Cấu trúc tiêu chuẩn: `[Trailer] [1-15] [16-30] [31-45]`.
+- **BR-05A — Chỉ có Episode, không có Trailer:** không tạo section/chip **Trailer**. Episode vẫn được grouping độc lập, tối đa 15 tập/section. Nếu có tối đa 15 Episode thì chỉ tạo một section và ẩn thanh chip; nếu có từ 16 Episode trở lên thì hiển thị các chip Episode như `1-15`, `16-30`, `31-31`.
+- **BR-06 — Thứ tự chip:** khi thanh chip được hiển thị, chip **Trailer** đứng trước nếu Season có Trailer; sau đó là các chip Episode theo thứ tự tăng dần. Nếu không có Trailer, thanh chip bắt đầu trực tiếp từ chip Episode đầu tiên. Cấu trúc ví dụ: `[Trailer] [1-15] [16-30]` hoặc `[1-15] [16-30]`.
 - **BR-07 — Điều kiện hiển thị cuối cùng:** chỉ hiển thị thanh chip khi tổng Trailer + Episode lớn hơn 15 và kết quả grouping tạo được ít nhất hai chip.
+- Episode có Compact Label dạng `1A`, `1B`, `2A` vẫn được grouping theo số lượng item và thứ tự API, không dựa trên giá trị số của label. Tên chip lấy label đầu-cuối thực tế của mỗi nhóm tối đa 15 item.
+- Tab/section Trailer chỉ hiển thị khi BE trả cấu hình và dữ liệu Trailer hợp lệ. Logic/contract gọi API tab Trailer trong Danh sách phát do BE phản hồi Client; Client không tự ghép dữ liệu từ API khác khi chưa có contract.
 - Danh sách dọc hiển thị thumbnail bên trái, title/mô tả bên phải và thời lượng trên thumbnail.
+- Chưa áp dụng phân trang cho Bottom Sheet Series trong Sprint 29.
 
 **Ma trận ví dụ**
 
 | Số Trailer | Số Episode | Thanh chip hiển thị | Giải thích |
 | ---: | ---: | --- | --- |
+| 0 | 10 | Không hiển thị | Chỉ có 10 Episode; tạo một section `1-10`, không có giá trị điều hướng. |
+| 0 | 15 | Không hiển thị | Chỉ có 15 Episode; tạo một section `1-15`. |
+| 0 | 16 | `1-15`, `16-16` | Không có Trailer; 16 Episode tạo hai section Episode; nhóm một item vẫn dùng format đầu-cuối. |
+| 0 | 30 | `1-15`, `16-30` | Không có Trailer; Episode được chia thành hai section. |
+| 0 | 31 | `1-15`, `16-30`, `31-31` | Không có Trailer; nhóm cuối một item vẫn dùng format đầu-cuối. |
 | 1 | 10 | Không hiển thị | Tổng 11 item, không vượt 15. |
 | 2 | 13 | Không hiển thị | Tổng 15 item. |
 | 2 | 14 | `Trailer`, `1-14` | Tổng 16 item và tạo được hai chip. |
 | 1 | 15 | `Trailer`, `1-15` | Tổng 16 item và tạo được hai chip. |
 | 16 | 0 | Không hiển thị | Chỉ tạo được một chip Trailer; không chia Trailer thành nhiều nhóm. |
 | 20 | 10 | `Trailer`, `1-10` | Trailer vẫn chỉ có một chip; Episode tạo một chip. |
+| 20 | 1 | `Trailer`, `1-1` | Trailer tạo một chip độc lập; Episode một item tạo chip `1-1`. |
 | 30 | 30 | `Trailer`, `1-15`, `16-30` | Episode được chia thành hai nhóm. |
 | 2 | 45 | `Trailer`, `1-15`, `16-30`, `31-45` | Episode được chia thành ba nhóm. |
 - Không hiển thị filter Cũ nhất/Mới nhất; mặc định từ cũ đến mới.
@@ -370,21 +481,27 @@ Block không có dữ liệu được ẩn và các block phía sau tự dồn l
 
 **Interaction Rules**
 
-- Tap ngoài Season Dropdown đóng Dropdown.
+- Tap ngoài Season Dropdown đóng Dropdown. Nút Back của thiết bị khi Dropdown đang mở chỉ đóng Dropdown và giữ Bottom Sheet; Back tiếp theo mới đóng Bottom Sheet.
+- Khi chọn Season mới, Dropdown đóng và vùng danh sách chuyển sang Loading; không hiển thị lẫn item Season cũ và mới. Tải thành công thì thay bằng Trailer/Episode Season mới và tính lại chip/active state. Nếu tải lỗi, hệ thống khôi phục Season và dataset trước đó, đồng thời hiển thị Error/Retry.
+- Chọn Season trong Dropdown chỉ thay dataset Bottom Sheet; Player tiếp tục phát item hiện tại cho tới khi user chọn Trailer/Episode khác.
+- Thanh chip hỗ trợ swipe/scroll ngang để xem chip bị khuất. Swipe chỉ di chuyển viewport chip, không tự thay đổi active chip.
 - Tap chip **Trailer** cuộn tới đầu section Trailer; không tự phát Trailer đầu tiên.
 - Tap chip Episode cuộn tới đầu section Episode tương ứng; không tự phát tập đầu tiên.
-- **BR-08 — Auto-select/Scroll Spy độc lập với Grouping:** chip active được xác định theo section/item đang hiển thị trên viewport, không phụ thuộc số lượng item trong section và không làm thay đổi cách grouping.
-- Khi viewport đang ở bất kỳ Trailer nào, active chip **Trailer**, dù section Trailer có 1 hay nhiều item.
-- Khi viewport đang ở Episode thuộc range nào, active chip range đó. Ví dụ đang thấy Tập 18 thì active `16-30`.
-- **Quy tắc chuyển active chip:** section nằm đầu vùng nội dung nhìn thấy là section active. Khi item đầu tiên của section tiếp theo chạm mép trên vùng danh sách, ngay bên dưới thanh chip sticky, hệ thống chuyển active sang chip của section đó.
-- Khi user cuộn ngược lên, active chip chuyển về section trước ngay khi item đầu tiên của section trước trở lại vị trí đầu vùng nội dung.
+- **BR-08 — Auto-select/Scroll Spy độc lập với Grouping:** chip active được xác định theo section chứa item đầu tiên đang nhìn thấy trong vùng danh sách; không phụ thuộc số lượng item trong section và không làm thay đổi cách grouping.
+- Nếu item đầu tiên đang nhìn thấy là Trailer, active chip **Trailer**, dù section Trailer có 1 hay nhiều item.
+- Nếu Season không có Trailer, không tồn tại trạng thái active Trailer; chip Episode đầu tiên là chip đầu danh sách.
+- Nếu item đầu tiên đang nhìn thấy là Episode thuộc range nào, active chip range đó. Ví dụ item đầu tiên đang nhìn thấy là Tập 18 thì active `16-30`.
+- Khi cuộn xuống và item đầu tiên của section tiếp theo trở thành item đầu tiên đang nhìn thấy ngay dưới thanh chip sticky, hệ thống chuyển active sang chip của section đó.
+- Khi cuộn ngược lên, active chip được cập nhật ngay khi item đầu tiên đang nhìn thấy thuộc section trước. Ví dụ Tập 15 xuất hiện ở vị trí đầu vùng danh sách thì active `1-15`.
 - Khi user tap chip, hệ thống cuộn item đầu tiên của section tương ứng tới ngay dưới thanh chip sticky; chip được chọn giữ active trong quá trình cuộn và Scroll Spy đồng bộ lại khi cuộn hoàn tất.
+- **BR-09 — Ngoại lệ khi chạm đáy danh sách:** khi danh sách đã cuộn tới vị trí cuối cùng, hệ thống luôn active chip cuối cùng, kể cả section cuối có ít item và item đầu tiên của section đó không thể chạm mép trên vùng danh sách.
+- Khi user cuộn ngược và danh sách rời khỏi vị trí cuối, hệ thống bỏ rule BR-09 và tiếp tục xác định active chip theo section chứa item đầu tiên đang nhìn thấy.
+- Nếu user tap chip cuối, hệ thống cuộn danh sách tới vị trí cuối có thể đạt được và giữ chip cuối ở trạng thái active.
 - Nếu thanh chip bị ẩn, Scroll Spy không hiển thị active state nhưng danh sách vẫn cuộn và phát item bình thường.
-- Tap Trailer/tập chuyển Player sang item tương ứng.
+- Tap Trailer/tập chuyển Player sang item tương ứng. Action tap/pressed item độc lập với Scroll Spy; nếu có programmatic scroll, chip target giữ active trong quá trình cuộn và Scroll Spy đồng bộ lại khi cuộn hoàn tất.
 - Khi mở Bottom Sheet và có thanh chip, hệ thống cuộn/focus chip chứa item đang phát; nếu item đang phát không thuộc danh sách thì active section đầu tiên đang hiển thị.
 - Đổi Season phải tính lại section Trailer, các nhóm Episode, điều kiện hiển thị thanh chip và active state.
 - Không hiển thị lẫn dữ liệu Season cũ và Season mới.
-- **Cần xác nhận:** behavior rollback khi tải Season mới thất bại.
 - **Cần xác nhận:** entry point cụ thể mở Bottom Sheet Danh sách trong Figma final.
 
 ### 5.6. Block Danh sách Playlist
@@ -395,7 +512,7 @@ Block không có dữ liệu được ẩn và các block phía sau tự dồn l
 
 **Trước thay đổi:** Playlist được mở từ floating button.
 
-**Sau thay đổi:** Detail hiển thị block **Danh sách**; Bottom Sheet giữ expanded list.
+**Sau thay đổi:** Detail hiển thị block **Danh sách** cố định ở Thumbnail View và thay đổi entry point mở danh sách. Playlist không có View Toggle. Bottom Sheet Playlist giữ nguyên UI/UX, presentation và business rule hiện tại; Sprint 29 không redesign Bottom Sheet Playlist.
 
 **Luồng hoạt động**
 
@@ -418,9 +535,11 @@ Block không có dữ liệu được ẩn và các block phía sau tự dồn l
 
 **Behavior**
 
-- Detail hiển thị carousel ngang gồm thumbnail, thời lượng và title.
+- Detail luôn hiển thị carousel ngang gồm thumbnail, thời lượng và title; không áp dụng Number View.
+- Playlist không hiển thị View Toggle.
 - Bottom Sheet hiển thị list dọc gồm thumbnail bên trái, title/artist bên phải và thời lượng trên thumbnail.
-- Không giới hạn tổng số item theo yêu cầu baseline; surface áp dụng lazy load/pagination theo API hiện hành nếu có.
+- Playlist không áp dụng Navigation Chip.
+- Chưa áp dụng phân trang/lazy-load trang tiếp theo trong Sprint 29; hiển thị dataset Playlist của response hiện tại.
 - Hai surface dùng cùng dữ liệu và playing state.
 - Không có dữ liệu thì ẩn block và không giữ khoảng trống.
 - Lỗi Playlist độc lập không đóng toàn bộ Detail.
@@ -430,56 +549,40 @@ Block không có dữ liệu được ẩn và các block phía sau tự dồn l
 
 - Tap item phát đúng item và cập nhật Playing state trên surface còn lại.
 - Không duy trì floating Playlist sau khi block mới có hiệu lực.
-- Bottom Sheet là expanded view của block Danh sách.
+- Bottom Sheet là expanded view của block Danh sách và giữ nguyên UI/UX hiện tại.
+- Không render Navigation Chip tại Detail Flat hoặc Bottom Sheet Playlist.
 - **Cần xác nhận:** tap title, CTA hay entry point nào mở Bottom Sheet trong Figma final.
 - **Cần xác nhận:** Playlist có CTA Thử lại tại block khi mất mạng hay chỉ dùng popup baseline.
 
-### 5.7. Khung Bình luận
+### 5.7. Bình luận — Floating Button
 
-> **UPD VER1.1 — Nội dung bổ sung:** Mục đích, Trước/Sau thay đổi, luồng Collapse/Expand, Các trạng thái, Behavior và Interaction Rules.
+> **UPD VER1.3:** PD chốt chưa áp dụng block Bình luận mới tại Detail Flat; giữ nguyên entry point và flow Bình luận hiện hành.
 
-**Mục đích:** Chuyển Bình luận từ floating button sang khung preview trực tiếp trên Detail.
-
-**Trước thay đổi:** User mở Bình luận từ floating button.
-
-**Sau thay đổi:** Detail hiển thị khung Bình luận dạng collapse; tap khung mở Bottom Sheet Bình luận dạng expand.
+**Mục đích:** Cho phép user mở tính năng Bình luận từ icon Bình luận tại Floating Button.
 
 **Luồng hoạt động**
 
-1. Hệ thống kiểm tra nội dung có cho phép bình luận.
-2. Nếu được phép, hệ thống hiển thị title `Bình luận {count}` và preview bình luận nổi bật.
-3. User chọn khung Bình luận.
-4. Hệ thống mở Bottom Sheet Bình luận.
-5. Khi action yêu cầu xác thực, hệ thống kiểm tra login/token.
-6. User xem, nhập và gửi bình luận theo Comment flow hiện hành.
+1. Hệ thống kiểm tra cấu hình Bình luận của nội dung.
+2. Nếu được phép, hệ thống hiển thị icon Bình luận tại Floating Button theo hiện trạng.
+3. User chọn icon Bình luận.
+4. Hệ thống mở Comment surface theo flow hiện hành.
+5. User xem, nhập và gửi bình luận theo business rule hiện hành.
 
 **Các trạng thái**
 
-- Loading.
-- Loaded.
-- Empty.
-- Blocked/Hidden.
-- Error.
-- Login Required.
-- Bottom Sheet: Opened, Closed.
-- Input: Ready, Submitting, Success, Error.
+- Floating Button/Comment icon: Default, Pressed, Hidden.
+- Comment surface: Loading, Loaded, Empty, Error, Opened, Closed.
+- Login: Logged In, Guest/Login Required, Token Expired.
 
-**Behavior**
+**Behavior và Interaction Rules**
 
-- Block collapse hiển thị số lượng bình luận và preview gồm avatar, text theo giới hạn UI final.
-- Tap block mở Bottom Sheet Bình luận.
-- Nội dung bị chặn bình luận thì ẩn toàn bộ block.
-- Khi không có bình luận, empty state/CTA kế thừa Comment flow hiện hành.
-- Business rule tiếp tục kế thừa `C-2 - Comment - Mobile & Tablet`.
-- Chưa đăng nhập hoặc token hết hạn thì dùng Login Required flow.
-- Đăng nhập thành công quay lại đúng Detail VOD.
-
-**Interaction Rules**
-
-- Không duy trì floating Bình luận sau khi block mới có hiệu lực.
-- Không submit khi chưa xác thực.
-- Không tự gửi lại nội dung sau login nếu user chưa xác nhận submit lại.
-- Đóng Bottom Sheet giữ nguyên Detail và Player state.
+- Không hiển thị block preview/collapse Bình luận tại Detail Flat trong Sprint 29.
+- CMS off hoặc `is_comment = 0`: ẩn icon Bình luận; không giữ khoảng trống hoặc entry point thay thế trên Detail Flat.
+- CMS on hoặc `is_comment = 1`: hiển thị icon Bình luận tại Floating Button và kế thừa toàn bộ Comment flow hiện hành.
+- Chưa đăng nhập/Login Queue sử dụng avatar guest/default trong Comment surface theo hiện trạng.
+- Đóng Comment surface giữ nguyên Detail, Player và scroll state.
+- API Comment lỗi không ảnh hưởng các block khác tại Detail.
+- Không map Floating Button Bình luận sang block mới cho tới khi có phương án PD/Figma khác được chốt.
 
 ### 5.8. Block Short Videos
 
@@ -515,74 +618,46 @@ Block không có dữ liệu được ẩn và các block phía sau tự dồn l
 
 ### 5.9. Block Trailers
 
-**Mục đích:** Hiển thị Trailer và video liên quan trực tiếp trên Detail.
+**Mục đích:** Hiển thị Trailer/video tại Detail Flat cho VOD lẻ và Playlist theo phạm vi đã chốt.
 
-**Luồng hoạt động**
+**Phạm vi hiển thị**
 
-1. Hệ thống tải danh sách Trailer/video liên quan của nội dung hoặc Season hiện tại.
-2. Có dữ liệu thì hiển thị block **Trailers & videos**.
-3. User cuộn ngang và chọn một card.
-4. Player chuyển sang Trailer/video được chọn.
-5. Hệ thống cập nhật Playing state tại Detail và Bottom Sheet nếu cùng item đang hiển thị.
+- **VOD bộ/Series:** không trả và không hiển thị block Trailer tại Detail Flat. Trailer của Season chỉ xuất hiện trong Tab/section Trailer của Bottom Sheet Danh sách khi BE trả cấu hình và dữ liệu hợp lệ.
+- **VOD lẻ có Trailer:** hiển thị Tab/block **Danh sách** tại Detail Flat theo layout tương tự phim bộ; item Trailer dùng presentation theo Figma.
+- **Playlist:** trả block Trailer tại Detail Flat khi có dữ liệu; Playlist không áp dụng Navigation Chip.
 
 **Các trạng thái**
 
-- Loading.
-- Loaded.
-- Empty/Hidden.
-- Error.
-- Card: Default, Pressed, Playing.
-- Missing Thumbnail/Title/Duration.
+- Loading, Loaded, Empty/Hidden, Error.
+- Item: Default, Pressed, Playing.
 
-**Behavior**
+**Behavior và Interaction Rules**
 
-- Detail hiển thị block title **Trailers & videos** và card video ngang.
-- Bottom Sheet Series tiếp tục có chip/list Trailer khi Season có dữ liệu.
-- Hai surface dùng cùng dữ liệu Trailer của Season hiện tại nhưng presentation khác nhau.
-- Không có Trailer thì ẩn block/chip tương ứng.
-- Thumbnail lỗi dùng placeholder; field text thiếu được ẩn theo component.
-
-**Interaction Rules**
-
-- Tap toàn bộ card để phát Trailer/video.
-- Chỉ một Trailer/video có Playing state tại một thời điểm.
-- Chọn Trailer không điều hướng sang Detail khác, trừ khi destination dữ liệu quy định khác.
-- Lỗi phát kế thừa Player flow.
+- Không có dữ liệu thì ẩn block, không giữ khoảng trống.
+- Tap item Trailer chuyển Player sang Trailer tương ứng và cập nhật Playing state.
+- Logic gọi API Tab Trailer trong Danh sách phát áp dụng theo contract BE phản hồi Client.
+- Chưa áp dụng phân trang.
 
 ### 5.10. Block Season
 
-**Mục đích:** Hiển thị các Season khác của nội dung dưới dạng poster ngang trên Detail.
+**Mục đích:** Hiển thị Season tại Detail Flat cho VOD lẻ/Playlist khi API trả dữ liệu phù hợp.
 
-**Luồng hoạt động**
+**Phạm vi hiển thị**
 
-1. Hệ thống tải danh sách Season liên quan.
-2. Có Season khác thì hiển thị block **Các seasons**.
-3. User cuộn và chọn một card Season.
-4. Hệ thống mở/chuyển sang Season được chọn.
-5. Detail tải lại dữ liệu phù hợp với Season mới.
+- **VOD bộ/Series:** không trả và không hiển thị block Season tại Detail Flat. Season của Series được chọn trong Season Dropdown thuộc Bottom Sheet Danh sách.
+- **VOD lẻ/Playlist:** trả block Season tại Detail Flat khi có dữ liệu; hiển thị card ngang theo Figma.
 
 **Các trạng thái**
 
-- Loading.
-- Loaded.
-- Empty/Hidden.
-- Error.
+- Loading, Loaded, Empty/Hidden, Error.
 - Card: Default, Pressed, Current/Selected nếu thiết kế hỗ trợ.
 
-**Behavior**
+**Behavior và Interaction Rules**
 
-- Detail dùng card poster ngang; không dùng Season Dropdown.
-- Season Dropdown chỉ thuộc Detail Danh sách Series trong Bottom Sheet.
-- Card hiển thị poster và title Season theo UI final.
-- Không có Season khác thì ẩn block.
-- Tên dài truncate theo component.
-
-**Interaction Rules**
-
-- Tap card phải mở/chuyển đúng Season.
-- Không hiển thị lẫn dữ liệu của hai Season sau khi chuyển thành công.
-- **Cần xác nhận:** card Season update cùng Detail route hay mở một Detail mới.
-- **Cần xác nhận:** behavior khi tải Season mới thất bại.
+- Không có dữ liệu thì ẩn block và đẩy block phía sau lên.
+- Tap card mở/chuyển đúng nội dung Season theo destination API và cập nhật Detail/Player theo flow hiện hành.
+- Season Dropdown trong Bottom Sheet Series không bị thay thế bởi block Season tại Detail Flat.
+- Chưa áp dụng phân trang.
 
 ### 5.11. Block Liên quan
 
@@ -615,54 +690,97 @@ Block không có dữ liệu được ẩn và các block phía sau tự dồn l
 - Không tự phát hoặc tự điều hướng khi user chỉ cuộn qua block.
 - Back navigation quay lại Detail trước theo navigation stack hiện hành.
 
-### 5.12. D2G Surface
+### 5.12. Danh sách D2G, Vietnam Airlines và Vietjet Air
 
-> **UPD VER1.1 — Nội dung bổ sung:** Mục đích, Trước/Sau thay đổi, Luồng hoạt động, Các trạng thái, Behavior và Interaction Rules của D2G Surface.
+> **UPD VER1.2:** Tách rõ Detail tiêu chuẩn từ content block và Detail mở từ trang Nội dung tải xuống. Không dùng một surface chung cho hai context.
 
-**Mục đích:** Hiển thị độc lập danh sách nội dung đã tải/hỗ trợ D2G với thông tin dung lượng và thời hạn sử dụng.
+**Mục đích:** Chuyển entry point Danh sách của D2G, Vietnam Airlines và Vietjet Air từ Floating Button/tab Videos cũ sang Detail Flat, đồng thời giữ nguyên UI/Flow của Card Item và Download/D2G Detail hiện hành.
 
-**Trước thay đổi:** D2G được truy cập từ floating button.
+#### 5.12.1. Phạm vi nội dung
 
-**Sau thay đổi:** Icon D2G tại Card Info mở D2G Surface độc lập theo UI final.
+- Áp dụng cho D2G, Vietnam Airlines và Vietjet Air.
+- Sprint 29 chỉ thay đổi vị trí entry point Danh sách.
+- UI, dữ liệu, entitlement, playback và download flow của Card Item giữ nguyên nếu mục này không quy định khác.
+
+#### 5.12.2. Detail tiêu chuẩn khi mở từ content block
 
 **Luồng hoạt động**
 
-1. User chọn icon D2G tại Card Info.
-2. Hệ thống mở D2G Surface của nội dung hiện tại.
-3. Hệ thống hiển thị title, giới hạn độ tuổi, thời lượng và tổng dung lượng khi có.
-4. Hệ thống hiển thị danh sách tập/item đã tải.
-5. Mỗi item hiển thị thumbnail, thời lượng, tên tập, dung lượng và thời hạn sử dụng.
-6. User chọn item hoặc action gia hạn theo D2G flow hiện hành.
+1. User chọn item D2G/Vietnam Airlines/Vietjet Air tại một content block.
+2. Hệ thống mở Detail VOD tiêu chuẩn.
+3. Hệ thống hiển thị block **Danh sách** trực tiếp tại Detail Flat; block này thay thế entry point Floating Button/tab Videos cũ, không hiển thị trùng hai danh sách.
+4. User cuộn và chọn item trực tiếp tại block Danh sách.
+5. Hệ thống thực hiện Card Item flow hiện hành và đồng bộ Playing state.
+6. Nếu Figma có header/CTA mở rộng, user chọn entry point đó để mở expanded list theo surface hiện hành.
 
 **Các trạng thái**
 
-- Loading.
-- Loaded.
-- Empty/Hidden.
-- Error.
-- Item: Available, Queued/Downloading, Downloaded, Expiring, Expired, Failed.
-- Login Required/Entitlement Required khi business rule áp dụng.
+- Block: Loading, Loaded, Empty/Hidden, Error.
+- Item: Default, Pressed, Selected/Playing, Locked/Entitlement Required nếu áp dụng.
 
 **Behavior**
 
-- UI dùng danh sách dọc; thumbnail bên trái và thông tin item bên phải.
-- Thời lượng hiển thị trên thumbnail.
-- Item có thể hiển thị dung lượng như `85 MB`.
-- Thời hạn có thể hiển thị `Hết hạn trong 48 giờ` hoặc `Hết hạn` theo dữ liệu.
-- Item hết hạn không được thể hiện như file còn sử dụng được.
-- Download state, thời hạn và gia hạn tiếp tục kế thừa tài liệu Download/D2G hiện hành.
-- Lỗi D2G không làm mất Detail VOD; đóng surface quay lại đúng Detail.
+- Không có dữ liệu thì ẩn block, không giữ khoảng trống.
+- Lỗi block không đóng Detail hoặc xóa dữ liệu hợp lệ của Player và các block khác.
+- Card Item giữ nguyên component và business rule hiện tại.
 
 **Interaction Rules**
 
-- Không cho mở/phát file khi entitlement hoặc trạng thái file không hợp lệ.
-- Action gia hạn chỉ hiển thị và hoạt động theo D2G business rule hiện hành.
-- Đóng D2G Surface giữ nguyên Detail và Player state.
-- **Cần xác nhận:** action cụ thể khi tap item Expired/Expiring và điều kiện login/entitlement chi tiết.
+- Không duy trì Floating Button/tab Videos cũ sau khi block Danh sách mới có hiệu lực.
+- Tap item thực hiện đúng action hiện hành; không đồng thời trigger action Download độc lập.
+- **Cần bổ sung Figma:** Detail tiêu chuẩn cho cả ba loại nội dung và entry point mở expanded list nếu có.
+
+#### 5.12.3. Detail khi mở từ trang Nội dung tải xuống
+
+**Luồng hoạt động**
+
+1. User mở một nội dung từ trang Nội dung tải xuống.
+2. Hệ thống giữ Detail Download/D2G hiện tại với thông tin dung lượng, thời hạn và danh sách item đã tải.
+3. Hệ thống hiển thị danh sách theo thứ tự mặc định **cũ → mới**; không hiển thị filter Cũ nhất/Mới nhất.
+4. User chọn item hoặc action tải/gia hạn/tải lại theo Download/D2G flow hiện hành.
+5. User chọn Back/Đóng để quay lại trang Nội dung tải xuống.
+
+**Display**
+
+- App bar, thông tin nội dung, metadata, tổng dung lượng, danh sách item, trạng thái tải và thời hạn giữ theo UI hiện hành.
+- Field thiếu được ẩn; thumbnail lỗi dùng placeholder đúng tỷ lệ.
+
+**Các trạng thái**
+
+- Surface: Loading, Loaded, Empty, Error.
+- Item tải: Queued, Downloading, Paused, Downloaded, Failed.
+- Thời hạn: Valid, Expiring, Expired.
+- Login Required/Entitlement Required khi business rule áp dụng.
+
+**Behavior và Interaction Rules**
+
+- Surface này không thuộc phạm vi redesign entry point Danh sách tại Detail Flat.
+- Bỏ filter Cũ nhất/Mới nhất; danh sách mặc định sắp xếp **cũ → mới** theo thứ tự dữ liệu BE trả về.
+- Lỗi một item không làm mất các item hợp lệ khác.
+- Không mở/phát file Expired, file lỗi hoặc entitlement không hợp lệ.
+- Tap Back/Đóng quay lại đúng trang Nội dung tải xuống và giữ context điều hướng hiện hành.
+- Bổ sung surface **Airline ON** cho Vietnam Airlines/Vietjet Air theo Figma; UI chỉ hiển thị khi trạng thái Airline ON được API xác định.
+- Surface Airline ON kế thừa Card Item/playback/download business rule hiện hành, trừ khác biệt được Figma hoặc API contract quy định rõ.
+- **Cần bổ sung/điều chỉnh Figma:** Detail mở từ trang Nội dung tải xuống, Airline ON và các trạng thái tải/thời hạn còn thiếu.
 
 ---
 
 ## 6. Các trạng thái chung
+
+### 6.0. Định nghĩa trạng thái component
+
+| State | Điều kiện | Hiển thị và tương tác |
+| --- | --- | --- |
+| Loading | Component đang tải dữ liệu | Hiển thị skeleton/placeholder trong đúng vùng; chưa cho tương tác với item chưa tải. |
+| Loaded | API thành công và có dữ liệu | Hiển thị dữ liệu, cho phép các interaction hợp lệ. |
+| Empty | API thành công nhưng không có dữ liệu | Ẩn component hoặc hiển thị empty state theo rule riêng; không tạo dữ liệu giả. |
+| Error | API lỗi/timeout | Giữ Detail và dữ liệu tốt của component khác; hiển thị Error/Retry trong đúng vùng. |
+| Hidden | Feature không áp dụng hoặc không đủ điều kiện hiển thị | Không render component và không giữ khoảng trống. |
+| Pressed | User đang nhấn một control/item | Hiển thị pressed feedback; chưa được coi là Selected hoặc Playing. |
+| Selected | Item/chip/view do user chọn | Hiển thị selected/active state theo Figma; không mặc định đồng nghĩa với nội dung đang phát. |
+| Playing | Item tương ứng với nội dung Player đang phát | Chỉ một item trong context có Playing state; chuyển nội dung phải xóa Playing state cũ. |
+
+Các mục 5.4, 5.5, 5.5.1 và các component khác kế thừa định nghĩa trên; chỉ mô tả thêm ngoại lệ tại component.
 
 ### 6.1. API Detail lỗi — không bao gồm lỗi 410 và mất mạng
 
@@ -739,7 +857,7 @@ Block không có dữ liệu được ẩn và các block phía sau tự dồn l
 
 - Không giữ khoảng trống của block bị ẩn.
 - Danh sách, Short Videos, Trailers, Season, Playlist và Liên quan không có dữ liệu thì ẩn.
-- Bình luận bị chặn thì ẩn toàn bộ block Bình luận.
+- Bình luận bị chặn thì ẩn icon Bình luận tại Floating Button; không có block Bình luận tại Detail Flat.
 - D2G không có dữ liệu áp dụng empty/hidden rule của D2G flow hiện hành.
 - Empty không được hiểu là API Error.
 
@@ -810,25 +928,26 @@ Block không có dữ liệu được ẩn và các block phía sau tự dồn l
 ### 7.1. Tracking
 
 - Tracking tab Thông tin cũ được map sang nút **Đọc thêm** khi Analytics xác nhận.
-- Tracking floating Bình luận và Playlist được map sang component mới tương ứng.
+- Bình luận tiếp tục tracking theo Floating Button/Comment surface hiện hành; không map sang block Detail Flat.
+- Tracking Floating Playlist được map sang component Danh sách Playlist mới nếu Analytics yêu cầu.
 - Detail và Bottom Sheet cần phân biệt source surface nếu Analytics yêu cầu.
-- Detail cần theo dõi card tập, item Playlist, Trailer, Season, Short Video và nội dung Liên quan.
+- Detail cần theo dõi item tập ở cả Number View và Thumbnail View, item Playlist, Trailer, Season, Short Video và nội dung Liên quan.
+- Series cần theo dõi interaction chuyển presentation tại View Toggle và phân biệt `from_view`/`to_view`; event name/property chính thức chờ Analytics xác nhận.
 - Bottom Sheet cần theo dõi Season Dropdown, chip Trailer, chip nhóm và item list.
-- D2G cần theo dõi entry point mở surface và action trên item.
+- D2G cần theo dõi entry point mở surface, trạng thái Airline ON và action trên item.
 - Một interaction chỉ ghi event của surface user thực sự thao tác; không double-count.
 - Không tự tạo event name/property trước khi Analytics xác nhận.
 - Telemetry lỗi không được chặn user flow.
 
-### 7.2. Các điểm cần xác nhận
+### 7.2. Các điểm cần xác nhận / handoff còn chờ
 
 1. Breakpoint, số item nhìn thấy và responsive behavior riêng trên Tablet.
 2. Surface mở Primary Info từ nút **Đọc thêm**.
-3. Entry point cụ thể mở Bottom Sheet Danh sách Series/Playlist trong Figma final.
-4. Detail có tự cuộn tới item đang phát khi mở màn hay không.
-5. API contract cho danh sách tập cần có riêng nhãn hiển thị (`1A`, `1B`, `2A`, `2B`) và trường thứ tự; cần xác nhận tên field chính thức với Backend.
-6. Behavior rollback khi đổi Season nhưng tải dữ liệu mới thất bại.
-7. Card Season update cùng Detail route hay mở một Detail mới.
-8. Playlist có CTA **Thử lại** tại block khi mất mạng hay không.
-9. Block con nào dùng inline retry và block nào bị ẩn khi lỗi.
-10. Action khi tap item D2G Expired/Expiring và điều kiện login/entitlement chi tiết.
-11. Mapping Log 37/918 và field phân biệt Detail/Bottom Sheet/D2G Surface.
+3. Entry point cụ thể mở Bottom Sheet Danh sách Series/Playlist và expanded list D2G/Vietnam Airlines/Vietjet Air trong Figma final.
+4. Detail có tự cuộn tới item đang phát khi mở màn hoặc sau khi chuyển view hay không.
+5. Tên field/API contract chính thức cho thuộc tính ẩn/hiện hai mode và Label vương miện mới.
+6. Contract gọi API Tab Trailer trong Danh sách phát do BE phản hồi Client.
+7. Rule hiển thị lại/đã xem của tooltip tính năng mới theo Jira/Client implementation.
+8. Action chi tiết khi tap item D2G Expired/Expiring và điều kiện login/entitlement.
+9. Mapping Log 37/918 và field phân biệt Detail/Bottom Sheet/Download-D2G/Airline ON surface.
+10. Figma final cho tooltip, Airline ON và các UI/state còn thiếu đã được raise trong Q&A.
